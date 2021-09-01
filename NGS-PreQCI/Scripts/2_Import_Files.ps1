@@ -1,6 +1,6 @@
 
 # copy the result files to directories
-$dirNames = Get-ChildItem . -Directory -Filter *_* | Select-Object -ExpandProperty BaseName
+$dirNames = Get-ChildItem . -Directory -Filter D*_* | Select-Object -ExpandProperty BaseName
 foreach($dirName in $dirNames){
 
     $matchedFiles = Get-ChildItem . -File -Filter ($dirName.SubString(0,6) + "*")
@@ -11,10 +11,10 @@ foreach($dirName in $dirNames){
     Write-Host "`n"
 }
 
-# create excel applications
+# create excel application
 $excel = New-Object -ComObject Excel.Application
 
-$excelFiles = Get-ChildItem -Path . -Directory -Filter *_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *.xlsm 
+$excelFiles = Get-ChildItem -Path . -Directory -Filter D*_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *.xlsm 
 foreach($excelFile in $excelFiles){
 
     Write-Host ("Importing data for " + $excelFile.Name + "`n")
