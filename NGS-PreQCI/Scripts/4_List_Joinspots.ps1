@@ -28,7 +28,7 @@ function Get-Joinspots {
     $res
 } 
 
-$files = Get-ChildItem -Path . -Directory -Filter D*_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *Unfiltered*
+$files = Get-ChildItem -Path . -Directory -Filter D*_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *Joinspots*
 foreach ($file in $files) {
 
     $variants = Get-Content  $file.FullName
@@ -44,7 +44,7 @@ foreach ($file in $files) {
     # output joinspots for current directory
     Write-Host ($file.DirectoryName + "`n")
     if ($table.Count -eq 0) {
-        Write-Host "No Joinspots`n"
+        Write-Host "No Joinspots`n" -ForegroundColor Green
     }
     else {
         Write-Host "Joinspots Present" -ForegroundColor Red
