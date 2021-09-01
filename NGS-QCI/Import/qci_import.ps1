@@ -39,14 +39,14 @@ $templateXml = @"
 $reportType = (Read-Host "Enter the report type (Comp|Heme)").Trim()
 
 $code = $null
-$profile = $null
+$tpp = $null
 if ($reportType -ieq "Comp") {
     $code = "Comprehensive 275"
-    $profile = "Comprehensive_Cancer_Panel_275"
+    $tpp = "Comprehensive_Cancer_Panel_275"
 }
 elseif ($reportType -ieq "Heme") {
     $code = "Heme 141"
-    $profile = "Hematologic_Neoplasms_Panel_141"
+    $tpp = "Hematologic_Neoplasms_Panel_141"
 }
 else {
     Write-Host "`nERROR: An invalid report type was entered." -ForegroundColor Red
@@ -101,7 +101,7 @@ foreach($key in $patientRows.Keys){
 	
         # based on report type
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Code", $nsmgr).InnerText = $code
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $profile
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $tpp
 
         # based on input excel
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = "Test"
