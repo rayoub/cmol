@@ -1,12 +1,52 @@
 
+$templateXml = @"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns1:QCISomaticTest xmlns:ns1="http://qci.qiagen.com/xsd/interpret" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.12.0">
+    <ns1:TestProduct>
+        <ns1:Code></ns1:Code>
+        <ns1:Profile></ns1:Profile>
+        <ns1:ReportTemplate>KUMC_HemOnc_v2</ns1:ReportTemplate>
+    </ns1:TestProduct>
+    <ns1:Test>
+        <ns1:AccessionId></ns1:AccessionId>
+        <ns1:VariantsFilename></ns1:VariantsFilename>
+        <ns1:TestDate></ns1:TestDate>
+        <ns1:Diagnosis></ns1:Diagnosis>
+        <ns1:PrimarySourceTissue></ns1:PrimarySourceTissue>
+    </ns1:Test>
+    <ns1:Patient>
+        <ns1:Name></ns1:Name>
+        <ns1:BirthDate></ns1:BirthDate>
+        <ns1:Age></ns1:Age>
+        <ns1:Gender></ns1:Gender>
+    </ns1:Patient>
+    <ns1:Specimen>
+        <ns1:Id></ns1:Id>
+        <ns1:CollectionDate></ns1:CollectionDate>
+        <ns1:Type></ns1:Type>
+    </ns1:Specimen>
+    <ns1:Physician>
+        <ns1:Name></ns1:Name>
+        <ns1:ClientId></ns1:ClientId>
+        <ns1:FacilityName></ns1:FacilityName>
+    </ns1:Physician>
+    <ns1:Pathologist>
+        <ns1:Name></ns1:Name>
+    </ns1:Pathologist>
+</ns1:QCISomaticTest>
+"@
+
 $reportType = (Read-Host "Enter the report type (Comp|Heme)").Trim()
 
-$templateXml = ""
+$code = $null
+$profile = $null
 if ($reportType -ieq "Comp") {
-    $templateXml = "Comprehensive.xml"
+    $code = "Comprehensive 275"
+    $profile = "Comprehensive_Cancer_Panel_275"
 }
 elseif ($reportType -ieq "Heme") {
-    $templateXml = "Heme.xml"
+    $code = "Heme 141"
+    $profile = "Hematologic_Neoplasms_Panel_141"
 }
 else {
     Write-Host "`nERROR: An invalid report type was entered." -ForegroundColor Red
@@ -54,13 +94,18 @@ for ($i = 2; $i -lt 100; $i++){
 foreach($key in $patientRows.Keys){
     foreach($row in $patientRows[$key]){
 
-        $xml = [xml] (Get-Content -Path ("./" + $templateXml) -Raw)
+        $xml = [xml] $templateXml 
 
         $nsmgr = New-Object -TypeName System.Xml.XmlNamespaceManager -ArgumentList $xml.NameTable
         $nsmgr.AddNamespace("ns1", "http://qci.qiagen.com/xsd/interpret")
-		
+	
+        # based on report type
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Code", $nsmgr).InnerText = $code
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $profile
+
+        # based on input excel
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = ".vcf"
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = "Test"
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = "Test"
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:PrimarySourceTissue", $nsmgr).InnerText = "Test"
@@ -76,12 +121,14 @@ foreach($key in $patientRows.Keys){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = "Test"
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = "Test"
 
-        $xml.Save("./" + $key + ".xml")
+        $saveXml = (Join-Path -Path $PSScriptRoot -ChildPath ($key + ".xml"))
+        $saveZip = (Join-Path -Path $PSScriptRoot -ChildPath ($key + ".zip"))
 
+        $xml.Save($saveXml)
         $compress = @{
-            Path = "./" + $templateXml
+            Path = $saveXml
+            DestinationPath = $saveZip 
             CompressionLevel = "Optimal"
-            DestinationPath = "./" + $key + ".zip"
         }
         Compress-Archive @compress
 
