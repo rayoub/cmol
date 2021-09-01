@@ -21,7 +21,7 @@ $headers = @{
 }
 
 $response = $null
-$tests = Get-Content -Path ./exported_tests.json -Raw | ConvertFrom-Json 
+$tests = Get-Content -Path ./tests.json -Raw | ConvertFrom-Json 
 foreach ($test in $tests) {
 
     $uri = $test.exportUrl + '?view=reportXml'
