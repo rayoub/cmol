@@ -1,4 +1,66 @@
 
+######################################################################################################
+### FUNCTION DEFINITIONS
+######################################################################################################
+
+function Format-Date {
+    param ([String] $dateText)
+
+    if (-not [String]::isNullOrEmpty($dateText)) {
+        $dateObj = [DateTime] $dateText
+        Get-Date -Date $dateObj -Format 'yyyy-MM-dd'
+    }
+    else {
+        ""
+    }
+}
+
+function Format-Providers {
+
+    $providers = @()
+    
+    $provider = $row.Columns("R").text.trim()
+    if (!$provider -eq "") {
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AG").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AH").text.trim(), $row.Columns("AG").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AI").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AJ").text.trim(), $row.Columns("AI").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AK").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AL").text.trim(), $row.Columns("AK").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AM").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AN").text.trim(), $row.Columns("AM").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    ($providers -join "; ")
+}
+
+######################################################################################################
+### TEMPLATE DEFINITION
+######################################################################################################
+
 $templateXml = @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns1:QCISomaticTest xmlns:ns1="http://qci.qiagen.com/xsd/interpret" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.12.0">
@@ -36,6 +98,10 @@ $templateXml = @"
 </ns1:QCISomaticTest>
 "@
 
+######################################################################################################
+### GATHER INPUT
+######################################################################################################
+
 $reportType = (Read-Host "Enter the report type (Comp|Heme)").Trim()
 
 $code = $null
@@ -60,6 +126,10 @@ if ($null -eq $inputFile){
     Read-Host "`nPress enter to exit"
     exit
 }
+
+######################################################################################################
+### DO THE WORK
+######################################################################################################
 
 # load input workbook
 $excel = New-Object -ComObject Excel.Application
@@ -98,29 +168,40 @@ foreach($key in $patientRows.Keys){
 
         $nsmgr = New-Object -TypeName System.Xml.XmlNamespaceManager -ArgumentList $xml.NameTable
         $nsmgr.AddNamespace("ns1", "http://qci.qiagen.com/xsd/interpret")
-	
+
         # based on report type
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Code", $nsmgr).InnerText = $code
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $tpp
 
         # based on input excel
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:PrimarySourceTissue", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Type", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = "Test"
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $row.Columns("D").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:PrimarySourceTissue", $nsmgr).InnerText = "Unknown"
 
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Type", $nsmgr).InnerText = $row.Columns("N").text.trim()
+
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = $row.Columns("A").text.trim() + ", " + $row.Columns("B").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("F").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = "Test"
+        $gender = 'Male'
+        if ($row.Columns("G").text.trim().toUpper() -ne 'M') {
+            $gender = 'Female'
+        }
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = $gender
+
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Format-Providers
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = $row.Columns("C").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = $row.Columns("P").text.trim()
+
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
+
+        # gather input
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = "Test"
+
+        # file names
         $saveXml = (Join-Path -Path $PSScriptRoot -ChildPath ($key + ".xml"))
         $saveZip = (Join-Path -Path $PSScriptRoot -ChildPath ($key + ".zip"))
 
@@ -130,7 +211,7 @@ foreach($key in $patientRows.Keys){
             DestinationPath = $saveZip 
             CompressionLevel = "Optimal"
         }
-        Compress-Archive @compress
+        Compress-Archive @compress -Force
 
         # since this does not handle common reports, ignore subsequent rows
         break
