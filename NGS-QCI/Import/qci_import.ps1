@@ -15,6 +15,23 @@ function Format-Date {
     }
 }
 
+function Get-Age {
+    param ([String] $birthDateText)
+
+    if (-not [String]::isNullOrEmpty($birthDateText)) {
+        $birthDateObj = [DateTime] $birthDateText
+        $todayDateObj = Get-Date 
+        $age = $todayDateObj.Year - $birthDateObj.Year
+        if ($birthDateObj.Date -gt $todayDateObj.AddYears(-$age)) {
+            $age = $age - 1
+        }
+        $age
+    }
+    else {
+        ""
+    }
+}
+
 function Format-Providers {
 
     $providers = @()
@@ -184,7 +201,7 @@ foreach($key in $patientRows.Keys){
 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = $row.Columns("A").text.trim() + ", " + $row.Columns("B").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("F").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = "Test"
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age $row.Columns("F").text.trim()
         $gender = 'Male'
         if ($row.Columns("G").text.trim().toUpper() -ne 'M') {
             $gender = 'Female'
