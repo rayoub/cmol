@@ -1,4 +1,7 @@
 
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
 ######################################################################################################
 ### FUNCTION DEFINITIONS
 ######################################################################################################
@@ -75,8 +78,271 @@ function Format-Providers {
 }
 
 ######################################################################################################
-### TEMPLATE DEFINITION
+### GLOBAL DEFINITION
 ######################################################################################################
+
+$diagnoses = @(
+    'Acute Idiopathic Thrombocytopenic Purpura',
+    'Acute Leukemia',
+    'Acute Lymphoblastic Leukemia',
+    'Acute Lymphoid Leukemia',
+    'Acute Monocytic Leukemia',
+    'Acute Myeloblastic Leukemia',
+    'Acute Myeloid Leukemia',
+    'Acute Promyelocytic Leukemia',
+    'Adenocarcinoma',
+    'Adenoid Cystic Carcinoma',
+    'Adenosarcoma Of Cervix',
+    'AMML',
+    'Ampullary Carcinoma',
+    'Amyloidosis',
+    'Anaplastic Large Cell Lymphoma',
+    'Anaplastic Thyroid Carcinoma',
+    'Anemia',
+    'Angiomyolipoma',
+    'Angiosarcoma Of Breast',
+    'Aplastic Anemia',
+    'Appendiceal Carcinoma',
+    'Appendix Cancer',
+    'Autoimmune Hemolytic Anemia',
+    'Bacteremia',
+    'B-Cell Acute Lymphoblastic Leukemia',
+    'B-Cell Lymphoma',
+    'B-Cell Neoplasm',
+    'B-Cell NHL',
+    'B-Cell Prolymphocytic Leukemia',
+    'Bladder Cancer',
+    'Bladder Carcinoma',
+    'Blastic Plasmacytoid Dendritic Cell Neoplasm',
+    'Bone Tumor',
+    'Brain Cancer',
+    'Brain Carcinoma',
+    'Breast Adenocarcinoma',
+    'Breast Cancer',
+    'Breast Carcinoma',
+    'Cancer',
+    'Carcinoma',
+    'Cecal Adenocarcinoma',
+    'Cecum Cancer',
+    'Cerebellar Tumor',
+    'Cholangiocarcinoma',
+    'Cholangiosarcoma',
+    'Chondrosarcoma',
+    'Choroid Melanoma',
+    'Chronic Idiopathic Thrombocytopenic Purpura',
+    'Chronic Lymphoproliferative Disease',
+    'Chronic Myelocytic Leukemia',
+    'Chronic Myeloid Neoplasm',
+    'Chronic Myelomonocytic Leukemia',
+    'Chronic Neutropenia',
+    'Clear Cell Renal Cell Carcinoma',
+    'Clear Cell Sarcoma',
+    'CLL',
+    'CNS Lymphoma',
+    'Colon Adenocarcinoma',
+    'Colon Cancer',
+    'Colorectal Adenocarcinoma',
+    'Colorectal Cancer',
+    'Colorectal Carcinoma',
+    'Copper Deficiency',
+    'Cryoglobulinemia',
+    'Cutaneous Tcell Lymphoma',
+    'Cytopenia',
+    'Desmoplastic Small Round Cell Tumor',
+    'Diamond Blackfan Anemia',
+    'Diffuse Large B-Cell Lymphoma',
+    'Duodenal Adenocarcinoma',
+    'Dyskeratosis Congenita',
+    'Endometrial Carcinoma',
+    'Eosinophilia',
+    'Epithelioid Hemangioendothelioma',
+    'Epithelioid Sarcoma',
+    'Erythrocytosis',
+    'Esophageal Adenocarcinoma',
+    'Esophageal Cancer',
+    'Esophageal Squamous Cell Carcinoma',
+    'Essential Thrombocythemia',
+    'Essential Thrombocytopenia',
+    'Essential Thrombocytosis',
+    'ET',
+    'Ewings Sarcoma',
+    'Extranodal Marginal Zone Lymphoma',
+    'Follicular Dendritic Cell Sarcoma',
+    'Follicular Lymphoma',
+    'Follicular Non-Hodgkins Lymphoma',
+    'Follicular Thyroid Carcinoma',
+    'Gastroesophageal Neoplasm',
+    'GATA2 Deficiency',
+    'GBM',
+    'GIST',
+    'Glioblastoma',
+    'Glioma',
+    'Hairy Cell Leukemia',
+    'Hemangiopericytoma',
+    'Hematologic Disorder',
+    'Hematologic Disorders',
+    'Hematologic Malignancies',
+    'Hematologic Neoplasm',
+    'Hematological Disorder',
+    'Hematological Neoplasm',
+    'Hemochromatosis',
+    'Hemophagocytic Lymphohistiocytosis',
+    'Hepatic Carcinoma',
+    'Hepatocholangiocarcinoma',
+    'Hepatosplenic T-Cell Lymphoma',
+    'Hodgkins Lymphoma',
+    'Hurthle Cell Carcinoma',
+    'Hypereosinophilia',
+    'Hypereosinophilic Syndrome',
+    'Idiopathic Aplastic Anemia',
+    'Idiopathic Hypereosinophilic Syndrome',
+    'Idiopathic Thrombocytopenia Purpura',
+    'Idiopathic Thrombocytopenic Purpura',
+    'Intrahepatic Cholangiocarcinoma',
+    'Iron Deficiency Anemia',
+    'Jejunal Adenocarcinoma',
+    'Langerhans Cell Histiocytosis',
+    'Large Granular Lymphocytic Leukemia',
+    'Laryngeal Carcinoma',
+    'Leiomyosarcoma',
+    'Leukocytosis',
+    'Leukopenia',
+    'Liposarcoma',
+    'Liver Adenocarcinoma',
+    'Lung Adenocarcinoma',
+    'Lung Cancer',
+    'Lung Carcinoma',
+    'Lymphoadenopathy',
+    'Lymphoblastic Leukemia',
+    'Lymphoblastic Lymphoma',
+    'Lymphocytopenia',
+    'Lymphocytosis',
+    'Lymphoma',
+    'Lymphomatoid Granulomatosis',
+    'Lymphopenia',
+    'Lymphoplasmacytic Lymphoma',
+    'Macrocytic Anemia',
+    'Macrocytosis',
+    'Malignant Gastrointestinal Stromal Tumor',
+    'Malignant Neoplasm',
+    'Malignant Neoplasm Of Stomach',
+    'MALT Lymphoma',
+    'Mammary Adenocarcinoma',
+    'Mantle Cell Lymphoma',
+    'Marginal Zone Lymphoma',
+    'Mast Cell Activation Syndrome',
+    'Mast Cell Disease',
+    'Mast Cell Disorder',
+    'Mast Cell Leukemia',
+    'Mastocytosis',
+    'MDS',
+    'MDS/MPN',
+    'Melanoma',
+    'Mesothelioma',
+    'Metastatic Breast Cancer',
+    'Metastatic Carcinoma',
+    'Metastatic Colonic Adenocarcinoma',
+    'Metastatic Lung Adenocarcinoma',
+    'MGUS',
+    'Mixed Phenotype Acute Leukemia',
+    'Mixed Phenotype Leukemia',
+    'Monoclonal B-Cell Lymphocytosis',
+    'Monoclonal Gammopathy',
+    'Monocytosis',
+    'MPD',
+    'MPN',
+    'MPNST',
+    'Multiple Myeloma',
+    'Myelodysplastic Syndrome',
+    'Myelofibrosis',
+    'Myeloid Neoplasm',
+    'Myeloid Sarcoma',
+    'Myeloma',
+    'Myeloproliferative Disease',
+    'Myeloproliferative Disorder',
+    'Myeloproliferative Neoplasm',
+    'Myoepithelioma',
+    'Myxoid Liposarcoma',
+    'Neuroendocrine Carcinoma',
+    'Neuroendocrine Tumor',
+    'Neutropenia',
+    'Neutrophilia',
+    'NHL',
+    'NK/T-Cell Lymphoma',
+    'Non-Small Cell Carcinoma',
+    'Non-Small Cell Lung Cancer',
+    'Normocytic Anemia',
+    'Pancreatic Adenocarcinoma',
+    'Pancreatic Cancer',
+    'Pancytopenia',
+    'Papillary Thyroid Carcinoma',
+    'Paraproteinemia',
+    'Parosteal Osteosarcoma',
+    'Parotid Gland Cancer',
+    'Paroxysmal Nocturnal Hemoglobinuria',
+    'Peripheral Tcell Lymphoma',
+    'Peritoneal Carcinomatosis',
+    'Pheochromocytoma',
+    'Plasma Cell Leukemia',
+    'Pleomorphic Sarcoma',
+    'Polycythemia',
+    'Polycythemia Vera',
+    'Posterior Fossa Tumor',
+    'Primary Myelofibrosis',
+    'Primary Myxofibrosarcoma',
+    'Prolymphocytic Leukemia',
+    'Promyelocytic Leukemia',
+    'Prostate Cancer',
+    'Prostatic Adenocarcinoma',
+    'Pulmonary Adenocarcinoma',
+    'Rectal Adenocarcinoma',
+    'Rectal Cancer',
+    'Rectal Carcinoma',
+    'Red Cell Aplasia',
+    'Renal Cell Carcinoma',
+    'Retroperitoneal Liposarcoma',
+    'Rosai-Dorfman Disease',
+    'Round Cell Sarcoma',
+    'Salivary Duct Carcinoma',
+    'Salivary Gland Adenocarcinoma',
+    'Salivary Gland Cancer',
+    'Sarcoma',
+    'Sarcomatoid Carcinoma',
+    'Sarcomatoid Renal Cell Carcinoma',
+    'Secondary Myelofibrosis',
+    'Small Cell Carcinoma Of Bladder',
+    'Small Cell Lung Cancer',
+    'Small Lymphocytic Lymphoma',
+    'Smoldering Multiple Myeloma',
+    'Smoldering Myeloma',
+    'Spinal Cord Tumor',
+    'Spindle Cell Carcinoma',
+    'Splenomegaly',
+    'Squamous Cell Carcinoma',
+    'Stem Cell Donor',
+    'Systemic Mastocytosis',
+    'T-Cell ALL',
+    'T-Cell Large Granular Lymphocytic Leukemia',
+    'T-Cell Leukemia/Lymphoma',
+    'T-Cell Lymphoma',
+    'T-Cell Lymphoproliferative Disorder',
+    'T-Cell Prolymphocytic Leukemia',
+    'Thalamic Glioma',
+    'Thrombocythemia',
+    'Thrombocytopenia',
+    'Thrombocytosis',
+    'Thymoma',
+    'Thyroid Cancer',
+    'Thyroid Carcinoma',
+    'Undifferentiated Pleomorphic Sarcoma',
+    'Urothelial Carcinoma',
+    'Uterine Cancer',
+    'Uterine Sarcoma',
+    'Uveal Melanoma',
+    'Vasculitis',
+    'Von Willebrand Disease',
+    'Waldenstrom Macroglobulinemia'
+)
 
 $templateXml = @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -147,6 +413,62 @@ if ($null -eq $inputFile){
 ######################################################################################################
 ### DO THE WORK
 ######################################################################################################
+
+$dims = New-Object -TypeName System.Drawing.Size(400,300) # width, height
+$size = New-Object -TypeName System.Drawing.Size(115,35) 
+$adjust = New-Object -TypeName System.Drawing.Size(6,6) # double default margin
+$margin = New-Object -TypeName System.Windows.Forms.Padding(0)
+
+$form = New-Object -TypeName System.Windows.Forms.Form 
+$form.Text = "QCI Upload"
+$form.Size = $dims
+$form.Margin = $margin
+$form.StartPosition = "CenterScreen"
+$form.TopMost = $true
+
+$font = New-Object -TypeName System.Drawing.Font -ArgumentList 'GenericSanSerif', 12
+$form.Font = $font
+
+
+$cancelButton = New-Object System.Windows.Forms.Button
+$cancelButton.Text = 'Cancel'
+$cancelButton.Size = [System.Drawing.Size]::Subtract($size, $adjust)
+$cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+
+$okButton = New-Object System.Windows.Forms.Button
+$okButton.Text = 'OK'
+$okButton.Size = [System.Drawing.Size]::Subtract($size, $adjust)
+$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+
+$form.AcceptButton = $okButton
+$form.CancelButton = $cancelButton
+
+$flowPanel = New-Object System.Windows.Forms.FlowLayoutPanel
+$flowPanel.Width = $dims.Width
+$flowPanel.Height = $size.Height
+$flowPanel.Margin = $margin
+$flowPanel.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
+$flowPanel.Dock = [System.Windows.Forms.DockStyle]::Bottom
+
+$flowPanel.Controls.Add($cancelButton)
+$flowPanel.Controls.Add($okButton)
+
+$form.Controls.Add($flowPanel)
+
+$listBox = New-Object System.Windows.Forms.ListBox
+$listBox.Location = New-Object System.Drawing.Point(10,40)
+$listBox.Size = New-Object System.Drawing.Size(260,20)
+$listBox.Height = 80
+$listBox.AutoSize = $true
+
+foreach ($diagnosis in $diagnoses) {
+    [void] $listBox.Items.Add($diagnosis)
+}
+
+$form.Controls.Add($listBox)
+
+$form.ShowDialog()
+exit
 
 # load input workbook
 $excel = New-Object -ComObject Excel.Application
@@ -230,7 +552,7 @@ foreach($key in $patientRows.Keys){
         }
         Compress-Archive @compress -Force
 
-        # since this does not handle common reports, ignore subsequent rows
+        # since this does not handle 'common' reports, ignore subsequent rows
         break
     }
 }
