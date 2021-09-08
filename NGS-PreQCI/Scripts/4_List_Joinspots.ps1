@@ -52,5 +52,5 @@ foreach ($file in $files) {
     }
 }
 
-
+Read-Host "`nPress enter to exit"
 

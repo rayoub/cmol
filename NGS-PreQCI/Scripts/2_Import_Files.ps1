@@ -27,11 +27,13 @@ foreach($excelFile in $excelFiles){
     $macroName = "ResultPopulate"
     $excel.Run($macroName)
 
-    Start-Sleep -Seconds 3
+    Start-Sleep -Seconds 5
 
     # clean up empty rows on the result tab
     $macroName = "Clean"
     $excel.Run($macroName)
+    
+    Start-Sleep -Seconds 1
 
     # clean up
     $book.Save()
