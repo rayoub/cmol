@@ -421,19 +421,16 @@ $margin = New-Object -TypeName System.Windows.Forms.Padding(0)
 
 $form = New-Object -TypeName System.Windows.Forms.Form 
 $form.Text = "QCI Upload"
-$form.Size = $dims
-$form.Margin = $margin
+$form.ControlBox = $false
+$form.AutoSize = $true
+$form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
+$form.SizeGripStyle = 'Hide'
+#$form.Margin = $margin
 $form.StartPosition = "CenterScreen"
 $form.TopMost = $true
 
 $font = New-Object -TypeName System.Drawing.Font -ArgumentList 'GenericSanSerif', 12
 $form.Font = $font
-
-
-$cancelButton = New-Object System.Windows.Forms.Button
-$cancelButton.Text = 'Cancel'
-$cancelButton.Size = [System.Drawing.Size]::Subtract($size, $adjust)
-$cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
 
 $okButton = New-Object System.Windows.Forms.Button
 $okButton.Text = 'OK'
@@ -441,7 +438,6 @@ $okButton.Size = [System.Drawing.Size]::Subtract($size, $adjust)
 $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
 
 $form.AcceptButton = $okButton
-$form.CancelButton = $cancelButton
 
 $flowPanel = New-Object System.Windows.Forms.FlowLayoutPanel
 $flowPanel.Width = $dims.Width
@@ -455,17 +451,18 @@ $flowPanel.Controls.Add($okButton)
 
 $form.Controls.Add($flowPanel)
 
-$listBox = New-Object System.Windows.Forms.ListBox
-$listBox.Location = New-Object System.Drawing.Point(10,40)
-$listBox.Size = New-Object System.Drawing.Size(260,20)
-$listBox.Height = 80
-$listBox.AutoSize = $true
+$comboBox = New-Object System.Windows.Forms.ComboBox
+$comboBox.Location = New-Object System.Drawing.Point(10,40)
+$comboBox.AutoSize = $true
+$comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
 
 foreach ($diagnosis in $diagnoses) {
-    [void] $listBox.Items.Add($diagnosis)
+    [void] $comboBox.Items.Add($diagnosis)
 }
 
-$form.Controls.Add($listBox)
+$comboBox.SelectedIndex = 0
+
+$form.Controls.Add($comboBox)
 
 $form.ShowDialog()
 exit
