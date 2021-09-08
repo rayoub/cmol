@@ -414,55 +414,89 @@ if ($null -eq $inputFile){
 ### DO THE WORK
 ######################################################################################################
 
-$dims = New-Object -TypeName System.Drawing.Size(400,300) # width, height
-$size = New-Object -TypeName System.Drawing.Size(115,35) 
-$adjust = New-Object -TypeName System.Drawing.Size(6,6) # double default margin
-$margin = New-Object -TypeName System.Windows.Forms.Padding(0)
+$dims = New-Object System.Drawing.Size(595,172) # width, height
+$padding = New-Object System.Windows.Forms.Padding(6)
+$font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
 
-$form = New-Object -TypeName System.Windows.Forms.Form 
+# create form
+$form = New-Object System.Windows.Forms.Form 
 $form.Text = "QCI Upload"
+$form.Font = $font
 $form.ControlBox = $false
-$form.AutoSize = $true
+$form.Size = $dims
 $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
 $form.SizeGripStyle = 'Hide'
-#$form.Margin = $margin
 $form.StartPosition = "CenterScreen"
 $form.TopMost = $true
 
-$font = New-Object -TypeName System.Drawing.Font -ArgumentList 'GenericSanSerif', 12
-$form.Font = $font
+# labels
+$diagnosisText = New-Object System.Windows.Forms.Label 
+$diagnosisText.Text = "Indicated Diagnosis:"
+$diagnosisText.AutoSize = $true
+$diagnosisText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+$diagnosisValue = New-Object System.Windows.Forms.Label 
+$diagnosisValue.Text = "ALL"
+$diagnosisValue.AutoSize = $true
+$diagnosisValue.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+$diagnosesText = New-Object System.Windows.Forms.Label
+$diagnosesText.Text = "Available Diagnoses:"
+$diagnosesText.AutoSize = $true
+$diagnosesText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
 
-$okButton = New-Object System.Windows.Forms.Button
-$okButton.Text = 'OK'
-$okButton.Size = [System.Drawing.Size]::Subtract($size, $adjust)
-$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-
-$form.AcceptButton = $okButton
-
-$flowPanel = New-Object System.Windows.Forms.FlowLayoutPanel
-$flowPanel.Width = $dims.Width
-$flowPanel.Height = $size.Height
-$flowPanel.Margin = $margin
-$flowPanel.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
-$flowPanel.Dock = [System.Windows.Forms.DockStyle]::Bottom
-
-$flowPanel.Controls.Add($cancelButton)
-$flowPanel.Controls.Add($okButton)
-
-$form.Controls.Add($flowPanel)
-
+# diagnoses combobox
 $comboBox = New-Object System.Windows.Forms.ComboBox
-$comboBox.Location = New-Object System.Drawing.Point(10,40)
-$comboBox.AutoSize = $true
 $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-
+$comboBox.Anchor = [System.Windows.Forms.AnchorStyles]::Right
+$comboBox.Width = 375
 foreach ($diagnosis in $diagnoses) {
     [void] $comboBox.Items.Add($diagnosis)
 }
-
 $comboBox.SelectedIndex = 0
 
-$form.Controls.Add($comboBox)
+# ok button
+$okButton = New-Object System.Windows.Forms.Button
+$okButton.Text = 'OK'
+$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+$okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+$form.AcceptButton = $okButton
+
+# table panel
+$table = New-Object System.Windows.Forms.TableLayoutPanel
+$table.RowCount = 3
+$table.ColumnCount = 2
+$table.AutoSize = $true
+$table.Padding = $padding
+
+# row styles
+$rowStyle1 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+$rowStyle2 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+$rowStyle3 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+$table.RowStyles.Add($rowStyle1)
+$table.RowStyles.Add($rowStyle2)
+$table.RowStyles.Add($rowStyle3)
+
+# table first row
+$table.Controls.Add($diagnosisText)
+$table.SetRow($diagnosisText, 0)
+$table.SetColumn($diagnosisText, 0)
+$table.Controls.Add($diagnosisValue)
+$table.SetRow($diagnosisValue, 0)
+$table.SetColumn($diagnosisValue, 1)
+
+# table second row
+$table.Controls.Add($diagnosesText)
+$table.SetRow($diagnosesText, 1)
+$table.SetColumn($diagnosesText, 0)
+$table.Controls.Add($comboBox)
+$table.SetRow($comboBox, 1)
+$table.SetColumn($comboBox, 1)
+
+# table third row
+$table.Controls.Add($okButton)
+$table.SetRow($okButton, 2)
+$table.SetColumn($okButton, 1)
+
+$form.Controls.Add($table)
 
 $form.ShowDialog()
 exit
@@ -502,7 +536,7 @@ foreach($key in $patientRows.Keys){
 
         $xml = [xml] $templateXml 
 
-        $nsmgr = New-Object -TypeName System.Xml.XmlNamespaceManager -ArgumentList $xml.NameTable
+        $nsmgr = New-Object System.Xml.XmlNamespaceManager -ArgumentList $xml.NameTable
         $nsmgr.AddNamespace("ns1", "http://qci.qiagen.com/xsd/interpret")
 
         # based on report type
