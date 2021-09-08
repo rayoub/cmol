@@ -3,81 +3,6 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 ######################################################################################################
-### FUNCTION DEFINITIONS
-######################################################################################################
-
-function Format-Date {
-    param ([String] $dateText)
-
-    if (-not [String]::isNullOrEmpty($dateText)) {
-        $dateObj = [DateTime] $dateText
-        Get-Date -Date $dateObj -Format 'yyyy-MM-dd'
-    }
-    else {
-        ""
-    }
-}
-
-function Get-Age {
-    param ([String] $birthDateText)
-
-    if (-not [String]::isNullOrEmpty($birthDateText)) {
-        $birthDateObj = [DateTime] $birthDateText
-        $todayDateObj = Get-Date 
-        $age = $todayDateObj.Year - $birthDateObj.Year
-        if ($birthDateObj.Date -gt $todayDateObj.AddYears(-$age)) {
-            $age = $age - 1
-        }
-        $age
-    }
-    else {
-        ""
-    }
-}
-
-function Format-Providers {
-
-    $providers = @()
-    
-    $provider = $row.Columns("R").text.trim()
-    if (!$provider -eq "") {
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AG").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AH").text.trim(), $row.Columns("AG").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AI").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AJ").text.trim(), $row.Columns("AI").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AK").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AL").text.trim(), $row.Columns("AK").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AM").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AN").text.trim(), $row.Columns("AM").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    ($providers -join "; ")
-}
-
-######################################################################################################
 ### GLOBAL DEFINITION
 ######################################################################################################
 
@@ -382,6 +307,190 @@ $templateXml = @"
 "@
 
 ######################################################################################################
+### FUNCTION DEFINITIONS
+######################################################################################################
+
+function Format-Date {
+    param ([String] $dateText)
+
+    if (-not [String]::isNullOrEmpty($dateText)) {
+        $dateObj = [DateTime] $dateText
+        Get-Date -Date $dateObj -Format 'yyyy-MM-dd'
+    }
+    else {
+        ""
+    }
+}
+
+function Get-Age {
+    param ([String] $birthDateText)
+
+    if (-not [String]::isNullOrEmpty($birthDateText)) {
+        $birthDateObj = [DateTime] $birthDateText
+        $todayDateObj = Get-Date 
+        $age = $todayDateObj.Year - $birthDateObj.Year
+        if ($birthDateObj.Date -gt $todayDateObj.AddYears(-$age)) {
+            $age = $age - 1
+        }
+        $age
+    }
+    else {
+        ""
+    }
+}
+
+function Format-Providers {
+
+    $providers = @()
+    
+    $provider = $row.Columns("R").text.trim()
+    if (!$provider -eq "") {
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AG").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AH").text.trim(), $row.Columns("AG").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AI").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AJ").text.trim(), $row.Columns("AI").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AK").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AL").text.trim(), $row.Columns("AK").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    $provider = $row.Columns("AM").text.trim()
+    if (!$provider -eq ""){
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("AN").text.trim(), $row.Columns("AM").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    ($providers -join "; ")
+}
+
+function Get-Diagnosis-Index {
+    param([String] $diagnosis)
+  
+    $j = -1
+    for ($i = 0; $i -lt $diagnoses.Count; $i++) {
+        if ($diagnoses[$i] -ieq $diagnosis) {
+            $j = $i 
+            break
+        }
+    }
+    $j
+}
+
+######################################################################################################
+### INPUT FORM
+######################################################################################################
+
+function Get-Input {
+    param ([String] $cmolId, [String] $indicatedDiagnosis)
+
+    $dims = New-Object System.Drawing.Size(595,172) # width, height
+    $padding = New-Object System.Windows.Forms.Padding(6)
+    $font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
+
+    # create form
+    $form = New-Object System.Windows.Forms.Form 
+    $form.Text = "QCI Upload for $cmolId"
+    $form.Font = $font
+    $form.ControlBox = $false
+    $form.Size = $dims
+    $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
+    $form.SizeGripStyle = 'Hide'
+    $form.StartPosition = "CenterScreen"
+    $form.TopMost = $true
+
+    # labels
+    $diagnosisText = New-Object System.Windows.Forms.Label 
+    $diagnosisText.Text = "Indicated Diagnosis:"
+    $diagnosisText.AutoSize = $true
+    $diagnosisText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+    $diagnosisValue = New-Object System.Windows.Forms.Label 
+    $diagnosisValue.Text = $indicatedDiagnosis
+    $diagnosisValue.AutoSize = $true
+    $diagnosisValue.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+    $diagnosesText = New-Object System.Windows.Forms.Label
+    $diagnosesText.Text = "Available Diagnoses:"
+    $diagnosesText.AutoSize = $true
+    $diagnosesText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+
+    # diagnoses combobox
+    $comboBox = New-Object System.Windows.Forms.ComboBox
+    $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+    $comboBox.Anchor = [System.Windows.Forms.AnchorStyles]::Right
+    $comboBox.Width = 375
+    foreach ($diagnosis in $diagnoses) {
+        [void] $comboBox.Items.Add($diagnosis)
+    }
+    $comboBox.SelectedIndex = 0
+
+    # ok button
+    $okButton = New-Object System.Windows.Forms.Button
+    $okButton.Text = 'OK'
+    $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form.AcceptButton = $okButton
+
+    # table panel
+    $table = New-Object System.Windows.Forms.TableLayoutPanel
+    $table.RowCount = 3
+    $table.ColumnCount = 2
+    $table.AutoSize = $true
+    $table.Padding = $padding
+
+    # row styles
+    $rowStyle1 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+    $rowStyle2 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+    $rowStyle3 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+    [void] $table.RowStyles.Add($rowStyle1)
+    [void] $table.RowStyles.Add($rowStyle2)
+    [void] $table.RowStyles.Add($rowStyle3)
+
+    # table first row
+    $table.Controls.Add($diagnosisText)
+    $table.SetRow($diagnosisText, 0)
+    $table.SetColumn($diagnosisText, 0)
+    $table.Controls.Add($diagnosisValue)
+    $table.SetRow($diagnosisValue, 0)
+    $table.SetColumn($diagnosisValue, 1)
+
+    # table second row
+    $table.Controls.Add($diagnosesText)
+    $table.SetRow($diagnosesText, 1)
+    $table.SetColumn($diagnosesText, 0)
+    $table.Controls.Add($comboBox)
+    $table.SetRow($comboBox, 1)
+    $table.SetColumn($comboBox, 1)
+
+    # table third row
+    $table.Controls.Add($okButton)
+    $table.SetRow($okButton, 2)
+    $table.SetColumn($okButton, 1)
+
+    $form.Controls.Add($table)
+
+    [void] $form.ShowDialog()
+
+    $diagnoses[$comboBox.SelectedIndex]
+}
+
+######################################################################################################
 ### GATHER INPUT
 ######################################################################################################
 
@@ -413,93 +522,6 @@ if ($null -eq $inputFile){
 ######################################################################################################
 ### DO THE WORK
 ######################################################################################################
-
-$dims = New-Object System.Drawing.Size(595,172) # width, height
-$padding = New-Object System.Windows.Forms.Padding(6)
-$font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
-
-# create form
-$form = New-Object System.Windows.Forms.Form 
-$form.Text = "QCI Upload"
-$form.Font = $font
-$form.ControlBox = $false
-$form.Size = $dims
-$form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
-$form.SizeGripStyle = 'Hide'
-$form.StartPosition = "CenterScreen"
-$form.TopMost = $true
-
-# labels
-$diagnosisText = New-Object System.Windows.Forms.Label 
-$diagnosisText.Text = "Indicated Diagnosis:"
-$diagnosisText.AutoSize = $true
-$diagnosisText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
-$diagnosisValue = New-Object System.Windows.Forms.Label 
-$diagnosisValue.Text = "ALL"
-$diagnosisValue.AutoSize = $true
-$diagnosisValue.Anchor = [System.Windows.Forms.AnchorStyles]::Left
-$diagnosesText = New-Object System.Windows.Forms.Label
-$diagnosesText.Text = "Available Diagnoses:"
-$diagnosesText.AutoSize = $true
-$diagnosesText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
-
-# diagnoses combobox
-$comboBox = New-Object System.Windows.Forms.ComboBox
-$comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-$comboBox.Anchor = [System.Windows.Forms.AnchorStyles]::Right
-$comboBox.Width = 375
-foreach ($diagnosis in $diagnoses) {
-    [void] $comboBox.Items.Add($diagnosis)
-}
-$comboBox.SelectedIndex = 0
-
-# ok button
-$okButton = New-Object System.Windows.Forms.Button
-$okButton.Text = 'OK'
-$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-$okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-$form.AcceptButton = $okButton
-
-# table panel
-$table = New-Object System.Windows.Forms.TableLayoutPanel
-$table.RowCount = 3
-$table.ColumnCount = 2
-$table.AutoSize = $true
-$table.Padding = $padding
-
-# row styles
-$rowStyle1 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
-$rowStyle2 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
-$rowStyle3 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
-$table.RowStyles.Add($rowStyle1)
-$table.RowStyles.Add($rowStyle2)
-$table.RowStyles.Add($rowStyle3)
-
-# table first row
-$table.Controls.Add($diagnosisText)
-$table.SetRow($diagnosisText, 0)
-$table.SetColumn($diagnosisText, 0)
-$table.Controls.Add($diagnosisValue)
-$table.SetRow($diagnosisValue, 0)
-$table.SetColumn($diagnosisValue, 1)
-
-# table second row
-$table.Controls.Add($diagnosesText)
-$table.SetRow($diagnosesText, 1)
-$table.SetColumn($diagnosesText, 0)
-$table.Controls.Add($comboBox)
-$table.SetRow($comboBox, 1)
-$table.SetColumn($comboBox, 1)
-
-# table third row
-$table.Controls.Add($okButton)
-$table.SetRow($okButton, 2)
-$table.SetColumn($okButton, 1)
-
-$form.Controls.Add($table)
-
-$form.ShowDialog()
-exit
 
 # load input workbook
 $excel = New-Object -ComObject Excel.Application
@@ -567,9 +589,23 @@ foreach($key in $patientRows.Keys){
 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
 
-        # gather input
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = "Test"
+        # diagnosis from input
+        $cmolId = $row.Columns("I").text.trim()
+        $indicatedDiagnosis = $row.Columns("AF").text.trim()
+        if ([String]::IsNullOrEmpty($indicatedDiagnosis)){
+            $indicatedDiagnosis = "[blank]"
+        }
+        $i = Get-Diagnosis-Index -Diagnosis $indicatedDiagnosis
+        if ($i -ge 0) {
+            $indicatedDiagnosis = $diagnoses[$i]
+        }
+        else {
+            $indicatedDiagnosis = Get-Input -CmolId $cmolId -indicatedDiagnosis $indicatedDiagnosis
+        }
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $indicatedDiagnosis
+	
+        # find the VCF file automatically
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
 
         # file names
         $saveXml = (Join-Path -Path $PSScriptRoot -ChildPath ($key + ".xml"))
