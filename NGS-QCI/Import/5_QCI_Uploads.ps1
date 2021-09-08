@@ -540,21 +540,21 @@ for ($i = 2; $i -lt 100; $i++){
     }
 
     # fill in hash-table
-    $dirName = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
+    $key = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
     $row = $inputSheet.rows($i)
-    if ($patientRows.ContainsKey($dirName)) {
+    if ($patientRows.ContainsKey($key)) {
 
         # some reports may have multiple rows for a single accession #/cmol id combination
-        $patientRows[$dirName] += $row
+        $patientRows[$key] += $row
     }
     else {
-        $patientRows.Add($dirName, @($row))
+        $patientRows.Add($key, @($row))
     }
 }
 
 # iterate input rows
-foreach($dirName in $patientRows.Keys){
-    foreach($row in $patientRows[$dirName]){
+foreach($key in $patientRows.Keys){
+    foreach($row in $patientRows[$key]){
 
         $xml = [xml] $templateXml 
 
@@ -590,7 +590,7 @@ foreach($dirName in $patientRows.Keys){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
 
         # diagnosis from input
-        $cmolId = $dirName
+        $cmolId = $key
         $indicated = $row.Columns("AF").text.trim()
         if ([String]::IsNullOrEmpty($indicated)){
             $indicated= "[blank]"
@@ -607,17 +607,22 @@ foreach($dirName in $patientRows.Keys){
         # find the VCF file automatically
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
 
-        # file names
-        $saveXml = (Join-Path -Path $PSScriptRoot -ChildPath ($dirName + ".xml"))
-        $saveZip = (Join-Path -Path $PSScriptRoot -ChildPath ($dirName + ".zip"))
+        # get real dir name
+        $dirName = Get-ChildItem -Path . -Directory -Filter $key | Select-Object -First 1 | Select-Object -ExpandProperty Name
+        if ($null -ne $dirName) {
+            
+            # file names
+            $saveXml = (Join-Path $PSScriptRoot -ChildPath (Join-Path $dirName ($key + ".xml")))
+            $saveZip = (Join-Path $PSScriptRoot -ChildPath (Join-Path $dirName ($key + ".zip")))
 
-        $xml.Save($saveXml)
-        $compress = @{
-            Path = $saveXml
-            DestinationPath = $saveZip 
-            CompressionLevel = "Optimal"
+            $xml.Save($saveXml)
+            $compress = @{
+                Path = $saveXml
+                DestinationPath = $saveZip 
+                CompressionLevel = "Optimal"
+            }
+            Compress-Archive @compress -Force
         }
-        Compress-Archive @compress -Force
 
         # since this does not handle 'common' reports, ignore subsequent rows
         break
