@@ -381,17 +381,16 @@ function Format-Providers {
     ($providers -join "; ")
 }
 
-function Get-DiagnosisIndex {
-    param([String] $diagnosis)
-  
-    $j = -1
-    for ($i = 0; $i -lt $available.Count; $i++) {
-        if ($available[$i] -ieq $diagnosis) {
-            $j = $i 
-            break
-        }
-    }
-    $j
+function Get-FileName
+{
+    param([String] $initialDirectory, [String] $cmolId)
+
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.InitialDirectory = $initialDirectory
+    $OpenFileDialog.filter = "Variant Call File (*.vcf) | *.vcf"
+    $OpenFileDialog.Title = "Select Variant Call File for $cmolId"
+    $OpenFileDialog.ShowDialog() | Out-Null
+    $OpenFileDialog.FileName
 }
 
 ######################################################################################################
@@ -443,9 +442,17 @@ function Get-Input {
     # ok button
     $okButton = New-Object System.Windows.Forms.Button
     $okButton.Text = 'OK'
+    $okButton.AutoSize = $true
     $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
     $okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     $form.AcceptButton = $okButton
+
+    # abort button
+    $abortButton = New-Object System.Windows.Forms.Button
+    $abortButton.Text = 'Abort'
+    $abortButton.AutoSize = $true
+    $abortButton.DialogResult = [System.Windows.Forms.DialogResult]::Abort
+    $abortButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 
     # table panel
     $table = New-Object System.Windows.Forms.TableLayoutPanel
@@ -478,14 +485,22 @@ function Get-Input {
     $table.SetRow($comboBox, 1)
     $table.SetColumn($comboBox, 1)
 
+    # flow panel for bottom buttons
+    $flow = New-Object System.Windows.Forms.FlowLayoutPanel
+    $flow.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
+    $flow.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $flow.Controls.Add($okButton)
+    $flow.Controls.Add($abortButton)
+
     # table third row
-    $table.Controls.Add($okButton)
-    $table.SetRow($okButton, 2)
-    $table.SetColumn($okButton, 1)
+    $table.Controls.Add($flow)
+    $table.SetRow($flow, 2)
+    $table.SetColumn($flow, 0)
+    $table.SetColumnSpan($flow, 2)
 
     $form.Controls.Add($table)
 
-    [void] $form.ShowDialog()
+    $form.ShowDialog()
 
     $available[$comboBox.SelectedIndex]
 }
@@ -554,6 +569,18 @@ for ($i = 2; $i -lt 100; $i++){
 
 # iterate input rows
 foreach($key in $patientRows.Keys){
+        
+    # get directory corresponding to key
+    $dirName = Get-ChildItem -Path . -Directory -Filter $key* | Select-Object -First 1 | Select-Object -ExpandProperty Name
+
+    # continue if directory does not exist
+    if ($null -eq $dirName) {
+
+        Write-Host "`nSkipping QCI upload package for: $key. A corresponding directory does not exist." -ForegroundColor Red
+        continue
+    }
+
+    # the directory does exist
     foreach($row in $patientRows[$key]){
 
         $xml = [xml] $templateXml 
@@ -595,34 +622,36 @@ foreach($key in $patientRows.Keys){
         if ([String]::IsNullOrEmpty($indicated)){
             $indicated= "[blank]"
         }
-        $i = Get-DiagnosisIndex -Diagnosis $indicated
-        if ($i -ge 0) {
-            $indicated = $available[$i]
+        $result, $selected = Get-Input -CmolId $cmolId -Indicated $indicated
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $selected
+        if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
+            Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
+            $inputBook.close()
+            $excel.quit()
+            exit 1
         }
-        else {
-            $indicated = Get-Input -CmolId $cmolId -Indicated $indicated
-        }
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $indicated
-	
-        # find the VCF file automatically
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = "Test"
 
-        # get real dir name
-        $dirName = Get-ChildItem -Path . -Directory -Filter $key | Select-Object -First 1 | Select-Object -ExpandProperty Name
-        if ($null -ne $dirName) {
-            
-            # file names
-            $saveXml = (Join-Path $PSScriptRoot -ChildPath (Join-Path $dirName ($key + ".xml")))
-            $saveZip = (Join-Path $PSScriptRoot -ChildPath (Join-Path $dirName ($key + ".zip")))
+        $dirPath = (Join-Path $PSScriptRoot -ChildPath $dirName)
+        $file = Get-FileName -initialDirectory $dirPath -cmolId $cmolId
+        $fileName = (Split-Path -Path $file -Leaf)
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = $fileName
+        
+        # file names
+        $saveVcf = $file
+        $saveXml = (Join-Path $dirPath -ChildPath ($key + ".xml"))
+        $saveZip = (Join-Path $dirPath -ChildPath ($key + ".zip"))
 
-            $xml.Save($saveXml)
-            $compress = @{
-                Path = $saveXml
-                DestinationPath = $saveZip 
-                CompressionLevel = "Optimal"
-            }
-            Compress-Archive @compress -Force
+        # create archive
+        $xml.Save($saveXml)
+        $compress = @{
+            Path = $saveVcf, $saveXml
+            DestinationPath = $saveZip 
+            CompressionLevel = "Optimal"
         }
+        Compress-Archive @compress -Force
+
+        # confirmation
+        Write-Host "`nProcessed QCI upload package for: $key" -ForegroundColor Green
 
         # since this does not handle 'common' reports, ignore subsequent rows
         break
