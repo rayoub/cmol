@@ -47,7 +47,7 @@ foreach ($file in $files) {
         Write-Host "No Joinspots`n" -ForegroundColor Green
     }
     else {
-        Write-Host "Joinspots Present" -ForegroundColor Red
+        Write-Host "Joinspots Present" -ForegroundColor Yellow
         $table | ForEach-Object { [PSCustomObject]$_ } | Format-Table -AutoSize -Property Position, Ref, Alt, Reads, Count
     }
 }
