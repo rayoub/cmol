@@ -28,7 +28,7 @@ function Get-Joinspots {
     $res
 } 
 
-$files = Get-ChildItem -Path . -Directory -Filter D*_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *Joinspots*
+$files = Get-ChildItem -Path . -Directory -Filter D* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *Joinspots*
 foreach ($file in $files) {
 
     $variants = Get-Content  $file.FullName
