@@ -394,8 +394,93 @@ function Get-FileName
 }
 
 ######################################################################################################
-### INPUT FORM
+### INPUT FORMS
 ######################################################################################################
+
+function Get-Selected {
+    param ([String[]] $idList)
+
+    $dims = New-Object System.Drawing.Size(560,300) # width, height
+    $padding = New-Object System.Windows.Forms.Padding(6)
+    $font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
+
+    # create form
+    $form = New-Object System.Windows.Forms.Form 
+    $form.Text = "QCI Upload"
+    $form.Font = $font
+    $form.ControlBox = $false
+    $form.Size = $dims
+    $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
+    $form.SizeGripStyle = 'Hide'
+    $form.StartPosition = "CenterScreen"
+    $form.TopMost = $true
+
+    # select label
+    $selectText = New-Object System.Windows.Forms.Label 
+    $selectText.Text = "Select Samples:"
+    $selectText.AutoSize = $true
+    $selectText.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
+
+    # select listbox
+    $listBox = New-Object System.Windows.Forms.ListBox
+    $listBox.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
+    $listBox.Width = 375
+    $listBox.Height = 200
+    foreach ($cmolId in $idList) {
+        [void] $listBox.Items.Add($cmolId)
+    }
+    $listBox.SelectionMode = 'MultiExtended'
+    $listBox.SelectedIndex = 0
+
+    # ok button
+    $okButton = New-Object System.Windows.Forms.Button
+    $okButton.Text = 'OK'
+    $okButton.AutoSize = $true
+    $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form.AcceptButton = $okButton
+
+    # abort button
+    $abortButton = New-Object System.Windows.Forms.Button
+    $abortButton.Text = 'Abort'
+    $abortButton.AutoSize = $true
+    $abortButton.DialogResult = [System.Windows.Forms.DialogResult]::Abort
+    $abortButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+
+    # table panel
+    $table = New-Object System.Windows.Forms.TableLayoutPanel
+    $table.RowCount = 2
+    $table.ColumnCount = 2
+    $table.AutoSize = $true
+    $table.Padding = $padding
+
+    # table first row
+    $table.Controls.Add($selectText)
+    $table.SetRow($selectText, 0)
+    $table.SetColumn($selectText, 0)
+    $table.Controls.Add($listBox)
+    $table.SetRow($listBox, 0)
+    $table.SetColumn($listBox, 1)
+
+    # flow panel for bottom buttons
+    $flow = New-Object System.Windows.Forms.FlowLayoutPanel
+    $flow.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
+    $flow.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $flow.Controls.Add($okButton)
+    $flow.Controls.Add($abortButton)
+
+    # table third row
+    $table.Controls.Add($flow)
+    $table.SetRow($flow, 1)
+    $table.SetColumn($flow, 0)
+    $table.SetColumnSpan($flow, 2)
+
+    $form.Controls.Add($table)
+
+    $form.ShowDialog()
+
+    $listbox.SelectedItems
+}
 
 function Get-Input {
     param ([String] $cmolId, [String] $indicated)
@@ -417,12 +502,13 @@ function Get-Input {
 
     # labels
     $indicatedText = New-Object System.Windows.Forms.Label 
-    $indicatedText.Text = "Indicated Diagnosis:"
+    $indicatedText.Text = "Receipt Log Diagnosis:"
     $indicatedText.AutoSize = $true
     $indicatedText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
     $indicatedValue = New-Object System.Windows.Forms.Label 
     $indicatedValue.Text = $indicated
-    $indicatedValue.AutoSize = $true
+    $indicatedValue.AutoSize = $false
+    $indicatedValue.Width = 375
     $indicatedValue.Anchor = [System.Windows.Forms.AnchorStyles]::Left
     $availableText = New-Object System.Windows.Forms.Label
     $availableText.Text = "Available Diagnoses:"
@@ -544,6 +630,7 @@ $inputBook = $excel.workbooks.open($inputFile.FullName)
 $inputSheet = $inputBook.sheets(1)
 
 # build hash-table of accession #/cmol id combos and patient rows from input workbook
+$idList = @()
 $patientRows = @{} 
 for ($i = 2; $i -lt 100; $i++){
 
@@ -555,33 +642,49 @@ for ($i = 2; $i -lt 100; $i++){
     }
 
     # fill in hash-table
-    $key = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
+    $cmolId = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
     $row = $inputSheet.rows($i)
-    if ($patientRows.ContainsKey($key)) {
+    if ($patientRows.ContainsKey($cmolId)) {
 
         # some reports may have multiple rows for a single accession #/cmol id combination
-        $patientRows[$key] += $row
+        $patientRows[$cmolId] += $row
     }
     else {
-        $patientRows.Add($key, @($row))
+        $patientRows.Add($cmolId, @($row))
     }
+    $idList += $cmolId
+}
+
+$result, $samples = Get-Selected -IdList $idList
+if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
+    Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
+    $inputBook.close()
+    $excel.quit()
+    exit
+}
+
+if ($samples.Count -eq 0) {
+    Write-Host "`nNo samples selected for processing. Aborting the creation of QCI upload packages`n" -ForegroundColor Red
+    $inputBook.close()
+    $excel.quit()
+    exit
 }
 
 # iterate input rows
-foreach($key in $patientRows.Keys){
-        
-    # get directory corresponding to key
-    $dirName = Get-ChildItem -Path . -Directory -Filter $key* | Select-Object -First 1 | Select-Object -ExpandProperty Name
+foreach($cmolId in $samples){
+    
+    # get directory corresponding to cmol id
+    $dirName = Get-ChildItem -Path . -Directory -Filter $cmolId* | Select-Object -First 1 | Select-Object -ExpandProperty Name
 
     # continue if directory does not exist
     if ($null -eq $dirName) {
 
-        Write-Host "`nSkipping QCI upload package for: $key. A corresponding directory does not exist." -ForegroundColor Red
+        Write-Host "`nSkipping QCI upload package for: $cmolId. A corresponding directory does not exist." -ForegroundColor Red
         continue
     }
 
     # the directory does exist
-    foreach($row in $patientRows[$key]){
+    foreach($row in $patientRows[$cmolId]){
 
         $xml = [xml] $templateXml 
 
@@ -617,7 +720,6 @@ foreach($key in $patientRows.Keys){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
 
         # diagnosis from input
-        $cmolId = $key
         $indicated = $row.Columns("AF").text.trim()
         if ([String]::IsNullOrEmpty($indicated)){
             $indicated= "[blank]"
@@ -628,18 +730,22 @@ foreach($key in $patientRows.Keys){
             Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
             $inputBook.close()
             $excel.quit()
-            exit 1
+            exit
         }
 
         $dirPath = (Join-Path $PSScriptRoot -ChildPath $dirName)
         $file = Get-FileName -initialDirectory $dirPath -cmolId $cmolId
+        if ([String]::IsNullOrEmpty($file)) {
+            Write-Host "`nNo Vcf file selected for: $cmolId. Skipping to the next sample." -ForegroundColor Red
+            continue
+        }
         $fileName = (Split-Path -Path $file -Leaf)
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:VariantsFilename", $nsmgr).InnerText = $fileName
         
         # file names
         $saveVcf = $file
-        $saveXml = (Join-Path $dirPath -ChildPath ($key + ".xml"))
-        $saveZip = (Join-Path $dirPath -ChildPath ($key + ".zip"))
+        $saveXml = (Join-Path $dirPath -ChildPath ($cmolId + ".xml"))
+        $saveZip = (Join-Path $dirPath -ChildPath ($cmolId + ".zip"))
 
         # create archive
         $xml.Save($saveXml)
@@ -651,7 +757,7 @@ foreach($key in $patientRows.Keys){
         Compress-Archive @compress -Force
 
         # confirmation
-        Write-Host "`nProcessed QCI upload package for: $key" -ForegroundColor Green
+        Write-Host "`nProcessed QCI upload package for: $cmolId" -ForegroundColor Green
 
         # since this does not handle 'common' reports, ignore subsequent rows
         break
