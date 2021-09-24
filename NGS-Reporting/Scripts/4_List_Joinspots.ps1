@@ -37,7 +37,9 @@ foreach ($file in $files) {
     # add joinspots here
     $table += Get-Joinspots -Variants $variants -Position 115258746 -RefAllele 'A' -AltAllele 'C'
     $table += Get-Joinspots -Variants $variants -Position 115258748 -RefAllele 'C' -AltAllele 'A'
-
+    $table += Get-Joinspots -Variants $variants -Position 25398283 -RefAllele 'A' -AltAllele 'C'
+    $table += Get-Joinspots -Variants $variants -Position 25398285 -RefAllele 'C' -AltAllele 'A'
+    
     # remove nulls
     $table = $table | Where-Object { $null -ne $_ }
 
