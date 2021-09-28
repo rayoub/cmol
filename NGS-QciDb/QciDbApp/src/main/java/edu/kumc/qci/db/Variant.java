@@ -14,7 +14,7 @@ public class Variant extends PGobject {
     private String actionability;
     private String phenotypeId;
     private String phenotypeName;
-    private String dbSnp;
+    private String dbsnp;
     private String cadd;
     private String alleleFraction;
     private String readDepth;
@@ -32,6 +32,14 @@ public class Variant extends PGobject {
     private String function;
     private String referenceCount;
     
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
+    }
+
     public String getChromosome() {
         return chromosome;
     }
@@ -104,12 +112,12 @@ public class Variant extends PGobject {
         this.phenotypeName = phenotypeName;
     }
 
-    public String getDbSnp() {
-        return dbSnp;
+    public String getDbsnp() {
+        return dbsnp;
     }
 
-    public void setDbSnp(String dbsnp) {
-        this.dbSnp = dbsnp;
+    public void setDbsnp(String dbsnp) {
+        this.dbsnp = dbsnp;
     }
 
     public String getCadd() {
@@ -254,7 +262,7 @@ public class Variant extends PGobject {
             actionability + "," + 
             phenotypeId + "," + 
             phenotypeName + "," + 
-            dbSnp + "," + 
+            dbsnp + "," + 
             cadd + "," + 
             alleleFraction + "," + 
             readDepth + "," + 
