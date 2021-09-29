@@ -14,7 +14,6 @@ public class Report extends PGobject {
     private String diagnosis;
     private String interpretation;
     
-    private String patientName;
     private String sex;
     private String dateOfBirth;
     
@@ -27,16 +26,10 @@ public class Report extends PGobject {
     private String specimenId;
     private String specimenType;
     private String specimenCollectionDate;
-    private String specimenDissection;
-    private String specimenTumorContent;
     
     private String labTestedCNVGain;
     private String labTestedGenes;
     private String labTranscriptIds;
-    private String sampleDetectedGeneFusions;
-    private String sampleDetectedGeneNegative;
-    
-    private String version;
    
     public String getReportId() {
         return reportId;
@@ -100,14 +93,6 @@ public class Report extends PGobject {
 
     public void setInterpretation(String interpretation) {
         this.interpretation = interpretation;
-    }
-
-    public String getPatientName() {
-        return patientName;
-    }
-
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
     }
 
     public String getSex() {
@@ -190,22 +175,6 @@ public class Report extends PGobject {
         this.specimenCollectionDate = specimenCollectionDate;
     }
 
-    public String getSpecimenDissection() {
-        return specimenDissection;
-    }
-
-    public void setSpecimenDissection(String specimenDissection) {
-        this.specimenDissection = specimenDissection;
-    }
-
-    public String getSpecimenTumorContent() {
-        return specimenTumorContent;
-    }
-
-    public void setSpecimenTumorContent(String specimenTumorContent) {
-        this.specimenTumorContent = specimenTumorContent;
-    }
-
     public String getLabTestedCNVGain() {
         return labTestedCNVGain;
     }
@@ -229,30 +198,6 @@ public class Report extends PGobject {
     public void setLabTranscriptIds(String labTranscriptIds) {
         this.labTranscriptIds = labTranscriptIds;
     }
-
-    public String getSampleDetectedGeneFusions() {
-        return sampleDetectedGeneFusions;
-    }
-
-    public void setSampleDetectedGeneFusions(String sampleDetectedGeneFusions) {
-        this.sampleDetectedGeneFusions = sampleDetectedGeneFusions;
-    }
-
-    public String getSampleDetectedGeneNegative() {
-        return sampleDetectedGeneNegative;
-    }
-
-    public void setSampleDetectedGeneNegative(String sampleDetectedGeneNegative) {
-        this.sampleDetectedGeneNegative = sampleDetectedGeneNegative;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
     
     @Override
     public String getValue() {
@@ -260,37 +205,31 @@ public class Report extends PGobject {
             
             reportId + "," +
 
-            subjectId + "," +
-            accession + "," +
+            subjectId.replace("(", "\\(").replace(")","\\)") + "," +
+            accession.replace("(", "\\(").replace(")","\\)") + "," +
             testDate + "," +
-            testCode + "," +
+            testCode.replace("(", "\\(").replace(")","\\)") + "," +
             clinicalFinding + "," +
             diagnosis + "," +
             interpretation + "," +
 
-            patientName + "," +
             sex + "," +
             dateOfBirth + "," +
 
             orderingPhysicianClient + "," +
-            orderingPhysicianFacilityName + "," +
-            orderingPhysicianName + "," +
-            pathologistName + "," +
+            orderingPhysicianFacilityName.replace(",","\\,") + "," +
+            orderingPhysicianName.replace(",", "\\,") + "," +
+            pathologistName.replace(",","\\,") + "," +
             
             primaryTumorSite + "," +
-            specimenId + "," +
-            specimenType + "," +
+            specimenId.replace("(", "\\(").replace(")","\\)") + "," +
+            specimenType.replace("(", "\\(").replace(")","\\)") + "," +
             specimenCollectionDate + "," +
-            specimenDissection + "," +
-            specimenTumorContent + "," +
 
             labTestedCNVGain + "," +
             labTestedGenes + "," +
-            labTranscriptIds + "," +
-            sampleDetectedGeneFusions + "," +
-            sampleDetectedGeneNegative + "," +
+            labTranscriptIds 
 
-            version 
         + ")";
         return row;
     }

@@ -42,9 +42,6 @@ public class ParseXml {
 
         List<Path> filePaths = Files.list(Paths.get(dataPath))
             .filter(p -> !p.endsWith("xml"))
-            .sorted()
-            .skip(1000)
-            .limit(1)
             .collect(Collectors.toList());
 
         List<Report> reports = new ArrayList<>();
@@ -74,7 +71,7 @@ public class ParseXml {
         }
 
         saveReports(reports);
-       // saveVariants(variants);
+        saveVariants(variants);
     }
 
     private static void setReportProperties(String reportId, Report report, Element element) throws XPathExpressionException {
@@ -91,7 +88,6 @@ public class ParseXml {
         report.setDiagnosis(xpath.evaluate("/report/diagnosis", element));
         report.setInterpretation(xpath.evaluate("/report/interpretation", element));
         
-        report.setPatientName(xpath.evaluate("/report/patientName", element));
         report.setSex(xpath.evaluate("/report/sex", element));
         report.setDateOfBirth(xpath.evaluate("/report/dateOfBirth", element));
         
@@ -104,16 +100,10 @@ public class ParseXml {
         report.setSpecimenId(xpath.evaluate("/report/specimenId", element));
         report.setSpecimenType(xpath.evaluate("/report/specimenType", element));
         report.setSpecimenCollectionDate(xpath.evaluate("/report/specimenCollectionDate", element));
-        report.setSpecimenDissection(xpath.evaluate("/report/specimenDissection", element));
-        report.setSpecimenTumorContent(xpath.evaluate("/report/specimentTumorContent", element));
         
         report.setLabTestedCNVGain(xpath.evaluate("/report/labTestedCNVGain", element));
         report.setLabTestedGenes(xpath.evaluate("/report/labTestedGenes", element));
         report.setLabTranscriptIds(xpath.evaluate("/report/labTranscriptIds", element));
-        report.setSampleDetectedGeneFusions(xpath.evaluate("/report/sampleDetectedGeneFusions", element));
-        report.setSampleDetectedGeneNegative(xpath.evaluate("/report/sampleDetectedGeneNegative", element));
-
-        report.setVersion(xpath.evaluate("/report/version", element));
     }
 
     private static void setVariantProperties(String reportId, Variant variant, Element element) throws XPathExpressionException {
@@ -156,7 +146,6 @@ public class ParseXml {
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
-        conn.setAutoCommit(false);
 
         ((PGConnection) conn).addDataType("qci_report", Report.class);
 
@@ -168,6 +157,8 @@ public class ParseXml {
     
         updt.execute();
         updt.close();
+
+        conn.close();
     }
 
     private static void saveVariants(List<Variant> variants) throws SQLException {
@@ -175,7 +166,6 @@ public class ParseXml {
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
-        conn.setAutoCommit(false);
 
         ((PGConnection) conn).addDataType("qci_variant", Variant.class);
 
@@ -187,5 +177,7 @@ public class ParseXml {
     
         updt.execute();
         updt.close();
+        
+        conn.close();
     }
 }

@@ -13,25 +13,19 @@ BEGIN
         clinical_finding,
         diagnosis,
         interpretation,
-        patient_name,
         sex,
         date_of_birth,
         ordering_physician_client,
-        ordering_physicianFacility_name,
+        ordering_physician_facility_name,
         ordering_physician_name,
         pathologist_name,
         primary_tumor_site,
         specimen_id,
         specimen_type,
         specimen_collection_date,
-        specimen_dissection,
-        specimen_tumor_content,
         lab_tested_cnv_gain,
         lab_tested_genes,
-        lab_transcript_ids,
-        sample_detected_gene_fusions,
-        sample_detected_gene_negative,
-        version
+        lab_transcript_ids
     )
 	SELECT
         report_id,
@@ -42,25 +36,19 @@ BEGIN
         clinical_finding,
         diagnosis,
         interpretation,
-        patient_name,
         sex,
         date_of_birth,
         ordering_physician_client,
-        ordering_physicianFacility_name,
+        ordering_physician_facility_name,
         ordering_physician_name,
         pathologist_name,
         primary_tumor_site,
         specimen_id,
         specimen_type,
         specimen_collection_date,
-        specimen_dissection,
-        specimen_tumor_content,
         lab_tested_cnv_gain,
         lab_tested_genes,
-        lab_transcript_ids,
-        sample_detected_gene_fusions,
-        sample_detected_gene_negative,
-        version
+        lab_transcript_ids
 	FROM
 		UNNEST(p_tab);
 

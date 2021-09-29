@@ -6,7 +6,7 @@ public class Variant extends PGobject {
 
     private String reportId;
     private String chromosome;
-    private String position ;
+    private String position;
     private String reference;
     private String alternate;
     private String genotype;
@@ -278,7 +278,7 @@ public class Variant extends PGobject {
             gcChange + "," + 
             genomicChange + "," + 
             function + "," + 
-            referenceCount 
+            referenceCount
         + ")";
         return row;
     }
