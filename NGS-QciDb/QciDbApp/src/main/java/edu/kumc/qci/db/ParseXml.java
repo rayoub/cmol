@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +19,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FilenameUtils;
+import org.postgresql.PGConnection;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,7 +35,7 @@ public class ParseXml {
         xpf = XPathFactory.newInstance();
     }
 
-    public static void parse(String dataPath) throws XPathExpressionException, SAXException, IOException, ParserConfigurationException {
+    public static void parse(String dataPath) throws XPathExpressionException, SAXException, IOException, ParserConfigurationException, SQLException {
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -39,7 +44,7 @@ public class ParseXml {
             .filter(p -> !p.endsWith("xml"))
             .sorted()
             .skip(1000)
-            .limit(100)
+            .limit(1)
             .collect(Collectors.toList());
 
         List<Report> reports = new ArrayList<>();
@@ -68,12 +73,8 @@ public class ParseXml {
             } 
         }
 
-        for(Report report : reports){
-            System.out.println(report.toString());
-        }
-        for(Variant variant : variants){
-            System.out.println(variant.toString());
-        }
+        saveReports(reports);
+       // saveVariants(variants);
     }
 
     private static void setReportProperties(String reportId, Report report, Element element) throws XPathExpressionException {
@@ -148,5 +149,43 @@ public class ParseXml {
 
         variant.setFunction(xpath.evaluate("function", element));
         variant.setReferenceCount(xpath.evaluate("referencecount", element));
+    }
+
+    private static void saveReports(List<Report> reports) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+        conn.setAutoCommit(false);
+
+        ((PGConnection) conn).addDataType("qci_report", Report.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_report(?);");
+     
+        Report a[] = new Report[reports.size()];
+        reports.toArray(a);
+        updt.setArray(1, conn.createArrayOf("qci_report", a));
+    
+        updt.execute();
+        updt.close();
+    }
+
+    private static void saveVariants(List<Variant> variants) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+        conn.setAutoCommit(false);
+
+        ((PGConnection) conn).addDataType("qci_variant", Variant.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_variant(?);");
+     
+        Variant a[] = new Variant[variants.size()];
+        variants.toArray(a);
+        updt.setArray(1, conn.createArrayOf("qci_variant", a));
+    
+        updt.execute();
+        updt.close();
     }
 }
