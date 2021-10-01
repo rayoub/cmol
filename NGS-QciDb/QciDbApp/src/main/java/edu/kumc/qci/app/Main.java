@@ -12,7 +12,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.kumc.qci.db.ParseXml;
+import edu.kumc.qci.db.Importer;
 
 public class Main {
 
@@ -57,7 +57,7 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
-        ParseXml.parse(Constants.DATA_PATH);
+        Importer.importXml(Constants.DATA_PATH);
     }
 
     private static void option_help(Options options) {
