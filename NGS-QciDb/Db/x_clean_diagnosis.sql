@@ -1,40 +1,43 @@
 
--- fix the other clean scripts and then do a reimport of everything
-
-
-SELECT  
+WITH clean_diagnosis AS
+(
+    SELECT
+        sentence_case(diagnosis) AS diagnosis
+    FROM    
+        qci_report
+)
+SELECT
     diagnosis,
     COUNT(*)
-FROM    
+FROM
     qci_report
 GROUP BY  
     diagnosis
 ORDER BY   
     diagnosis;
 
-UPDATE qci_report SET diagnosis = INITCAP(diagnosis);
+---- sentence casing
+--UPDATE qci_report SET diagnosis = sentence_case(diagnosis);
+--
+---- fix mistakes 
+--UPDATE qci_report SET diagnosis = 'Acute lymphoblastic leukemia' WHERE diagnosis = 'Acute lymphoid leukemia';
+--UPDATE qci_report SET diagnosis = 'Acute myeloid leukemia' WHERE diagnosis = 'Acute myeloblastic leukemia';
+--UPDATE qci_report SET diagnosis = 'Chronic myeloid leukemia' WHERE diagnosis = 'Chronic myelocytic leukemia';
+--UPDATE qci_report SET diagnosis = 'Colon cancer' WHERE diagnosis = 'COLON CANCER';
+--UPDATE qci_report SET diagnosis = 'Esophageal adenocarcinoma' WHERE diagnosis = 'Esophagus adenocarcinoma';
+--UPDATE qci_report SET diagnosis = 'Follicular non-Hodgkins lymphoma' WHERE diagnosis = 'Follicular non-hodgkins lymphoma';
+--UPDATE qci_report SET diagnosis = 'Hematologic disorder' WHERE diagnosis = 'Hematologic disorders';
+--UPDATE qci_report SET diagnosis = 'Hematologic disorder' WHERE diagnosis = 'Hematological disorder';
+--UPDATE qci_report SET diagnosis = 'Hematologic neoplasm' WHERE diagnosis = 'Hematological neoplasm';
+--UPDATE qci_report SET diagnosis = 'Lung cancer' WHERE diagnosis = 'Lung';
+--UPDATE qci_report SET diagnosis = 'Lung cancer' WHERE diagnosis = 'LUNG CANCER';
+--UPDATE qci_report SET diagnosis = 'Myeloid neoplasm' WHERE diagnosis = 'Myloid neoplasm';
+--UPDATE qci_report SET diagnosis = 'NK/T-cell lymphoma' WHERE diagnosis = 'Nk/T-Cell lymphoma';
+--UPDATE qci_report SET diagnosis = 'T-cell large granular lymphocytic leukemia' WHERE diagnosis = 'T-cell large granular lymphocyte leukemia';
+--UPDATE qci_report SET diagnosis = 'Von Willebrand disease' WHERE diagnosis = 'Von willebrand disease';
+--UPDATE qci_report SET diagnosis = 'Waldenstrom macroglobulinemia' WHERE diagnosis = 'Waldenstrom macroglobuilnemia';
+--UPDATE qci_report SET diagnosis = 'Waldenstrom macroglobulinemia' WHERE diagnosis = 'Waldenstrom''S macroglobulinemia';
 
-UPDATE qci_report SET diagnosis = 'B-Cell Acute Lymphoblastic Leukemia' WHERE diagnosis = 'B Cell ALL'; 
-UPDATE qci_report SET diagnosis = 'B-Cell Acute Lymphoblastic Leukemia' WHERE diagnosis = 'Bcell ALL'; 
-UPDATE qci_report SET diagnosis = 'B-Cell Acute Lymphoblastic Leukemia' WHERE diagnosis = 'B-Cell ALL'; 
-UPDATE qci_report SET diagnosis = 'B-Cell Lymphoma' WHERE diagnosis = 'Bcell Lymphoma';
-UPDATE qci_report SET diagnosis = 'B-Cell NHL' WHERE diagnosis = 'Bcell NHL';
-UPDATE qci_report SET diagnosis = 'Chronic Myelomonocytic Leukemia' WHERE diagnosis = 'CMML';
-UPDATE qci_report SET diagnosis = 'Diffuse Large B-Cell Lymphoma' WHERE diagnosis = 'DLBCL';
-UPDATE qci_report SET diagnosis = 'Esophageal Adenocarcinoma' WHERE diagnosis = 'Esophagus Adenocarcinoma';
-UPDATE qci_report SET diagnosis = 'Hepatosplenic T-Cell Lymphoma' WHERE diagnosis = 'Hepatosplenic Tcell Lymphoma'; 
-UPDATE qci_report SET diagnosis = 'Large Granular Lymphocytic Leukemia' WHERE diagnosis = 'LGL Leukemia';
-UPDATE qci_report SET diagnosis = 'Lung Cancer' WHERE diagnosis = 'Lung';
-UPDATE qci_report SET diagnosis = 'Monoclonal B-Cell Lymphocytosis' WHERE diagnosis = 'Monoclonal B Cell Lymphocytosis';
-UPDATE qci_report SET diagnosis = 'Monoclonal B-Cell Lymphocytosis' WHERE diagnosis = 'Monoclonal Bcell Lymphocytosis';
-UPDATE qci_report SET diagnosis = 'Myeloid Neoplasm' WHERE diagnosis = 'Myloid Neoplasm';
-UPDATE qci_report SET diagnosis = 'Non-Small Cell Lung Cancer' WHERE diagnosis = 'NSCLC';
-UPDATE qci_report SET diagnosis = 'Prolymphocytic Leukemia' WHERE diagnosis = 'PLL';
-UPDATE qci_report SET diagnosis = 'T-Cell ALL' WHERE diagnosis = 'Tcell ALL';
-UPDATE qci_report SET diagnosis = 'T-Cell Large Granular Lymphocytic Leukemia' WHERE diagnosis = 'T-Cell Large Granular Lymphocyte Leukemia';
-UPDATE qci_report SET diagnosis = 'T-Cell Large Granular Lymphocytic Leukemia' WHERE diagnosis = 'Tcell Large Granular Lymphocytic Leukemia';
-UPDATE qci_report SET diagnosis = 'T-Cell Leukemia/Lymphoma' WHERE diagnosis = 'Tcell Leukemia/Lymphoma'; 
-UPDATE qci_report SET diagnosis = 'T-Cell Lymphoma' WHERE diagnosis = 'Tcell Lymphoma';
-UPDATE qci_report SET diagnosis = 'T-Cell Lymphoproliferative Disorder' WHERE diagnosis = 'Tcell Lymphoproliferative Disorder';
-UPDATE qci_report SET diagnosis = 'Waldenstrom Macroglobulinemia' WHERE diagnosis = 'Waldenstrom Macroglobuilnemia';
-UPDATE qci_report SET diagnosis = 'Waldenstrom Macroglobulinemia' WHERE diagnosis = 'Waldenstrom''s Macroglobulinemia';
+
+
+

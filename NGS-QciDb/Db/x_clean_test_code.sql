@@ -1,13 +1,13 @@
 
-SELECT
-    test_code,
-    COUNT(*)
-FROM
-    qci_report
-GROUP BY
-    test_code
-ORDER BY   
-    test_code;
+--SELECT
+--    test_code,
+--    COUNT(*)
+--FROM
+--    qci_report
+--GROUP BY
+--    test_code
+--ORDER BY   
+--    test_code;
 
 -- don't waste time with low frequency junk data from a long time ago
 

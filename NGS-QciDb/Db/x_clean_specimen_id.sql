@@ -1,5 +1,5 @@
 
-SELECT specimen_id, COUNT(*) FROM qci_report WHERE specimen_id NOT LIKE 'D%' GROUP BY specimen_id ORDER BY specimen_id;
+--SELECT specimen_id, COUNT(*) FROM qci_report WHERE specimen_id NOT LIKE 'D%' GROUP BY specimen_id ORDER BY specimen_id;
 
 UPDATE 
     qci_report

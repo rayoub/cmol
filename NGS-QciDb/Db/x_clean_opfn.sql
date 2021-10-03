@@ -1,13 +1,13 @@
 
-SELECT
-    ordering_physician_facility_name,
-    COUNT(*)
-FROM
-    qci_report
-GROUP BY
-    ordering_physician_facility_name
-ORDER BY
-    ordering_physician_facility_name;
+--SELECT
+--    ordering_physician_facility_name,
+--    COUNT(*)
+--FROM
+--    qci_report
+--GROUP BY
+--    ordering_physician_facility_name
+--ORDER BY
+--    ordering_physician_facility_name;
 
 UPDATE 
     qci_report

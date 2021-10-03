@@ -1,13 +1,13 @@
 
-SELECT 
-    specimen_type,
-    COUNT(*)
-FROM    
-    qci_report
-GROUP BY
-    specimen_type
-ORDER BY    
-    specimen_type;
+--SELECT 
+--    specimen_type,
+--    COUNT(*)
+--FROM    
+--    qci_report
+--GROUP BY
+--    specimen_type
+--ORDER BY    
+--    specimen_type;
 
 UPDATE
     qci_report
