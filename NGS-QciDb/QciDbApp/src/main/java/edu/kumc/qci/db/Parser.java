@@ -72,7 +72,6 @@ public class Parser {
         
         report.setLabTestedCNVGain(xpath.evaluate("/report/labTestedCNVGain", element));
         report.setLabTestedGenes(xpath.evaluate("/report/labTestedGenes", element));
-        report.setLabTranscriptIds(xpath.evaluate("/report/labTranscriptIds", element));
     }
 
     private static void setVariantProperties(String reportId, Variant variant, Element element) throws XPathExpressionException {

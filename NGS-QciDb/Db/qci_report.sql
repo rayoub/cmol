@@ -20,8 +20,7 @@ CREATE TABLE qci_report
     specimen_type VARCHAR NULL,
     specimen_collection_date DATE NULL,
     lab_tested_cnv_gain VARCHAR NULL,
-    lab_tested_genes VARCHAR NULL,
-    lab_transcript_ids VARCHAR NULL
+    lab_tested_genes VARCHAR NULL
 );
 
 CREATE UNIQUE INDEX idx_qci_report_unique ON qci_report (report_id);

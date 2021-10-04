@@ -29,7 +29,6 @@ public class Report extends PGobject {
     
     private String labTestedCNVGain;
     private String labTestedGenes;
-    private String labTranscriptIds;
    
     public String getReportId() {
         return reportId;
@@ -190,14 +189,6 @@ public class Report extends PGobject {
     public void setLabTestedGenes(String labTestedGenes) {
         this.labTestedGenes = labTestedGenes;
     }
-
-    public String getLabTranscriptIds() {
-        return labTranscriptIds;
-    }
-
-    public void setLabTranscriptIds(String labTranscriptIds) {
-        this.labTranscriptIds = labTranscriptIds;
-    }
     
     @Override
     public String getValue() {
@@ -227,8 +218,7 @@ public class Report extends PGobject {
             specimenCollectionDate + "," +
 
             labTestedCNVGain + "," +
-            labTestedGenes + "," +
-            labTranscriptIds 
+            labTestedGenes
 
         + ")";
         return row;

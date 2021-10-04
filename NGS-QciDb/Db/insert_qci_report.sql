@@ -24,8 +24,7 @@ BEGIN
         specimen_type,
         specimen_collection_date,
         lab_tested_cnv_gain,
-        lab_tested_genes,
-        lab_transcript_ids
+        lab_tested_genes
     )
 	SELECT
         report_id,
@@ -47,8 +46,7 @@ BEGIN
         specimen_type,
         specimen_collection_date,
         lab_tested_cnv_gain,
-        lab_tested_genes,
-        lab_transcript_ids
+        lab_tested_genes
 	FROM
 		UNNEST(p_tab);
 
