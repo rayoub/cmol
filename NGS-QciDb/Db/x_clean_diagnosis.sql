@@ -1,11 +1,4 @@
 
-WITH clean_diagnosis AS
-(
-    SELECT
-        sentence_case(diagnosis) AS diagnosis
-    FROM    
-        qci_report
-)
 SELECT
     diagnosis,
     COUNT(*)
@@ -16,7 +9,7 @@ GROUP BY
 ORDER BY   
     diagnosis;
 
----- sentence casing
+-- sentence casing
 --UPDATE qci_report SET diagnosis = sentence_case(diagnosis);
 --
 ---- fix mistakes 

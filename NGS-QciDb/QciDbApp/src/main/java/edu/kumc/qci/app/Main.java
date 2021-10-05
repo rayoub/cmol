@@ -12,6 +12,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
 
 public class Main {
@@ -22,6 +23,12 @@ public class Main {
         
         OptionGroup group = new OptionGroup();
 
+        group.addOption(Option.builder("b")
+                .longOpt("build")
+                .build());
+        group.addOption(Option.builder("u")
+                .longOpt("update")
+                .build());
         group.addOption(Option.builder("d")
                 .longOpt("debug")
                 .build());
@@ -44,7 +51,11 @@ public class Main {
         }
 
         try {
-            if (line.hasOption("d")) {
+            if (line.hasOption("b")) {
+                option_b(line);
+            } else if (line.hasOption("u")) {
+                option_u(line);
+            } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
                 option_help(options);
@@ -55,15 +66,27 @@ public class Main {
         }
     }
 
+    private static void option_b(CommandLine line) throws Exception {
+
+        Getter.getXml();
+        Importer.truncateQciTables();
+        Importer.importXml(Config.DATA_PATH);
+    }
+
+    private static void option_u(CommandLine line) throws Exception {
+
+        Getter.getXml();
+        Importer.importXml(Config.DATA_PATH);
+    }
+
     private static void option_d(CommandLine line) throws Exception {
 
-        Importer.importXml(Constants.DATA_PATH);
     }
 
     private static void option_help(Options options) {
 
         HelpFormatter formatter = getHelpFormatter("Usage: ");
-        formatter.printHelp(Constants.APP_NAME, options);
+        formatter.printHelp(Config.APP_NAME, options);
     }
 
     private static HelpFormatter getHelpFormatter(String headerPrefix){

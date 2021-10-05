@@ -6,9 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,10 +26,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-// TODO: 
-// 1. make a function that simply gets the latest xml based on the latest xml we have available and populate the data directory
-// 2. importXml function should not process xml that has already been processed. 
-// yes, it will have to do a few thousand pointless lookup to not do the work but that is not really a big deal
+// from the directory to the db
 
 public class Importer {
 
@@ -34,6 +34,8 @@ public class Importer {
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
+
+        Set<String> reportIds = getReportIds();
 
         List<Path> filePaths = Files.list(Paths.get(dataPath))
             .filter(p -> !p.endsWith("xml"))
@@ -44,19 +46,57 @@ public class Importer {
         for(Path filePath : filePaths) {
 
             String reportId = FilenameUtils.removeExtension(filePath.getFileName().toString());
+            if (!reportIds.contains(reportId)) {
 
-            Document xml = builder.parse(filePath.toFile());
+                Document xml = builder.parse(filePath.toFile());
 
-            Pair<Report, List<Variant>> pair = Parser.parseXml(reportId, xml);
+                Pair<Report, List<Variant>> pair = Parser.parseXml(reportId, xml);
 
-            reports.add(pair.getLeft());
-            variants.addAll(pair.getRight());
+                reports.add(pair.getLeft());
+                variants.addAll(pair.getRight());
+            }
         }
         
         saveReports(reports);
         saveVariants(variants);
     }
 
+    public static void truncateQciTables() throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT qci_truncate();");
+    
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
+
+    public static Set<String> getReportIds() throws SQLException {
+
+        Set<String> reportIds = new HashSet<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT report_id FROM get_qci_report_ids();");
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            reportIds.add(rs.getString("report_id"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return reportIds;
+    }
+    
     private static void saveReports(List<Report> reports) throws SQLException {
 
         PGSimpleDataSource ds = Ds.getDataSource();
