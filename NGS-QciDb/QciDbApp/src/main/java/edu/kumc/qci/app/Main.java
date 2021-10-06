@@ -23,11 +23,17 @@ public class Main {
         
         OptionGroup group = new OptionGroup();
 
-        group.addOption(Option.builder("b")
-                .longOpt("build")
+        group.addOption(Option.builder("g")
+                .longOpt("get")
+                .desc("get xml files")
                 .build());
-        group.addOption(Option.builder("u")
-                .longOpt("update")
+        group.addOption(Option.builder("i")
+                .longOpt("import")
+                .desc("import xml files")
+                .build());
+        group.addOption(Option.builder("c")
+                .longOpt("clear")
+                .desc("clear database tables")
                 .build());
         group.addOption(Option.builder("d")
                 .longOpt("debug")
@@ -51,10 +57,12 @@ public class Main {
         }
 
         try {
-            if (line.hasOption("b")) {
-                option_b(line);
-            } else if (line.hasOption("u")) {
-                option_u(line);
+            if (line.hasOption("g")) {
+                option_g(line);
+            } else if (line.hasOption("i")) {
+                option_i(line);
+            } else if (line.hasOption("c")) {
+                option_c(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -66,17 +74,19 @@ public class Main {
         }
     }
 
-    private static void option_b(CommandLine line) throws Exception {
+    private static void option_g(CommandLine line) throws Exception {
 
         Getter.getXml();
-        Importer.truncateQciTables();
-        Importer.importXml(Config.DATA_PATH);
     }
 
-    private static void option_u(CommandLine line) throws Exception {
+    private static void option_i(CommandLine line) throws Exception {
 
-        Getter.getXml();
         Importer.importXml(Config.DATA_PATH);
+    }
+    
+    private static void option_c(CommandLine line) throws Exception {
+
+        Importer.truncateQciTables();
     }
 
     private static void option_d(CommandLine line) throws Exception {

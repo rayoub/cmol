@@ -26,9 +26,21 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-// from the directory to the db
-
 public class Importer {
+
+    public static void truncateQciTables() throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT qci_truncate();");
+    
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
 
     public static void importXml(String dataPath) throws XPathExpressionException, SAXException, IOException, ParserConfigurationException, SQLException {
         
@@ -61,21 +73,7 @@ public class Importer {
         saveVariants(variants);
     }
 
-    public static void truncateQciTables() throws SQLException {
-
-        PGSimpleDataSource ds = Ds.getDataSource();
-
-        Connection conn = ds.getConnection();
-
-        PreparedStatement updt = conn.prepareStatement("SELECT qci_truncate();");
-    
-        updt.execute();
-        updt.close();
-
-        conn.close();
-    }
-
-    public static Set<String> getReportIds() throws SQLException {
+    private static Set<String> getReportIds() throws SQLException {
 
         Set<String> reportIds = new HashSet<>();
 
@@ -83,7 +81,7 @@ public class Importer {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT report_id FROM get_qci_report_ids();");
+        PreparedStatement stmt = conn.prepareCall("SELECT report_id FROM qci_report;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

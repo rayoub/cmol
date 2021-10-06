@@ -14,6 +14,7 @@ public class Config {
     public static String DB_USER;
     public static String DB_PASSWORD;
     public static String DATA_PATH;
+    public static String API_KEY;
 
     static {
 
@@ -28,6 +29,7 @@ public class Config {
             DB_USER = Properties.getProperty("DB_USER");
             DB_PASSWORD = Properties.getProperty("DB_PASSWORD");
             DATA_PATH = Properties.getProperty("DATA_PATH");
+            API_KEY = Properties.getProperty("API_KEY");
 
         } catch (IOException e) {
 

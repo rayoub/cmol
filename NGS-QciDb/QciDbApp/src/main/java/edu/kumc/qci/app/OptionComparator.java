@@ -20,10 +20,11 @@ public class OptionComparator implements Comparator<Option> {
     // 2. import into tables
     
     static {
-        _map.put("b",1);
-        _map.put("u",2);
-        _map.put("d",3);
-        _map.put("?",2);
+        _map.put("g",1);
+        _map.put("i",2);
+        _map.put("c",3);
+        _map.put("d",4);
+        _map.put("?",5);
     }
 
     public int compare(Option x, Option y) {
