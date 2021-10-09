@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -45,8 +46,18 @@ public class Getter {
 
         Response response = invoke.get();
 
-        // iterate the tests and export
-        Test[] tests = response.readEntity(Test[].class);
+        // attempt to get the test
+        Test[] tests = new Test[] {};
+        try {
+
+            tests = response.readEntity(Test[].class);
+        }
+        catch (ProcessingException e) {
+
+            System.out.println("An error occurred. Make sure your access token is valid.");
+        }
+
+        // will be 0 tests on error
         for (Test test : tests) {
 
             target = client.target(test.exportUrl)
