@@ -29,7 +29,6 @@ BEGIN
         pc_change,
         pc_translation_impact,
         gc_change,
-        genomic_change,
         function,
         reference_count
     )
@@ -58,7 +57,6 @@ BEGIN
         pc_change,
         pc_translation_impact,
         gc_change,
-        genomic_change,
         function,
         reference_count
 	FROM

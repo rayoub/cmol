@@ -28,7 +28,6 @@ public class Variant extends PGobject {
     private String pcChange;
     private String pcTranslationImpact;
     private String gcChange;
-    private String genomicChange;
     private String function;
     private String referenceCount;
     
@@ -224,14 +223,6 @@ public class Variant extends PGobject {
         this.gcChange = gcChange;
     }
 
-    public String getGenomicChange() {
-        return genomicChange;
-    }
-
-    public void setGenomicChange(String genomicChange) {
-        this.genomicChange = genomicChange;
-    }
-
     public String getFunction() {
         return function;
     }
@@ -276,7 +267,6 @@ public class Variant extends PGobject {
             pcChange + "," + 
             pcTranslationImpact + "," + 
             gcChange + "," + 
-            genomicChange + "," + 
             function + "," + 
             referenceCount
         + ")";

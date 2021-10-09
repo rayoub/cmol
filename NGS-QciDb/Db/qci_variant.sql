@@ -25,7 +25,6 @@ CREATE TABLE qci_variant
     pc_change VARCHAR NULL,
     pc_translation_impact VARCHAR NULL,
     gc_change VARCHAR NULL,
-    genomic_change VARCHAR NULL,
     function VARCHAR NULL,
     reference_count INTEGER NULL
 );
