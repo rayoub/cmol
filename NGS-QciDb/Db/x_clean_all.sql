@@ -1,6 +1,7 @@
 
 -- these first two must be in order
 \i x_clean_test_code.sql
+\i x_clean_accession.sql
 \i x_clean_specimen_id.sql
 
 -- must come after the first 2

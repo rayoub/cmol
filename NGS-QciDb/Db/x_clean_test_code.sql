@@ -70,7 +70,9 @@ WHERE
         'NGS COMMON',
         'ngs common',
         'NGS common',
-        'NGS COMMOM'
+        'NGS COMMOM',
+        'Common 14',
+        'Common 24'
     );
 
 UPDATE 
@@ -82,6 +84,34 @@ WHERE
         'ngs heme',
         'NGS HEME'
     );
+
+UPDATE 
+    qci_report
+SET
+    test_code = 'NGS Heme One'
+WHERE
+    test_code IN (
+        'Heme 141_One'
+    );
+
+UPDATE 
+    qci_report
+SET
+    test_code = 'NGS Comprehensive One'
+WHERE
+    test_code IN (
+        'Comprehensive 275_One'
+    );
+
+UPDATE 
+    qci_report
+SET
+    test_code = 'NGS Common One'
+WHERE
+    test_code IN (
+        'Common 24_One'
+    );
+
 
 -- panel numbering is not accurate, use lab tested genes instead
 -- however, preserve 'Common 14' for now since that is a special case
