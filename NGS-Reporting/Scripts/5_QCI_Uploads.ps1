@@ -6,6 +6,87 @@ Add-Type -AssemblyName System.Drawing
 ### GLOBAL DEFINITION
 ######################################################################################################
 
+$sources = @(
+    '',
+    'Abdomen',
+    'Adrenal Gland',
+    'Anus',
+    'Appendix',
+    'Biliary Tree',
+    'Blood vessel',
+    'Bone',
+    'Bone marrow',
+    'Brain',
+    'Breast',
+    'Bronchus',
+    'Cauda equina',
+    'Cervix uteri',
+    'Clivus',
+    'Colon',
+    'Colon / rectum',
+    'Diaphragm',
+    'Duodenum',
+    'Dura mater',
+    'Endometrium',
+    'Esophagus',
+    'Eye',
+    'Gallbladder',
+    'Gastroesophageal junction',
+    'Head and neck',
+    'Heart',
+    'Kidney',
+    'Larynx',
+    'Left colon',
+    'Liver',
+    'Lower limb and hip',
+    'Lung',
+    'Lymph node',
+    'Lymphoid tissue',
+    'Mediastinum',
+    'Meninges',
+    'Mouth',
+    'Muscle',
+    'Nasopharynx',
+    'Nose',
+    'Olfactory nerve',
+    'Optic nerve',
+    'Oropharynx',
+    'Ovary',
+    'Pancreas',
+    'Paranasal sinus',
+    'Parathyroid gland',
+    'Penis',
+    'Pharynx',
+    'Pineal gland',
+    'Pituitary gland',
+    'Placenta',
+    'Pleura',
+    'Prostate gland',
+    'Rectum',
+    'Salivary gland',
+    'Scrotum',
+    'Sigmoid colon',
+    'Skin',
+    'Small intestine',
+    'Soft tissue',
+    'Spinal cord',
+    'Spleen',
+    'Stomach',
+    'Testis',
+    'Thorax',
+    'Thymus',
+    'Thyroid',
+    'Tonsil',
+    'Trachea',
+    'Upper limb and shoulder',
+    'Urinary bladder',
+    'Urinary tract',
+    'Uterus',
+    'Vagina',
+    'Vestibular nerve',
+    'Vulva'
+)
+
 $available = @(
     'Acute idiopathic thrombocytopenic purpura',
     'Acute leukemia',
@@ -479,7 +560,7 @@ function Get-Selected {
 function Get-Input {
     param ([String] $cmolId, [String] $indicated)
 
-    $dims = New-Object System.Drawing.Size(595,172) # width, height
+    $dims = New-Object System.Drawing.Size(595,242) # width, height
     $padding = New-Object System.Windows.Forms.Padding(6)
     $font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
 
@@ -508,6 +589,10 @@ function Get-Input {
     $availableText.Text = "Available Diagnoses:"
     $availableText.AutoSize = $true
     $availableText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
+    $sourceText = New-Object System.Windows.Forms.label
+    $sourceText.Text = "Tumor Site:"
+    $sourceText.AutoSize = $true
+    $sourceText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
 
     # diagnoses combobox
     $comboBox = New-Object System.Windows.Forms.ComboBox
@@ -517,7 +602,22 @@ function Get-Input {
     foreach ($diagnosis in $available) {
         [void] $comboBox.Items.Add($diagnosis)
     }
-    $comboBox.SelectedIndex = 0
+    if ($available -contains $indicated) {
+        $comboBox.SelectedItem = $indicated
+    }
+    else {
+        $comboBox.SelectedIndex = 0
+    }
+
+    # sources combobox
+    $sourceCombo = New-Object System.Windows.Forms.ComboBox
+    $sourceCombo.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+    $sourceCombo.Anchor = [System.Windows.Forms.AnchorStyles]::Right
+    $sourceCombo.Width = 375
+    foreach ($source in $sources) {
+        [void] $sourceCombo.Items.Add($source)
+    }
+    $sourceCombo.SelectedIndex = 0
 
     # ok button
     $okButton = New-Object System.Windows.Forms.Button
@@ -536,7 +636,7 @@ function Get-Input {
 
     # table panel
     $table = New-Object System.Windows.Forms.TableLayoutPanel
-    $table.RowCount = 3
+    $table.RowCount = 4
     $table.ColumnCount = 2
     $table.AutoSize = $true
     $table.Padding = $padding
@@ -545,9 +645,11 @@ function Get-Input {
     $rowStyle1 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
     $rowStyle2 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
     $rowStyle3 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
+    $rowStyle4 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
     [void] $table.RowStyles.Add($rowStyle1)
     [void] $table.RowStyles.Add($rowStyle2)
     [void] $table.RowStyles.Add($rowStyle3)
+    [void] $table.RowStyles.Add($rowStyle4)
 
     # table first row
     $table.Controls.Add($indicatedText)
@@ -565,6 +667,14 @@ function Get-Input {
     $table.SetRow($comboBox, 1)
     $table.SetColumn($comboBox, 1)
 
+    # table third row
+    $table.Controls.Add($sourceText)
+    $table.SetRow($sourceText, 2)
+    $table.SetColumn($sourceText, 0)
+    $table.Controls.Add($sourceCombo)
+    $table.SetRow($sourceCombo, 2)
+    $table.SetColumn($sourceCombo, 1)
+
     # flow panel for bottom buttons
     $flow = New-Object System.Windows.Forms.FlowLayoutPanel
     $flow.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
@@ -572,9 +682,9 @@ function Get-Input {
     $flow.Controls.Add($okButton)
     $flow.Controls.Add($abortButton)
 
-    # table third row
+    # table bottom row
     $table.Controls.Add($flow)
-    $table.SetRow($flow, 2)
+    $table.SetRow($flow, 3)
     $table.SetColumn($flow, 0)
     $table.SetColumnSpan($flow, 2)
 
@@ -583,6 +693,8 @@ function Get-Input {
     $form.ShowDialog()
 
     $available[$comboBox.SelectedIndex]
+
+    $sources[$sourceCombo.SelectedIndex]
 }
 
 ######################################################################################################
@@ -692,7 +804,6 @@ foreach($cmolId in $samples){
         # based on input excel
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $row.Columns("D").text.trim()
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:PrimarySourceTissue", $nsmgr).InnerText = "Unknown"
 
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
@@ -718,15 +829,19 @@ foreach($cmolId in $samples){
         if ([String]::IsNullOrEmpty($indicated)){
             $indicated= "[blank]"
         }
-        $result, $selected = Get-Input -CmolId $cmolId -Indicated $indicated
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $selected
+
+        # get inputs from input form
+        $result, $selectedDiagnosis, $selectedSource = Get-Input -CmolId $cmolId -Indicated $indicated
         if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
             Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
             $inputBook.close()
             $excel.quit()
             exit
         }
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $selectedDiagnosis
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:PrimarySourceTissue", $nsmgr).InnerText =  $selectedSource
 
+        # get the VCF file
         $dirPath = (Join-Path $PSScriptRoot -ChildPath $dirName)
         $file = Get-FileName -initialDirectory $dirPath -cmolId $cmolId
         if ([String]::IsNullOrEmpty($file)) {
