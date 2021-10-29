@@ -8,6 +8,7 @@ Add-Type -AssemblyName System.Drawing
 
 $sources = @(
     'Not Provided',
+    'Unknown',
     'Abdomen',
     'Adrenal Gland',
     'Anus',
