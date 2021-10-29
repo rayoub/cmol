@@ -1,9 +1,9 @@
 
 # data directory
-NGS-QciDb/Data
+Illumina-QciDb/Data
 
 # build ignores
-NGS-QciDb/QciDbApp/target
-NGS-QciDb/QciDbApp/.classpath
-NGS-QciDb/QciDbApp/.project
-NGS-QciDb/QciDbApp/.settings
+Illumina-QciDb/QciDbApp/target
+Illumina-QciDb/QciDbApp/.classpath
+Illumina-QciDb/QciDbApp/.project
+Illumina-QciDb/QciDbApp/.settings
