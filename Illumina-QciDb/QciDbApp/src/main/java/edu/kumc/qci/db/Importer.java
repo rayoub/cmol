@@ -28,6 +28,13 @@ import org.xml.sax.SAXException;
 
 public class Importer {
 
+    private static Set<String> BLACK_LIST = new HashSet<>();
+
+    static {
+        BLACK_LIST.add("DP_1302129100");
+        BLACK_LIST.add("DP_1302137400");
+    }
+
     public static void truncateQciTables() throws SQLException {
 
         PGSimpleDataSource ds = Ds.getDataSource();
@@ -58,7 +65,7 @@ public class Importer {
         for(Path filePath : filePaths) {
 
             String reportId = FilenameUtils.removeExtension(filePath.getFileName().toString());
-            if (!reportIds.contains(reportId)) {
+            if (!reportIds.contains(reportId) && !BLACK_LIST.contains(reportId)) {
 
                 Document xml = builder.parse(filePath.toFile());
 

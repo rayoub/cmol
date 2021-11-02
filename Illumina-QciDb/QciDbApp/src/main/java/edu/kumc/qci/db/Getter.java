@@ -60,18 +60,19 @@ public class Getter {
         // will be 0 tests on error
         for (Test test : tests) {
 
-            target = client.target(test.exportUrl)
-                .queryParam("view","reportXml");
-
-            invoke = target.request(MediaType.APPLICATION_JSON);
-            invoke.header("Authorization", Config.API_KEY);
-
-            response = invoke.get();
-
-            String xml = response.readEntity(String.class);
-
             File file = new File(Config.DATA_PATH, test.dataPackageID + ".xml");
             if (!file.exists()) {
+
+                target = client.target(test.exportUrl)
+                    .queryParam("view","reportXml");
+
+                invoke = target.request(MediaType.APPLICATION_JSON);
+                invoke.header("Authorization", Config.API_KEY);
+
+                response = invoke.get();
+
+                String xml = response.readEntity(String.class);
+
                 FileUtils.writeStringToFile(file, xml, StandardCharsets.UTF_8);
             }
         }
