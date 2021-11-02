@@ -1,16 +1,30 @@
-SELECT 
-    test_code, 
-    COALESCE(primary_tumor_site, 'NULL') AS primary_tumor_site,
-    count(*),
-    STRING_AGG(ordering_physician_client,';') AS MRNs
-FROM 
-    qci_report 
+SELECT
+    qr.ordering_physician_client AS mrn,
+    qr.report_id,
+    qr.accession,
+    qr.test_date,
+    qr.test_code,
+    qr.diagnosis,
+    qr.interpretation,
+    REPLACE(qr.ordering_physician_name, ',', '') AS ordering_physician_name,
+    REPLACE(qr.ordering_physician_facility_name, ',', '') AS ordering_physician_facility_name,
+    qv.gene,
+    qv.allele_fraction,
+    qv.tc_transcript,
+    qv.tc_change,
+    qv.tc_exon_number,
+    qv.pc_protein,
+    qv.pc_change,
+    qv.assessment
+FROM
+    qci_report qr 
+    INNER JOIN qci_variant qv 
+        ON qv.report_id = qr.report_id
 WHERE
-    ordering_physician_client IS NOT NULL
-    AND (primary_tumor_site IN ('Unknown','Not Provided') OR primary_tumor_site IS NULL)
-GROUP BY 
-    test_code, 
-    primary_tumor_site 
+    qr.diagnosis = 'Acute myeloid leukemia'
+    AND qr.ordering_physician_client IS NOT NULL
+    AND qv.gene = 'TP53'
 ORDER BY    
-    test_code, 
-    primary_tumor_site;
+    qr.ordering_physician_client,
+    qr.report_id,
+    qr.accession;
