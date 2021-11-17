@@ -61,7 +61,7 @@ $sources = @(
     'Pineal Gland',
     'Pituitary Gland',
     'Placenta',
-    'Prostat',
+    'Prostate Gland',
     'Gland',
     'Rectum',
     'Salivary Gland',
