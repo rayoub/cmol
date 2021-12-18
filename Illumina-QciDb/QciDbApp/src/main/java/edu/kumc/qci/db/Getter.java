@@ -22,6 +22,7 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.qci.app.Config;
+import edu.kumc.qci.app.Constants;
 
 public class Getter {
 
@@ -60,7 +61,7 @@ public class Getter {
         // will be 0 tests on error
         for (Test test : tests) {
 
-            File file = new File(Config.DATA_PATH, test.dataPackageID + ".xml");
+            File file = new File(Constants.DATA_PATH, test.dataPackageID + ".xml");
             if (!file.exists()) {
 
                 target = client.target(test.exportUrl)

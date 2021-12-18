@@ -34,7 +34,7 @@ public class Reporter {
         else {
             stmt.setNull(1, Types.VARCHAR);
             if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-                stmt.setNull(1, Types.VARCHAR);
+                stmt.setNull(2, Types.VARCHAR);
             }
             else {
                 stmt.setString(2, criteria.getProteinChange());
@@ -48,19 +48,33 @@ public class Reporter {
 
             row.setReportId(rs.getString("report_id"));
             row.setMrn(rs.getString("mrn"));
+            if (rs.wasNull()) row.setMrn("");
             row.setAccession(rs.getString("accession"));
+            if (rs.wasNull()) row.setAccession("");
             row.setTestDate(rs.getString("test_date"));
+            if (rs.wasNull()) row.setTestDate("");
             row.setTestCode(rs.getString("test_code"));
+            if (rs.wasNull()) row.setTestCode("");
             row.setDiagnosis(rs.getString("diagnosis"));
+            if (rs.wasNull()) row.setDiagnosis("");
             row.setInterpretation(rs.getString("interpretation"));
+            if (rs.wasNull()) row.setInterpretation("");
             row.setPhysician(rs.getString("physician"));
+            if (rs.wasNull()) row.setPhysician("");
             row.setGene(rs.getString("gene"));
+            if (rs.wasNull()) row.setGene("");
             row.setAlleleFraction(rs.getDouble("allele_fraction"));
+            if (rs.wasNull()) row.setAlleleFraction(-1.0);
             row.setTranscript(rs.getString("transcript"));
-            row.setTrasncriptChange(rs.getString("trasncript_change"));
+            if (rs.wasNull()) row.setTranscript("");
+            row.setTranscriptChange(rs.getString("transcript_change"));
+            if (rs.wasNull()) row.setTranscriptChange("");
             row.setProtein(rs.getString("protein"));
+            if (rs.wasNull()) row.setProtein("");
             row.setProteinChange(rs.getString("protein_change"));
+            if (rs.wasNull()) row.setProteinChange("");
             row.setAssessment(rs.getString("assessment"));
+            if (rs.wasNull()) row.setAssessment("");
 
             rows.add(row);
         }

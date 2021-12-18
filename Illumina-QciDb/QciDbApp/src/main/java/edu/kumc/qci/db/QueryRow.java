@@ -1,9 +1,6 @@
-
 package edu.kumc.qci.db;
 
-import org.postgresql.util.PGobject;
-
-public class QueryRow extends PGobject {
+public class QueryRow {
     
     private String reportId;
     private String mrn;
@@ -113,7 +110,7 @@ public class QueryRow extends PGobject {
         return trasncriptChange;
     }
 
-    public void setTrasncriptChange(String trasncriptChange) {
+    public void setTranscriptChange(String trasncriptChange) {
         this.trasncriptChange = trasncriptChange;
     }
 
@@ -139,6 +136,15 @@ public class QueryRow extends PGobject {
 
     public void setAssessment(String assessment) {
         this.assessment = assessment;
+    }
+
+    @Override
+    public String toString() {
+        return "QueryRow [accession=" + accession + ", alleleFraction=" + alleleFraction + ", assessment=" + assessment
+                + ", diagnosis=" + diagnosis + ", gene=" + gene + ", interpretation=" + interpretation + ", mrn=" + mrn
+                + ", physician=" + physician + ", protein=" + protein + ", proteinChange=" + proteinChange
+                + ", reportId=" + reportId + ", testCode=" + testCode + ", testDate=" + testDate + ", transcript="
+                + transcript + ", trasncriptChange=" + trasncriptChange + "]";
     }
 }
    

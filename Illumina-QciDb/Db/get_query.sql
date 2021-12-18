@@ -12,7 +12,7 @@ RETURNS TABLE (
     gene VARCHAR,
     allele_fraction NUMERIC,
     transcript VARCHAR,
-    trasnscript_change VARCHAR,
+    transcript_change VARCHAR,
     protein VARCHAR,
     protein_change VARCHAR,
     assessment VARCHAR

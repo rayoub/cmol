@@ -9,11 +9,6 @@ public class Config {
     
     public static Properties Properties;
 
-    public static String APP_NAME;
-    public static String DB_NAME;
-    public static String DB_USER;
-    public static String DB_PASSWORD;
-    public static String DATA_PATH;
     public static String API_KEY;
 
     static {
@@ -24,11 +19,6 @@ public class Config {
 
             Properties.load(input);
 
-            APP_NAME = Properties.getProperty("APP_NAME");
-            DB_NAME = Properties.getProperty("DB_NAME");
-            DB_USER = Properties.getProperty("DB_USER");
-            DB_PASSWORD = Properties.getProperty("DB_PASSWORD");
-            DATA_PATH = Properties.getProperty("DATA_PATH");
             API_KEY = Properties.getProperty("API_KEY");
 
         } catch (IOException e) {
