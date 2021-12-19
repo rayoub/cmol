@@ -1,11 +1,20 @@
 package edu.kumc.qci.db;
 
-public class Criteria {
-    
+public class QueryCriteria {
+   
+    private String genes;
     private int changeType;
     private String transcriptChange;
     private String proteinChange;
-   
+  
+    public String getGenes() {
+        return genes;
+    }
+
+    public void setGenes(String genes) {
+        this.genes = genes;
+    }
+
     public int getChangeType() {
         return changeType;
     }

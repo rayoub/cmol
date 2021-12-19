@@ -12,7 +12,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 public class Reporter {
 
-    public static List<QueryRow> getQueryRows(Criteria criteria) throws SQLException {
+    public static List<QueryRow> getQueryRows(QueryCriteria criteria) throws SQLException {
 
         List<QueryRow> rows = new ArrayList<>();
 
@@ -20,24 +20,38 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?);");
+
+        boolean genesIsNull = true;
+        String genes = criteria.getGenes();
+        if (genes != null) {
+            genes = genes.replaceAll("\\s","");
+            if (!genes.isEmpty()) {
+                String[] a = genes.split(";");
+                stmt.setArray(1, conn.createArrayOf("VARCHAR", a));
+                genesIsNull = false;
+            }
+        }
+        if (genesIsNull) {
+            stmt.setNull(1, Types.ARRAY);
+        }
 
         if (criteria.getChangeType() == 1) {
             if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
-                stmt.setNull(1, Types.VARCHAR);
-            }
-            else {
-                stmt.setString(1, criteria.getTranscriptChange());
-            }
-            stmt.setNull(2, Types.VARCHAR);
-        }
-        else {
-            stmt.setNull(1, Types.VARCHAR);
-            if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
                 stmt.setNull(2, Types.VARCHAR);
             }
             else {
-                stmt.setString(2, criteria.getProteinChange());
+                stmt.setString(2, criteria.getTranscriptChange());
+            }
+            stmt.setNull(3, Types.VARCHAR);
+        }
+        else {
+            stmt.setNull(2, Types.VARCHAR);
+            if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
+                stmt.setNull(3, Types.VARCHAR);
+            }
+            else {
+                stmt.setString(3, criteria.getProteinChange());
             }
         }
 

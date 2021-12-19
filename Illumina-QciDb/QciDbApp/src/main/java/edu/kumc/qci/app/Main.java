@@ -1,5 +1,6 @@
 package edu.kumc.qci.app;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,8 +13,11 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.kumc.qci.db.QueryCriteria;
 import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
+import edu.kumc.qci.db.QueryRow;
+import edu.kumc.qci.db.Reporter;
 
 public class Main {
 
@@ -81,7 +85,7 @@ public class Main {
 
     private static void option_i(CommandLine line) throws Exception {
 
-        Importer.importXml(Config.DATA_PATH);
+        Importer.importXml(Constants.DATA_PATH);
     }
     
     private static void option_c(CommandLine line) throws Exception {
@@ -91,12 +95,21 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
+            QueryCriteria criteria = new QueryCriteria();
+            criteria.setChangeType(2);
+            criteria.setTranscriptChange("");
+            criteria.setProteinChange("G12C");
+
+            List<QueryRow> rows = Reporter.getQueryRows(criteria);
+            for (QueryRow row : rows) {
+                System.out.println(row.toString());
+            }
     }
 
     private static void option_help(Options options) {
 
         HelpFormatter formatter = getHelpFormatter("Usage: ");
-        formatter.printHelp(Config.APP_NAME, options);
+        formatter.printHelp(Constants.APP_NAME, options);
     }
 
     private static HelpFormatter getHelpFormatter(String headerPrefix){
