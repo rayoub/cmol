@@ -76,7 +76,7 @@ BEGIN
                 ON qv.report_id = qr.report_id
             -- this is the only difference
             INNER JOIN UNNEST(p_tab) p(gene)
-                ON p.gene = qv.gene
+                ON LOWER(p.gene) = LOWER(qv.gene)
         WHERE 
             qr.ordering_physician_client IS NOT NULL
             AND (p_tc_change IS NULL OR qv.tc_change LIKE '%' || p_tc_change || '%')
