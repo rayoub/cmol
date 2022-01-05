@@ -1,6 +1,7 @@
 
 CREATE OR REPLACE FUNCTION get_query (p_tab VARCHAR ARRAY DEFAULT NULL, p_tc_change VARCHAR DEFAULT NULL, p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
+    n INTEGER,
     report_id VARCHAR,
     mrn VARCHAR,
     accession VARCHAR,
@@ -24,6 +25,7 @@ BEGIN
     
         RETURN QUERY
         SELECT
+            ROW_NUMBER() OVER (ORDER BY qr.test_date DESC)::INTEGER AS n,
             qr.report_id,
             qr.ordering_physician_client AS mrn,
             qr.accession,
@@ -55,6 +57,7 @@ BEGIN
         
         RETURN QUERY
         SELECT
+            ROW_NUMBER() OVER (ORDER BY qr.test_date DESC)::INTEGER AS n,
             qr.report_id,
             qr.ordering_physician_client AS mrn,
             qr.accession,

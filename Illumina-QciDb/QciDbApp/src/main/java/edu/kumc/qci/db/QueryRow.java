@@ -1,7 +1,8 @@
 package edu.kumc.qci.db;
 
 public class QueryRow {
-    
+
+    private int n;
     private String reportId;
     private String mrn;
     private String accession;
@@ -17,6 +18,14 @@ public class QueryRow {
     private String protein;
     private String proteinChange;
     private String assessment;
+
+    public int getN() {
+        return n;
+    }
+
+    public void setN(int n) {
+        this.n = n;
+    }
 
     public String getReportId() {
         return reportId;
@@ -142,7 +151,7 @@ public class QueryRow {
     public String toString() {
         return "QueryRow [accession=" + accession + ", alleleFraction=" + alleleFraction + ", assessment=" + assessment
                 + ", diagnosis=" + diagnosis + ", gene=" + gene + ", interpretation=" + interpretation + ", mrn=" + mrn
-                + ", physician=" + physician + ", protein=" + protein + ", proteinChange=" + proteinChange
+                + ", n=" + n + ", physician=" + physician + ", protein=" + protein + ", proteinChange=" + proteinChange
                 + ", reportId=" + reportId + ", testCode=" + testCode + ", testDate=" + testDate + ", transcript="
                 + transcript + ", trasncriptChange=" + trasncriptChange + "]";
     }
