@@ -35,24 +35,19 @@ public class Reporter {
         if (genesIsNull) {
             stmt.setNull(1, Types.ARRAY);
         }
+        
+        if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
+            stmt.setNull(2, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(2, criteria.getTranscriptChange());
+        }
 
-        if (criteria.getChangeType() == 1) {
-            if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
-                stmt.setNull(2, Types.VARCHAR);
-            }
-            else {
-                stmt.setString(2, criteria.getTranscriptChange());
-            }
+        if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
             stmt.setNull(3, Types.VARCHAR);
         }
         else {
-            stmt.setNull(2, Types.VARCHAR);
-            if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-                stmt.setNull(3, Types.VARCHAR);
-            }
-            else {
-                stmt.setString(3, criteria.getProteinChange());
-            }
+            stmt.setString(3, criteria.getProteinChange());
         }
 
         ResultSet rs = stmt.executeQuery();

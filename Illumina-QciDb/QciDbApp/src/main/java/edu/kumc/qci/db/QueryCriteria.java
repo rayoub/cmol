@@ -3,7 +3,6 @@ package edu.kumc.qci.db;
 public class QueryCriteria {
    
     private String genes;
-    private int changeType;
     private String transcriptChange;
     private String proteinChange;
   
@@ -13,14 +12,6 @@ public class QueryCriteria {
 
     public void setGenes(String genes) {
         this.genes = genes;
-    }
-
-    public int getChangeType() {
-        return changeType;
-    }
-    
-    public void setChangeType(int changeType) {
-        this.changeType = changeType;
     }
 
     public String getTranscriptChange() {
