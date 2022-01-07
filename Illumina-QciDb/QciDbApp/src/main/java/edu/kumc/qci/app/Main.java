@@ -96,7 +96,6 @@ public class Main {
     private static void option_d(CommandLine line) throws Exception {
 
             QueryCriteria criteria = new QueryCriteria();
-            criteria.setChangeType(2);
             criteria.setTranscriptChange("");
             criteria.setProteinChange("G12C");
 

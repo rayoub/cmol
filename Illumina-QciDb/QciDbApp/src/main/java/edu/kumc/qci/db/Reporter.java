@@ -55,7 +55,6 @@ public class Reporter {
 
             QueryRow row = new QueryRow();
 
-            row.setN(rs.getInt("n"));
             row.setReportId(rs.getString("report_id"));
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
