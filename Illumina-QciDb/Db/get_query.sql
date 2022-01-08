@@ -1,5 +1,10 @@
 
-CREATE OR REPLACE FUNCTION get_query (p_tab VARCHAR ARRAY DEFAULT NULL, p_tc_change VARCHAR DEFAULT NULL, p_pc_change VARCHAR DEFAULT NULL)
+CREATE OR REPLACE FUNCTION get_query (
+    p_from_date DATE DEFAULT NULL,
+    p_to_date DATE DEFAULT NULL,
+    p_tab VARCHAR ARRAY DEFAULT NULL, 
+    p_tc_change VARCHAR DEFAULT NULL, 
+    p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
     report_id VARCHAR,
     mrn VARCHAR,
@@ -45,6 +50,8 @@ BEGIN
                 ON qv.report_id = qr.report_id
         WHERE 
             qr.ordering_physician_client IS NOT NULL
+            AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
+            AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_tc_change IS NULL OR qv.tc_change LIKE '%' || p_tc_change || '%')
             AND (p_pc_change IS NULL OR qv.pc_change LIKE '%' || p_pc_change || '%')
             AND qr.test_code NOT LIKE '%Common%'
@@ -79,6 +86,8 @@ BEGIN
                 ON LOWER(p.gene) = LOWER(qv.gene)
         WHERE 
             qr.ordering_physician_client IS NOT NULL
+            AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
+            AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_tc_change IS NULL OR qv.tc_change LIKE '%' || p_tc_change || '%')
             AND (p_pc_change IS NULL OR qv.pc_change LIKE '%' || p_pc_change || '%')
             AND qr.test_code NOT LIKE '%Common%'

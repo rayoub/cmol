@@ -1,6 +1,7 @@
 package edu.kumc.qci.db;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,34 +21,53 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?,?,?);");
+        
+        // from date
+        if (criteria.getFromDate() == null || criteria.getFromDate().isBlank()) {
+            stmt.setNull(1, Types.DATE);
+        }
+        else {
+            stmt.setDate(1, Date.valueOf(criteria.getFromDate()));
+        }
+        
+        // to date
+        if (criteria.getToDate() == null || criteria.getToDate().isBlank()) {
+            stmt.setNull(2, Types.DATE);
+        }
+        else {
+            stmt.setDate(2, Date.valueOf(criteria.getToDate()));
+        }
 
+        // genes
         boolean genesIsNull = true;
         String genes = criteria.getGenes();
         if (genes != null) {
             genes = genes.replaceAll("\\s","");
             if (!genes.isEmpty()) {
                 String[] a = genes.split(";");
-                stmt.setArray(1, conn.createArrayOf("VARCHAR", a));
+                stmt.setArray(3, conn.createArrayOf("VARCHAR", a));
                 genesIsNull = false;
             }
         }
         if (genesIsNull) {
-            stmt.setNull(1, Types.ARRAY);
-        }
-        
-        if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
-            stmt.setNull(2, Types.VARCHAR);
-        }
-        else {
-            stmt.setString(2, criteria.getTranscriptChange());
+            stmt.setNull(3, Types.ARRAY);
         }
 
-        if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-            stmt.setNull(3, Types.VARCHAR);
+        // tc change
+        if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
+            stmt.setNull(4, Types.VARCHAR);
         }
         else {
-            stmt.setString(3, criteria.getProteinChange());
+            stmt.setString(4, criteria.getTranscriptChange());
+        }
+
+        // pc change
+        if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
+            stmt.setNull(5, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(5, criteria.getProteinChange());
         }
 
         ResultSet rs = stmt.executeQuery();

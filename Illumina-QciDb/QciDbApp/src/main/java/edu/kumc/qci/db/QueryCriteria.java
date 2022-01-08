@@ -1,10 +1,28 @@
 package edu.kumc.qci.db;
 
 public class QueryCriteria {
-   
+
+    private String fromDate;
+    private String toDate;
     private String genes;
     private String transcriptChange;
     private String proteinChange;
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
+    }
   
     public String getGenes() {
         return genes;
