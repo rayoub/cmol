@@ -95,14 +95,21 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
-            QueryCriteria criteria = new QueryCriteria();
-            criteria.setTranscriptChange("");
-            criteria.setProteinChange("G12C");
+        String text = "lots of texts";
+        System.out.println(splitter(text, 3));
+    }
 
-            List<QueryRow> rows = Reporter.getQueryRows(criteria);
-            for (QueryRow row : rows) {
-                System.out.println(row.toString());
-            }
+    public static String splitter(String text, int lineLength) {
+
+        lineLength = Math.min(text.length(), lineLength);
+        char[] textChars = text.toCharArray();
+        int numberOfLines = (int)Math.ceil(text.length() / (double)lineLength);
+        String[] lines = new String[numberOfLines];
+        for (int i = 0; i < textChars.length; i++) {
+            int index = i / lineLength;
+            lines[index] = (lines[index] == null ? "" : lines[index]) + textChars[i];
+        }
+        return String.join("..." + System.lineSeparator(), lines);
     }
 
     private static void option_help(Options options) {
