@@ -62,3 +62,5 @@ if ($alerts.Count -gt 0) {
         Write-Host ($alert.reading + "," + $alert.well + "," + $alert.filter + "," + $alert.value)
     }
 }
+
+Read-Host "`nPress enter to exit"
