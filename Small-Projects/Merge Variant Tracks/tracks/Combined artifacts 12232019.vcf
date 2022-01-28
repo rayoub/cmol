@@ -1,0 +1,294 @@
+##fileformat=VCFv4.2
+##fileDate=20220118
+##fileEncoding=windows-1252
+##fileOrigin=/CLC_Data/V3 components-20.1/Combined artifacts 12232019
+##source=CLC Genomics Workbench 20.0 build 20191119102318
+##reference=/CLC_References/homo_sapiens/sequence/hg19/Homo_sapiens_sequence_hg19
+##contig=<ID=1,length=249250621>
+##contig=<ID=2,length=243199373>
+##contig=<ID=3,length=198022430>
+##contig=<ID=4,length=191154276>
+##contig=<ID=5,length=180915260>
+##contig=<ID=6,length=171115067>
+##contig=<ID=7,length=159138663>
+##contig=<ID=8,length=146364022>
+##contig=<ID=9,length=141213431>
+##contig=<ID=10,length=135534747>
+##contig=<ID=11,length=135006516>
+##contig=<ID=12,length=133851895>
+##contig=<ID=13,length=115169878>
+##contig=<ID=14,length=107349540>
+##contig=<ID=15,length=102531392>
+##contig=<ID=16,length=90354753>
+##contig=<ID=17,length=81195210>
+##contig=<ID=18,length=78077248>
+##contig=<ID=19,length=59128983>
+##contig=<ID=20,length=63025520>
+##contig=<ID=21,length=48129895>
+##contig=<ID=22,length=51304566>
+##contig=<ID=X,length=155270560>
+##contig=<ID=Y,length=59373566>
+##contig=<ID=MT,length=16569>
+##refOverlap=true
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total number of filtered reads used to call variants at this position in this sample.">
+##FORMAT=<ID=CLCAD2,Number=R,Type=Integer,Description="Allele depth, number of filtered reads supporting the alleles, ordered as listed in REF and ALT.">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Combined_artifacts_12232019
+1	12918916	.	C	A	.	.	.	GT	1
+1	12919781	.	G	A	.	.	.	GT	1
+1	12921142	.	G	A	.	.	.	GT	1
+1	12921150	.	C	A	.	.	.	GT	1
+1	12921265	.	G	A	.	.	.	GT	1
+1	12921272	.	G	A	.	.	.	GT	1
+1	12921332	.	T	C	.	.	.	GT	0/1
+1	12921332	.	TG	CA	.	.	.	GT	0/1
+1	12921365	.	A	C	.	.	.	GT	1
+1	12921382	.	T	G	.	.	.	GT	1
+1	12921423	.	G	A	.	.	.	GT	1
+1	12921443	.	T	C	.	.	.	GT	1
+1	12921479	.	C	G	.	.	.	GT	1
+1	12921484	.	CA	TG	.	.	.	GT	0/1
+1	12921485	.	A	G	.	.	.	GT	0/1
+1	12921594	.	C	G,T	.	.	.	GT	1/2
+1	12921600	.	C	T	.	.	.	GT	1
+1	12921635	.	G	A	.	.	.	GT	1
+1	27022939	.	CCCG	C	.	.	.	GT	1
+1	27023117	.	G	A	.	.	.	GT	1
+1	27023140	.	TGGC	T	.	.	.	GT	1
+1	27023450	.	AGCG	A	.	.	.	GT	1
+1	27057726	.	TCAG	T	.	.	.	GT	1
+1	27100181	.	CGCA	C	.	.	.	GT	1
+1	27105675	.	GGAA	G	.	.	.	GT	1
+1	27106308	.	G	A	.	.	.	GT	1
+1	35250819	.	C	T	.	.	.	GT	1
+1	43805046	.	A	G	.	.	.	GT	1
+1	43814992	.	CCTG	C	.	.	.	GT	1
+1	115258744	rs121434596	C	T	.	.	.	GT	1
+1	120539781	.	G	A	.	.	.	GT	1
+1	120548030	.	G	A	.	.	.	GT	1
+1	120612002	.	CGG	C	.	.	.	GT	1
+1	241663856	.	C	G	.	.	.	GT	1
+2	17941333	.	CA	C	.	.	.	GT	1
+2	25458575	.	C	A	.	.	.	GT	1
+2	25467023	.	C	A	.	.	.	GT	1
+2	47643443	.	T	A	.	.	.	GT	1
+2	48033401	.	T	C	.	.	.	GT	1
+2	61720156	.	T	G	.	.	.	GT	1
+2	209116262	.	AT	A	.	.	.	GT	1
+3	10088329	.	C	A	.	.	.	GT	1
+3	10107113	.	G	A	.	.	.	GT	1
+3	30691871	.	GA	G	.	.	.	GT	1
+3	128202754	.	G	A	.	.	.	GT	1
+3	142217556	.	CT	C	.	.	.	GT	1
+3	142261554	.	TA	T	.	.	.	GT	1
+3	142274739	.	ATT	A	.	.	.	GT	0/1
+3	142274739	.	AT	A	.	.	.	GT	0/1
+3	142274739	.	A	AT	.	.	.	GT	1
+4	1954945	.	A	G	.	.	.	GT	1
+4	55131118	.	C	T	.	.	.	GT	1
+4	55161391	.	T	C	.	.	.	GT	1
+4	55561718	.	ACCAT	A	.	.	.	GT	1
+4	55561914	.	G	A	.	.	.	GT	1
+4	55575642	.	T	C	.	.	.	GT	1
+4	55968187	.	A	G	.	.	.	GT	1
+4	55970853	.	C	T	.	.	.	GT	1
+4	57349318	.	T	C	.	.	.	GT	1
+4	57352505	.	G	A	.	.	.	GT	1
+4	153268227	.	CAA	C	.	.	.	GT	0/1
+4	153268227	.	CA	C	.	.	.	GT	0/1
+5	1255421	.	G	A	.	.	.	GT	1
+5	56177848	.	TCAA	T	.	.	.	GT	1
+5	170827156	.	GTGA	G	.	.	.	GT	1
+7	6043613	.	G	A	.	.	.	GT	1
+7	6043666	.	C	T	.	.	.	GT	1
+7	55214371	.	A	G	.	.	.	GT	1
+7	101882655	.	C	T	.	.	.	GT	1
+7	103206001	.	GA	G	.	.	.	GT	1
+7	103301976	.	T	TA	.	.	.	GT	1
+7	103629803	.	T	TGCCGCC,TGCCGCCGCCGCC,TGCCGCCGCCGCCGCCGCC	.	.	.	GT	1/2/3
+7	139094364	.	AAG	A	.	.	.	GT	1
+7	140482926	.	AG	A	.	.	.	GT	1
+7	140494209	.	G	A	.	.	.	GT	1
+7	142460369	.	G	A	.	.	.	GT	1
+7	148543693	.	TAA	T	.	.	.	GT	0/1
+7	148543693	.	TA	T	.	.	.	GT	0/1
+7	151836878	.	TA	T	.	.	.	GT	1
+7	151845382	.	G	A	.	.	.	GT	1
+7	151849883	.	G	A	.	.	.	GT	1
+7	151849944	.	C	G	.	.	.	GT	1
+7	151856134	.	T	A	.	.	.	GT	1
+7	151859797	.	G	A	.	.	.	GT	1
+7	151874050	.	T	G	.	.	.	GT	1
+7	151874147	.	CT	C	.	.	.	GT	1
+7	151904435	.	A	G	.	.	.	GT	1
+7	151921255	.	C	T	.	.	.	GT	1
+7	151921586	.	C	A	.	.	.	GT	1
+7	151927003	.	T	A	.	.	.	GT	1
+7	151927007	.	C	T	.	.	.	GT	1
+7	151927016	.	T	C	.	.	.	GT	1
+7	151927021	.	C	A	.	.	.	GT	1
+7	151927023	.	G	C	.	.	.	GT	1
+7	151927025	.	A	G	.	.	.	GT	1
+7	151927026	.	T	C	.	.	.	GT	1
+7	151927034	.	AACACTGACC	A	.	.	.	GT	1
+7	151927067	.	T	C	.	.	.	GT	1
+7	151927089	.	A	G	.	.	.	GT	1
+7	151932908	.	T	C	.	.	.	GT	1
+7	151932916	.	C	G	.	.	.	GT	1
+7	151933014	.	C	A	.	.	.	GT	1
+7	151935788	.	T	G	.	.	.	GT	1
+7	151935798	.	GA	TG	.	.	.	GT	1
+7	151935810	.	G	T	.	.	.	GT	1
+7	151935847	.	C	T	.	.	.	GT	1
+7	151935853	.	TC	AA	.	.	.	GT	1
+7	151935866	.	G	A	.	.	.	GT	1
+7	151935871	.	C	A	.	.	.	GT	1
+7	151945007	.	C	T	.	.	.	GT	1
+7	151945071	.	G	GT	.	.	.	GT	1
+7	151945101	.	G	C	.	.	.	GT	1
+7	151945140	.	C	T	.	.	.	GT	1
+7	151945167	.	G	T	.	.	.	GT	1
+7	151945184	.	C	T	.	.	.	GT	1
+7	151945215	.	T	C	.	.	.	GT	1
+7	151945225	.	T	C	.	.	.	GT	1
+7	151945228	.	G	A	.	.	.	GT	1
+7	151945256	.	G	A	.	.	.	GT	1
+7	151945291	.	G	A	.	.	.	GT	1
+7	151947937	.	C	G	.	.	.	GT	1
+7	151960144	.	T	C	.	.	.	GT	1
+7	151962255	.	C	T	.	.	.	GT	1
+7	151962257	.	C	T	.	.	.	GT	1
+7	151962265	.	C	T	.	.	.	GT	1
+7	151962285	.	T	A	.	.	.	GT	1
+7	151962290	.	C	G	.	.	.	GT	1
+7	151962294	.	G	A	.	.	.	GT	1
+7	151970797	.	A	T	.	.	.	GT	1
+7	151970811	.	T	C	.	.	.	GT	1
+7	151970835	.	T	C	.	.	.	GT	1
+7	151970858	.	C	T	.	.	.	GT	1
+7	151970859	.	C	A,T	.	.	.	GT	1/2
+7	151970877	.	G	A	.	.	.	GT	1
+7	151970896	.	A	T	.	.	.	GT	1
+7	151970902	.	C	A	.	.	.	GT	1
+7	151970911	.	G	A	.	.	.	GT	1
+7	151970931	.	G	A	.	.	.	GT	1
+7	151970939	.	C	A	.	.	.	GT	1
+7	151970951	.	C	T	.	.	.	GT	1
+7	152346219	.	CA	C	.	.	.	GT	1
+8	48866909	.	AT	A	.	.	.	GT	1
+8	90965665	.	CT	C	.	.	.	GT	1
+8	90982659	.	T	G	.	.	.	GT	1
+8	117864952	.	T	TA	.	.	.	GT	1
+9	5089744	.	TA	T	.	.	.	GT	1
+9	21971184	.	T	G	.	.	.	GT	1
+9	21974524	.	A	T	.	.	.	GT	1
+9	86586893	.	C	T	.	.	.	GT	1
+9	86586903	.	TATCATCATA	T	.	.	.	GT	1
+9	135771987	.	CGCT	C	.	.	.	GT	1
+9	139390944	.	TGTG	T	.	.	.	GT	1
+9	139401311	.	C	T	.	.	.	GT	1
+9	139401817	.	C	T	.	.	.	GT	1
+9	139404410	.	G	A	.	.	.	GT	1
+9	139417524	.	T	G	.	.	.	GT	1
+9	139418227	.	GC	G	.	.	.	GT	1
+10	27333121	.	TAA	T	.	.	.	GT	1
+10	27333121	.	T	TA	.	.	.	GT	1
+10	89692913	.	G	A	.	.	.	GT	1
+10	89692921	.	A	T	.	.	.	GT	1
+10	89692923	.	G	A	.	.	.	GT	1
+10	112357944	.	G	A	.	.	.	GT	1
+11	30033562	.	CA	C	.	.	.	GT	1
+11	32417903	.	AGATGCCG	A	.	.	.	GT	1
+11	94153332	.	GATC	G	.	.	.	GT	1
+11	94204900	.	T	G	.	.	.	GT	1
+11	119077232	.	GCAC	G	.	.	.	GT	1
+11	124412705	.	G	T	.	.	.	GT	1
+11	125505377	.	GA	G	.	.	.	GT	1
+11	125505377	.	G	GA	.	.	.	GT	1
+12	25378562	.	C	T	.	.	.	GT	1
+12	112926829	.	T	G	.	.	.	GT	1
+12	121434630	.	C	CTCATTCAT	.	.	.	GT	1
+13	19751274	.	G	A	.	.	.	GT	1
+13	19751292	.	T	C	.	.	.	GT	1
+13	19751301	.	C	T	.	.	.	GT	1
+13	28592629	.	T	C	.	.	.	GT	1
+13	28592634	.	CATG	C	.	.	.	GT	1
+13	32907420	.	GA	G	.	.	.	GT	1
+13	32911442	.	GA	G	.	.	.	GT	1
+13	32913558	.	CA	C	.	.	.	GT	1
+13	32913836	.	CA	C	.	.	.	GT	1
+13	32915295	rs80358906	G	A	.	.	.	GT	1
+13	32953632	.	CA	C	.	.	.	GT	1
+13	32954022	.	CA	C	.	.	.	GT	1
+13	32954022	.	C	CA	.	.	.	GT	1
+14	86089622	.	T	C	.	.	.	GT	1
+14	105242072	.	TCTC	T	.	.	.	GT	1
+15	66777513	.	C	T	.	.	.	GT	1
+15	90631917	.	TC	T	.	.	.	GT	1
+15	90645561	.	C	G	.	.	.	GT	1
+15	91295033	.	G	A	.	.	.	GT	1
+15	91304077	.	T	C	.	.	.	GT	1
+15	91304138	.	GA	G	.	.	.	GT	1
+15	91306241	.	G	A	.	.	.	GT	1
+16	3777897	.	T	G	.	.	.	GT	1
+16	3779346	.	T	G	.	.	.	GT	1
+16	3808052	.	TAA	T	.	.	.	GT	1
+16	3808052	.	T	TA	.	.	.	GT	1
+16	68771347	.	CGCT	C	.	.	.	GT	1
+16	89831344	.	CAG	C	.	.	.	GT	1
+17	263322	.	G	A	.	.	.	GT	1
+17	263523	.	C	A	.	.	.	GT	1
+17	263622	.	A	G	.	.	.	GT	1
+17	1586861	.	T	G	.	.	.	GT	1
+17	29490255	.	C	T	.	.	.	GT	1
+17	29541476	.	C	T	.	.	.	GT	1
+17	29554582	.	G	A	.	.	.	GT	1
+17	29554589	.	C	T	.	.	.	GT	1
+17	29661968	.	T	C	.	.	.	GT	1
+17	30267331	.	C	T	.	.	.	GT	1
+17	30302736	.	AT	A	.	.	.	GT	1
+17	30303572	.	C	T	.	.	.	GT	1
+17	37627306	.	AGCT	A	.	.	.	GT	1
+17	37949050	.	C	T	.	.	.	GT	1
+17	41245586	.	CT	C	.	.	.	GT	1
+18	42456670	.	C	CTCTT	.	.	.	GT	1
+19	17955119	.	C	G	.	.	.	GT	1
+19	33792754	.	GGGC	G	.	.	.	GT	1
+19	33793007	.	TCGC	T	.	.	.	GT	1
+19	45284236	.	A	G	.	.	.	GT	1
+20	57429715	.	A	C	.	.	.	GT	1
+20	57429718	.	TG	CT	.	.	.	GT	1
+21	36164566	.	T	G	.	.	.	GT	1
+21	36164574	.	TT	GG	.	.	.	GT	1
+21	44513243	.	G	A	.	.	.	GT	1
+21	44513290	.	A	C	.	.	.	GT	1
+21	44524453	.	C	T	.	.	.	GT	1
+21	44524456	.	G	A	.	.	.	GT	1
+22	23523740	.	A	T	.	.	.	GT	1
+22	23603727	.	G	A	.	.	.	GT	1
+22	23651619	.	G	A	.	.	.	GT	1
+22	23653911	.	C	T	.	.	.	GT	1
+22	23653975	.	T	TCCGG	.	.	.	GT	1
+22	23653987	.	A	G	.	.	.	GT	1
+22	23653989	.	G	A	.	.	.	GT	1
+22	23654017	.	G	A	.	.	.	GT	1
+22	23654019	.	C	T	.	.	.	GT	1
+22	23655107	.	T	C	.	.	.	GT	1
+22	29091157	.	A	G	.	.	.	GT	1
+22	41564761	.	A	T	.	.	.	GT	1
+X	15841230	.	C	CAGCCGG	.	.	.	GT	1
+X	15841319	.	G	A	.	.	.	GT	1
+X	34148807	.	AGACTGGACGTCCGACGAGTCTTGGGAGGCTCCGAGCGGA	A	.	.	.	GT	0/0/1
+X	34148815	.	CGTCCGACGAGTCTTGGGAGGCTCCGAGCGGAGACTGGAC	C	.	.	.	GT	0/0/1
+X	34148816	.	GTC	ACT	.	.	.	GT	0/0/1
+X	34148841	.	AG	GA	.	.	.	GT	0/0/1
+X	34148844	.	G	C	.	.	.	GT	0/0/1
+X	39923050	.	G	A	.	.	.	GT	1
+X	66765158	.	TGCAGCAGCAGCAGCAGCA	T	.	.	.	GT	0/0/1
+X	66765158	.	TGCAGCAGCAGCAGCA	T	.	.	.	GT	0/0/1
+X	66765158	.	TGCAGCAGCA	T	.	.	.	GT	0/0/1
+X	66765158	.	T	TGCA	.	.	.	GT	1
+X	123224521	.	TTA	T	.	.	.	GT	1
+X	123227937	.	A	AG	.	.	.	GT	1
+X	129149421	.	T	TG	.	.	.	GT	1
+X	129185892	.	A	C	.	.	.	GT	1

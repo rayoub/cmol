@@ -1,0 +1,64 @@
+##fileformat=VCFv4.2
+##fileDate=20220118
+##fileEncoding=windows-1252
+##fileOrigin=/CLC_Data/V3 components-20.1/Combined artifacts 12232019-wrong artifacts
+##source=CLC Genomics Workbench 20.0 build 20191119102318
+##reference=/CLC_References/homo_sapiens/sequence/hg19/Homo_sapiens_sequence_hg19
+##contig=<ID=1,length=249250621>
+##contig=<ID=2,length=243199373>
+##contig=<ID=3,length=198022430>
+##contig=<ID=4,length=191154276>
+##contig=<ID=5,length=180915260>
+##contig=<ID=6,length=171115067>
+##contig=<ID=7,length=159138663>
+##contig=<ID=8,length=146364022>
+##contig=<ID=9,length=141213431>
+##contig=<ID=10,length=135534747>
+##contig=<ID=11,length=135006516>
+##contig=<ID=12,length=133851895>
+##contig=<ID=13,length=115169878>
+##contig=<ID=14,length=107349540>
+##contig=<ID=15,length=102531392>
+##contig=<ID=16,length=90354753>
+##contig=<ID=17,length=81195210>
+##contig=<ID=18,length=78077248>
+##contig=<ID=19,length=59128983>
+##contig=<ID=20,length=63025520>
+##contig=<ID=21,length=48129895>
+##contig=<ID=22,length=51304566>
+##contig=<ID=X,length=155270560>
+##contig=<ID=Y,length=59373566>
+##contig=<ID=MT,length=16569>
+##refOverlap=true
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total number of filtered reads used to call variants at this position in this sample.">
+##FORMAT=<ID=CLCAD2,Number=R,Type=Integer,Description="Allele depth, number of filtered reads supporting the alleles, ordered as listed in REF and ALT.">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Combined_artifacts_12232019-wrong_artifacts
+1	27100181	.	CGCA	C	.	.	.	GT	1
+1	27106308	.	G	A	.	.	.	GT	1
+1	115258744	.	C	T	.	.	.	GT	1
+2	25458575	.	C	A	.	.	.	GT	1
+2	25467023	.	C	A	.	.	.	GT	1
+3	142217556	.	CT	C	.	.	.	GT	1
+3	142261554	.	TA	T	.	.	.	GT	1
+3	142274739	.	ATT	A	.	.	.	GT	1
+3	142274739	.	A	AT	.	.	.	GT	1
+7	152346219	.	CA	C	.	.	.	GT	1
+9	139390944	.	TGTG	T	.	.	.	GT	1
+11	125505377	.	GA	G	.	.	.	GT	1
+11	125505377	.	G	GA	.	.	.	GT	1
+12	25378562	.	C	T	.	.	.	GT	1
+13	28592629	.	T	C	.	.	.	GT	1
+13	28592634	.	CATG	C	.	.	.	GT	1
+13	32907420	.	GA	G	.	.	.	GT	1
+13	32911442	.	GA	G	.	.	.	GT	1
+13	32913558	.	CA	C	.	.	.	GT	1
+13	32913836	.	CA	C	.	.	.	GT	1
+13	32953632	.	CA	C	.	.	.	GT	1
+13	32954022	.	CA	C	.	.	.	GT	1
+13	32954022	.	C	CA	.	.	.	GT	1
+16	89831344	.	CAG	C	.	.	.	GT	1
+17	41245586	.	CT	C	.	.	.	GT	1
+21	44524453	.	C	T	.	.	.	GT	1
+21	44524456	.	G	A	.	.	.	GT	1
+X	123224521	.	TTA	T	.	.	.	GT	1
