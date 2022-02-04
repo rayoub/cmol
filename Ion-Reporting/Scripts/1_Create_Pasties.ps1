@@ -45,19 +45,9 @@ foreach($id in $patientRows.Keys){
     foreach($a in $patientRows[$id]) {
 
         # patient name
-        "Patient Name:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
         $a.Columns("A").text.trim() + ", " + $a.Columns("B").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        
-        # facility 
-        "Facility:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("P").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # accession #
-        "Accession #:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("D").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # provider name
-        "Provider Name:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
         $provider = $a.Columns("R").text.trim()
         if (!$provider -eq "") {
             $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
@@ -66,25 +56,35 @@ foreach($id in $patientRows.Keys){
         }
         $provider + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
-        # dob
-        "DOB:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("F").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # collection date
-        "Collection Date:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("E").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # sex
-        "Sex:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("G").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # received date
-        "Received Date:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-        $a.Columns("K").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+        # cmol id        
+        $a.Columns("I").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # MRN
-        "MRN:" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
         $a.Columns("C").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # facility 
+        $a.Columns("P").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # collection date
+        $a.Columns("E").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # dob
+        $a.Columns("F").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # sex
+        $a.Columns("G").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # accession #
+        $a.Columns("D").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+
+        # received date
+        $a.Columns("K").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+    
+        # diagnosis 
+        # pathoology id        
+
+        # report date
+        (Get-Date -Format "M/d/yyyy") + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
     }
 }
 
