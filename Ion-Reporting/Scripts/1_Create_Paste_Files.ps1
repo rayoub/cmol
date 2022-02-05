@@ -456,7 +456,7 @@ foreach($id in $patientRows.Keys){
         $selectedDiagnosis + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # pathoology id        
-        "pathology id`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+        $a.Columns("H").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # report date
         (Get-Date -Format "M/d/yyyy") + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
