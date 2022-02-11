@@ -4,6 +4,7 @@ public class QueryCriteria {
 
     private String fromDate;
     private String toDate;
+    private String mrns;
     private String genes;
     private String transcriptChange;
     private String proteinChange;
@@ -22,6 +23,14 @@ public class QueryCriteria {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+    
+    public String getMrns() {
+        return mrns;
+    }
+
+    public void setMrns(String mrns) {
+        this.mrns = mrns;
     }
   
     public String getGenes() {
