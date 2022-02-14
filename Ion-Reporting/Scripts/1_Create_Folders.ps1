@@ -1,11 +1,4 @@
 
-$currentDir = Get-Location | Split-Path -Leaf
-if ($currentDir -ne "results"){
-    Write-Host "`nERROR: You must be in a 'results' folder to run this script." -ForegroundColor Red
-    Read-Host "`nPress enter to exit"
-   exit
-}
-
 $inputFile = Get-ChildItem -Filter *_Input_v?.xlsx | Select-Object -First 1
 if ($null -eq $inputFile){
     Write-Host "`nERROR: An Excel input file was not found in the current directory." -ForegroundColor Red

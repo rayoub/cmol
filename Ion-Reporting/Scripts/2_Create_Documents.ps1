@@ -1,6 +1,5 @@
 
-$panel = "Comprehensive Plus"
-$suffix = "-Comprehensive Plus.docx"
+$suffix = "-Comprehensive Plus Assay Summary Result.docx"
 $submitDir = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Patient Reports\NGS Comprehensive Plus\Comprehensive Plus To Be Submitted"
 
 $templateFile = Get-ChildItem -Filter '*Assay Result Summary*.dotx' | Select-Object -First 1
@@ -51,6 +50,8 @@ for ($i = 2; $i -lt 100; $i++){
 $word = New-Object -ComObject Word.Application
 
 foreach($dirName in $patientRows.Keys){
+
+    Write-Host "Processing $dirName"
 
     # path name for report
     $pathName = $submitDir + "\" + $dirName 
@@ -111,9 +112,6 @@ foreach($dirName in $patientRows.Keys){
 
         # write template
         
-        # top 
-        $doc.bookmarks("Assay").range.text = $panel
-
         # column 1
         $doc.bookmarks("AssayID").range.text = $a.Columns("V").text.trim()
         $doc.bookmarks("PatientName").range.text = $a.Columns("A").text.trim() + ", " + $a.Columns("B").text.trim()
