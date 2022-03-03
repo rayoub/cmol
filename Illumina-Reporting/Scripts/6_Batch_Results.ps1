@@ -206,7 +206,7 @@ foreach($selectedDir in $selectedDirList){
         $runId = $resultSheet.Cells(1,2).text.trim()
         $runDate = $resultSheet.Cells(2,4).text.trim()
         $cmolId = $resultSheet.Cells(1,4).text.trim()
-        $MRN = $resultSheet.Cells(5,4).text.trim()
+        $MRN = "'" + $resultSheet.Cells(5,4).text.trim().padLeft(7,'0')
         $accession = $resultSheet.Cells(6,2).text.trim()
         $panel = $resultSheet.Cells(3,2).text.trim()
         $meanCoverage = $resultSheet.Cells(4,2).text.trim()
