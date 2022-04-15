@@ -48,7 +48,14 @@ $fields = @(
     'First name',
     'Ordering facility',
     'Specimen type',
-    'Surg path ID'
+    'Surg path ID',
+	'Short Dx',
+	'Short Dx Description',
+	'Primary or Secondary',
+	'Transplant Status',
+	'Metastatic To',
+	'Relapse Status',
+	'Cytogenetics'
 )
 
 ######################################################################################################
@@ -206,7 +213,7 @@ foreach($selectedDir in $selectedDirList){
         $runId = $resultSheet.Cells(1,2).text.trim()
         $runDate = $resultSheet.Cells(2,4).text.trim()
         $cmolId = $resultSheet.Cells(1,4).text.trim()
-        $MRN = $resultSheet.Cells(5,4).text.trim()
+        $MRN = "'" + $resultSheet.Cells(5,4).text.trim().padLeft(7,'0')
         $accession = $resultSheet.Cells(6,2).text.trim()
         $panel = $resultSheet.Cells(3,2).text.trim()
         $meanCoverage = $resultSheet.Cells(4,2).text.trim()
@@ -232,7 +239,8 @@ foreach($selectedDir in $selectedDirList){
         if ($name -match "CAP.*PT") {
             $facility = "CAP"
         }
-        elseif ($MRN.length -eq 7) {
+        # "'" + padded MRN
+        elseif ($MRN.length -eq 8) {
             $facility = "KUHA"
         }
         else {
@@ -240,6 +248,10 @@ foreach($selectedDir in $selectedDirList){
         }
         $specimenType = $resultSheet.Cells(1,27).text.trim()
         $surgPathId = $resultSheet.Cells(2,27).text.trim()
+		$cytogenetics = $resultSheet.Cells(6,13).text.trim()
+		if ($cytogenetics -match "^\+") {
+			$cytogenetics = "'" + $cytogenetics
+		}
         
         # iterate result rows
         for ($i = 10; $i -lt 100; $i++){
@@ -387,7 +399,8 @@ foreach($selectedDir in $selectedDirList){
             $batchSheet.Cells($batchIndex, 39).Value = $firstName  
             $batchSheet.Cells($batchIndex, 40).Value = $facility  
             $batchSheet.Cells($batchIndex, 41).Value = $specimenType  
-            $batchSheet.Cells($batchIndex, 42).Value = $surgPathId  
+            $batchSheet.Cells($batchIndex, 42).Value = $surgPathId
+			$batchSheet.Cells($batchIndex, 49).Value = $cytogenetics
 
             $batchIndex++
         }
