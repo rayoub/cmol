@@ -1,6 +1,5 @@
 package edu.kumc.qci.app;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,11 +12,8 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.kumc.qci.db.QueryCriteria;
 import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
-import edu.kumc.qci.db.QueryRow;
-import edu.kumc.qci.db.Reporter;
 
 public class Main {
 
