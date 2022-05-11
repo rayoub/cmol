@@ -1,6 +1,7 @@
 
 \i qci_report.sql
 \i qci_variant.sql
+\i qci_diagnosis.sql
 
 \i qci_truncate.sql
 
