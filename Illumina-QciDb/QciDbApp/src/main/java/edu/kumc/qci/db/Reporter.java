@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -21,22 +22,30 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?,?,?,?);");
-        
-        // from date
-        if (criteria.getFromDate() == null || criteria.getFromDate().isBlank()) {
-            stmt.setNull(1, Types.DATE);
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?,?,?,?,?);");
+
+        // diagnoses
+        if (criteria.getDiagnoses() == null || criteria.getDiagnoses().length == 0) {
+            stmt.setNull(1, Types.ARRAY);
         }
         else {
-            stmt.setDate(1, Date.valueOf(criteria.getFromDate()));
+            stmt.setArray(1, conn.createArrayOf("INTEGER", IntStream.of(criteria.getDiagnoses()).boxed().toArray()));
+        }
+
+        // from date
+        if (criteria.getFromDate() == null || criteria.getFromDate().isBlank()) {
+            stmt.setNull(2, Types.DATE);
+        }
+        else {
+            stmt.setDate(2, Date.valueOf(criteria.getFromDate()));
         }
         
         // to date
         if (criteria.getToDate() == null || criteria.getToDate().isBlank()) {
-            stmt.setNull(2, Types.DATE);
+            stmt.setNull(3, Types.DATE);
         }
         else {
-            stmt.setDate(2, Date.valueOf(criteria.getToDate()));
+            stmt.setDate(3, Date.valueOf(criteria.getToDate()));
         }
         
         // mrns
@@ -46,12 +55,12 @@ public class Reporter {
             mrns = mrns.replaceAll("\\s","");
             if (!mrns.isEmpty()) {
                 String[] a = mrns.split(";");
-                stmt.setArray(3, conn.createArrayOf("VARCHAR", a));
+                stmt.setArray(4, conn.createArrayOf("VARCHAR", a));
                 mrnsIsNull = false;
             }
         }
         if (mrnsIsNull) {
-            stmt.setNull(3, Types.ARRAY);
+            stmt.setNull(4, Types.ARRAY);
         }
 
         // genes
@@ -61,28 +70,28 @@ public class Reporter {
             genes = genes.replaceAll("\\s","");
             if (!genes.isEmpty()) {
                 String[] a = genes.split(";");
-                stmt.setArray(4, conn.createArrayOf("VARCHAR", a));
+                stmt.setArray(5, conn.createArrayOf("VARCHAR", a));
                 genesIsNull = false;
             }
         }
         if (genesIsNull) {
-            stmt.setNull(4, Types.ARRAY);
+            stmt.setNull(5, Types.ARRAY);
         }
 
         // tc change
         if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
-            stmt.setNull(5, Types.VARCHAR);
+            stmt.setNull(6, Types.VARCHAR);
         }
         else {
-            stmt.setString(5, criteria.getTranscriptChange());
+            stmt.setString(6, criteria.getTranscriptChange());
         }
 
         // pc change
         if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-            stmt.setNull(6, Types.VARCHAR);
+            stmt.setNull(7, Types.VARCHAR);
         }
         else {
-            stmt.setString(6, criteria.getProteinChange());
+            stmt.setString(7, criteria.getProteinChange());
         }
 
         ResultSet rs = stmt.executeQuery();

@@ -2,12 +2,21 @@ package edu.kumc.qci.db;
 
 public class QueryCriteria {
 
+    private int[] diagnoses;
     private String fromDate;
     private String toDate;
     private String mrns;
     private String genes;
     private String transcriptChange;
     private String proteinChange;
+
+    public int[] getDiagnoses() {
+        return diagnoses;
+    }
+
+    public void setDiagnoses(int[] diagnoses) {
+        this.diagnoses = diagnoses;
+    }
 
     public String getFromDate() {
         return fromDate;

@@ -1,5 +1,6 @@
 package edu.kumc.qci.app;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +15,9 @@ import org.apache.commons.cli.ParseException;
 
 import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
+import edu.kumc.qci.db.QueryCriteria;
+import edu.kumc.qci.db.QueryRow;
+import edu.kumc.qci.db.Reporter;
 
 public class Main {
 
@@ -91,8 +95,13 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
-        String text = "lots of texts";
-        System.out.println(splitter(text, 3));
+        QueryCriteria criteria = new QueryCriteria();
+        criteria.setDiagnoses(new int[] { 1,2,3 });
+
+        List<QueryRow> rows = Reporter.getQueryRows(criteria);
+        for (QueryRow row : rows) {
+            System.out.println(row.getDiagnosis());
+        }
     }
 
     public static String splitter(String text, int lineLength) {
