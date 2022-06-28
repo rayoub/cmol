@@ -420,11 +420,13 @@ function Format-Providers {
 
     $providers = @()
     
-    $provider = $row.Columns("P").text.trim()
-    if (!$provider -eq ""){
-        $providers += $provider 
+    $provider = $row.Columns("R").text.trim()
+    if (!$provider -eq "") {
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
     }
-    
+
     $provider = $row.Columns("AG").text.trim()
     if (!$provider -eq ""){
         $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
@@ -807,6 +809,7 @@ foreach($cmolId in $samples){
 
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Type", $nsmgr).InnerText = $row.Columns("N").text.trim()
 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = $row.Columns("A").text.trim() + ", " + $row.Columns("B").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("F").text.trim()
@@ -818,7 +821,8 @@ foreach($cmolId in $samples){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = $gender
 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Format-Providers
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = $row.Columns("C").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = $row.Columns("C").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = $row.Columns("P").text.trim()
 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
 
