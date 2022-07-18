@@ -105,7 +105,7 @@ function Get-Selected {
 ######################################################################################################
 
 # gather directories that start with D 
-$dirList = @(Get-ChildItem D* | Select-Object -ExpandProperty Name)
+$dirList = @(Get-ChildItem D* -Directory | Select-Object -ExpandProperty Name)
 if ($dirList.length -eq 0) {
     Write-Host "No result directories found. Exiting.`n" -ForegroundColor Red
     exit
@@ -124,17 +124,17 @@ $word.visible = $false
 
 # iterate selected directories 
 foreach($selectedDir in $selectedDirList){ 
-
+   
     # get the cmol id
     $index = $selectedDir.IndexOf("_")
     $cmolId = $selectedDir.Substring(0, $index)
 
-    $template = Get-ChildItem -Path -File $sourceDir -Filter "$cmolId*Letter Head*.docx" -Depth 1
+    $template = Get-ChildItem -Path $sourceDir -File -Filter ($cmolId + "*Letter Head.docx") -Depth 1
 
     # continue if file does not exist
     if ($null -eq $template) {
-        Write-Host "`nSkipping pdf conversion for: $selectedDir. A Letter Head word template does not exist." -ForegroundColor Red
-        continue
+       Write-Host "`nSkipping pdf conversion for: $selectedDir. A Letter Head word template does not exist." -ForegroundColor Red
+       continue
     }
 
     # open template
@@ -143,11 +143,11 @@ foreach($selectedDir in $selectedDirList){
 
     # save as pdf 
     $doc = $word.documents.open($template.FullName, $false, $true)
-    $doc.saveas($template, $formatPdf)
+    $doc.saveas($docName, $formatPdf)
     $doc.close($false)
 
     # output 
-    Write-Host Converted $template.Name to Pdf Format
+    Write-Host "`nConverted $template.Name to Pdf Format"
 }
 
 # clean up<A
