@@ -349,7 +349,7 @@ $available = @(
 $templateXml = @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns1:QCISomaticTest xmlns:ns1="http://qci.qiagen.com/xsd/interpret" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.12.0">
-    <ns1:TestProduct>
+    <ns1:TestProduct> 
         <ns1:Code></ns1:Code>
         <ns1:Profile></ns1:Profile>
         <ns1:ReportTemplate>KUMC_v1</ns1:ReportTemplate>
@@ -361,20 +361,19 @@ $templateXml = @"
         <ns1:Diagnosis></ns1:Diagnosis>
         <ns1:PrimarySourceTissue></ns1:PrimarySourceTissue>
     </ns1:Test>
-    <ns1:Patient>
+    <ns1:Patient> 
         <ns1:Name></ns1:Name>
         <ns1:BirthDate></ns1:BirthDate>
         <ns1:Age></ns1:Age>
         <ns1:Gender></ns1:Gender>
     </ns1:Patient>
-    <ns1:Specimen>
+    <ns1:Specimen> 
         <ns1:Id></ns1:Id>
         <ns1:CollectionDate></ns1:CollectionDate>
-        <ns1:Type></ns1:Type>
+        <ns1:Dissection></ns1:Dissection>
     </ns1:Specimen>
-    <ns1:Physician>
+    <ns1:Physician> 
         <ns1:Name></ns1:Name>
-        <ns1:ClientId></ns1:ClientId>
         <ns1:FacilityName></ns1:FacilityName>
     </ns1:Physician>
     <ns1:Pathologist>
@@ -420,12 +419,6 @@ function Format-Providers {
 
     $providers = @()
     
-    $provider = $row.Columns("P").text.trim()
-    if (!$provider -eq ""){
-        $providers += $provider 
-    }  
-   
-    # brought over from v2
     $provider = $row.Columns("R").text.trim()
     if (!$provider -eq "") {
         $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
@@ -489,7 +482,7 @@ function Get-Selected {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "QCI Upload"
+    $form.Text = "QCIIOne Upload"
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims
@@ -574,7 +567,7 @@ function Get-Input {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "QCI Upload for $cmolId"
+    $form.Text = "QCIIOne Upload for $cmolId"
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims
@@ -771,20 +764,30 @@ for ($i = 2; $i -lt 100; $i++){
 
 $result, $samples = Get-Selected -IdList $idList
 if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
-    Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
+    Write-Host "`nAborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
     $inputBook.close()
     $excel.quit()
     exit
 }
 
 if ($samples.Count -eq 0) {
-    Write-Host "`nNo samples selected for processing. Aborting the creation of QCI upload packages`n" -ForegroundColor Red
+    Write-Host "`nNo samples selected for processing. Aborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
     $inputBook.close()
     $excel.quit()
     exit
 }
 
-# iterate input rows
+# get the access token
+$tokenUri = "https://api.ingenuity.com/v1/oauth/access_token"
+$tokenForm = @{
+	grant_type = "client_credentials"
+	client_id = "a6a94c9ccc7c523e35ce24fbf041340a"
+ 	client_secret = "372c2d51ef7b55bb0b50eb2a7bc64e82"
+}
+$tokenResponse = Invoke-RestMethod -Uri $tokenUri -Method Post -Body $tokenForm
+$token = $tokenResponse.access_token
+
+# iterate input rows and upload
 foreach($cmolId in $samples){
     
     # get directory corresponding to cmol id
@@ -793,7 +796,7 @@ foreach($cmolId in $samples){
     # continue if directory does not exist
     if ($null -eq $dirName) {
 
-        Write-Host "`nSkipping QCI upload package for: $cmolId. A corresponding directory does not exist." -ForegroundColor Red
+        Write-Host "`nSkipping QCIIOne upload package for: $cmolId. A corresponding directory does not exist." -ForegroundColor Red
         continue
     }
 
@@ -805,18 +808,15 @@ foreach($cmolId in $samples){
         $nsmgr = New-Object System.Xml.XmlNamespaceManager -ArgumentList $xml.NameTable
         $nsmgr.AddNamespace("ns1", "http://qci.qiagen.com/xsd/interpret")
 
-        # based on report type
+        # TestProduct element - based on prompted inputs
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Code", $nsmgr).InnerText = $code
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $tpp	
 
-        # based on input excel
+        # Test element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $row.Columns("D").text.trim()
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
 
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Type", $nsmgr).InnerText = $row.Columns("N").text.trim()
-
+        # Patient element
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = $row.Columns("A").text.trim() + ", " + $row.Columns("B").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("F").text.trim()
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age $row.Columns("F").text.trim()
@@ -826,12 +826,19 @@ foreach($cmolId in $samples){
         }
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = $gender
 
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Format-Providers
-  #  	$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = $row.Columns("C").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = $row.Columns("C").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $row.Columns("H").text.trim()
+        # Specimen element
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = $row.Columns("C").text.trim() 
 
-        # diagnosis from input
+        # Physician element
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = $row.Columns("P").text.trim() 
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = "Facility Name"
+
+        # Pathologist element
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = "n/a"
+
+        # diagnosis from input excel
         $indicated = $row.Columns("AF").text.trim()
         if ([String]::IsNullOrEmpty($indicated)){
             $indicated= "[blank]"
@@ -840,7 +847,7 @@ foreach($cmolId in $samples){
         # get inputs from input form
         $result, $selectedDiagnosis, $selectedSource = Get-Input -CmolId $cmolId -Indicated $indicated
         if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
-            Write-Host "`nAborting the creation of QCI upload packages`n" -ForegroundColor Red
+            Write-Host "`nAborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
             $inputBook.close()
             $excel.quit()
             exit
@@ -872,8 +879,13 @@ foreach($cmolId in $samples){
         }
         Compress-Archive @compress -Force
 
+        Start-Sleep -Seconds 1
+
+        $response = C:/windows/system32/curl -X POST -H ("Authorization: " + $token) -H "Content-Type: multipart/form-data" -F ("file=@" + $saveZip) "https://api.ingenuity.com/v1/datapackages"
+        $json = $response | ConvertFrom-Json # ignore unused variable
+
         # confirmation
-        Write-Host "`nProcessed QCI upload package for: $cmolId" -ForegroundColor Green
+        Write-Host "`nProcessed QCIIOne upload package for: $cmolId" -ForegroundColor Green
 
         # since this does not handle 'common' reports, ignore subsequent rows
         break
