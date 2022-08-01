@@ -851,7 +851,11 @@ foreach($cmolId in $samples){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Format-Provider
 
         # Pathologist element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = "n/a"
+        $pathologist = $row.Columns("H").text.trim()
+        if ([String]::IsNullOrEmpty($pathologist) -or $pathologist -ieq 'n/a') {
+            $pathologist = $row.Columns("N").text.trim()
+        }
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $pathologist
 
         # diagnosis from input excel
         $indicated = $row.Columns("AF").text.trim()
