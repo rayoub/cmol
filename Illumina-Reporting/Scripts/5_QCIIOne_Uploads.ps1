@@ -374,6 +374,7 @@ $templateXml = @"
     </ns1:Specimen>
     <ns1:Physician> 
         <ns1:Name></ns1:Name>
+        <ns1:ClientId></ns1:ClientId>
         <ns1:FacilityName></ns1:FacilityName>
     </ns1:Physician>
     <ns1:Pathologist>
@@ -413,6 +414,19 @@ function Get-Age {
     else {
         ""
     }
+}
+function Format-Provider {
+
+    $providers = @()
+    
+    $provider = $row.Columns("R").text.trim()
+    if (!$provider -eq "") {
+        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
+        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
+            Where-Object {$_ -ne ""}) -join " "
+    }
+
+    ($providers -join "; ")
 }
 
 function Format-Providers {
@@ -832,8 +846,9 @@ foreach($cmolId in $samples){
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = $row.Columns("C").text.trim() 
 
         # Physician element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = $row.Columns("P").text.trim() 
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = "Facility Name"
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = $row.Columns("P").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = $row.Columns("P").text.trim()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Format-Provider
 
         # Pathologist element
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = "n/a"
@@ -883,6 +898,8 @@ foreach($cmolId in $samples){
 
         $response = C:/windows/system32/curl -X POST -H ("Authorization: " + $token) -H "Content-Type: multipart/form-data" -F ("file=@" + $saveZip) "https://api.ingenuity.com/v1/datapackages"
         $json = $response | ConvertFrom-Json # ignore unused variable
+
+        Write-Host $json
 
         # confirmation
         Write-Host "`nProcessed QCIIOne upload package for: $cmolId" -ForegroundColor Green
