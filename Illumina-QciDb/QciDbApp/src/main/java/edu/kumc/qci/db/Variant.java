@@ -4,9 +4,12 @@ import org.postgresql.util.PGobject;
 
 public class Variant extends PGobject {
 
+    public static int INT_NULL = -99999;
+    public static double DOUBLE_NULL = -99999.0;
+
     private String reportId;
     private String chromosome;
-    private String position;
+    private int position = INT_NULL;
     private String reference;
     private String alternate;
     private String genotype;
@@ -15,21 +18,21 @@ public class Variant extends PGobject {
     private String phenotypeId;
     private String phenotypeName;
     private String dbsnp;
-    private String cadd;
-    private String alleleFraction;
-    private String readDepth;
+    private double cadd = DOUBLE_NULL;
+    private double alleleFraction = DOUBLE_NULL;
+    private int readDepth = INT_NULL;
     private String variation;
     private String gene;
     private String tcTranscript;
     private String tcChange;
-    private String tcExonNumber;
+    private int tcExonNumber = INT_NULL;
     private String tcRegion;
     private String pcProtein;
     private String pcChange;
     private String pcTranslationImpact;
     private String gcChange;
     private String function;
-    private String referenceCount;
+    private int referenceCount = INT_NULL;
     
     public String getReportId() {
         return reportId;
@@ -47,11 +50,11 @@ public class Variant extends PGobject {
         this.chromosome = chromosome;
     }
 
-    public String getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -119,27 +122,27 @@ public class Variant extends PGobject {
         this.dbsnp = dbsnp;
     }
 
-    public String getCadd() {
+    public double getCadd() {
         return cadd;
     }
 
-    public void setCadd(String cadd) {
+    public void setCadd(double cadd) {
         this.cadd = cadd;
     }
 
-    public String getAlleleFraction() {
+    public double getAlleleFraction() {
         return alleleFraction;
     }
 
-    public void setAlleleFraction(String alleleFraction) {
+    public void setAlleleFraction(double alleleFraction) {
         this.alleleFraction = alleleFraction;
     }
 
-    public String getReadDepth() {
+    public int getReadDepth() {
         return readDepth;
     }
 
-    public void setReadDepth(String readDepth) {
+    public void setReadDepth(int readDepth) {
         this.readDepth = readDepth;
     }
 
@@ -175,11 +178,11 @@ public class Variant extends PGobject {
         this.tcChange = tcChange;
     }
 
-    public String getTcExonNumber() {
+    public int getTcExonNumber() {
         return tcExonNumber;
     }
 
-    public void setTcExonNumber(String tcExonNumber) {
+    public void setTcExonNumber(int tcExonNumber) {
         this.tcExonNumber = tcExonNumber;
     }
 
@@ -231,11 +234,11 @@ public class Variant extends PGobject {
         this.function = function;
     }
 
-    public String getReferenceCount() {
+    public int getReferenceCount() {
         return referenceCount;
     }
 
-    public void setReferenceCount(String referenceCount) {
+    public void setReferenceCount(int referenceCount) {
         this.referenceCount = referenceCount;
     }
     

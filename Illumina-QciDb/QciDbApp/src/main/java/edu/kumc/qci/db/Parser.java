@@ -81,7 +81,8 @@ public class Parser {
         variant.setReportId(reportId);
         
         variant.setChromosome(xpath.evaluate("chromosome", element));
-        variant.setPosition(xpath.evaluate("position", element));
+        String position = xpath.evaluate("position", element);
+        if (!position.isBlank()) variant.setPosition(Integer.parseInt(position));
         variant.setReference(xpath.evaluate("reference", element));
         variant.setAlternate(xpath.evaluate("alternate", element));
         variant.setGenotype(xpath.evaluate("genotype", element));
@@ -90,15 +91,19 @@ public class Parser {
         variant.setPhenotypeId(xpath.evaluate("phenotype/@id", element));
         variant.setPhenotypeName(xpath.evaluate("phenotype/@name", element));
         variant.setDbsnp(xpath.evaluate("dbsnp", element));
-        variant.setCadd(xpath.evaluate("cadd", element));
-        variant.setAlleleFraction(xpath.evaluate("allelefraction", element));
-        variant.setReadDepth(xpath.evaluate("readdepth", element));
+        String cadd = xpath.evaluate("cadd", element);
+        if (!cadd.isBlank()) variant.setCadd(Double.parseDouble(cadd));
+        String alleleFraction = xpath.evaluate("allelefraction", element);
+        if (!alleleFraction.isBlank()) variant.setAlleleFraction(Double.parseDouble(alleleFraction));
+        String readDepth = xpath.evaluate("readdepth", element);
+        if (!readDepth.isBlank()) variant.setReadDepth(Integer.parseInt(readDepth));
         variant.setVariation(xpath.evaluate("variation", element));
         variant.setGene(xpath.evaluate("gene", element));
 
         variant.setTcTranscript(xpath.evaluate("transcriptchange/transcript", element));
         variant.setTcChange(xpath.evaluate("transcriptchange/change", element));
-        variant.setTcExonNumber(xpath.evaluate("transcriptchange/exonNumber", element));
+        String exonNumber = xpath.evaluate("transcriptchange/exonNumber", element);
+        if (!exonNumber.isBlank()) variant.setTcExonNumber(Integer.parseInt(exonNumber));
         variant.setTcRegion(xpath.evaluate("transcriptchange/region", element));
         variant.setPcProtein(xpath.evaluate("proteinchange/protein", element));
         variant.setPcChange(xpath.evaluate("proteinchange/change", element));
@@ -106,6 +111,7 @@ public class Parser {
         variant.setGcChange(xpath.evaluate("genomicchange/change", element));
 
         variant.setFunction(xpath.evaluate("function", element));
-        variant.setReferenceCount(xpath.evaluate("referencecount", element));
+        String referenceCount = xpath.evaluate("referencecount", element);
+        variant.setReferenceCount(Integer.parseInt(referenceCount));
     }
 }

@@ -67,11 +67,8 @@ FROM
     INNER JOIN qci_variant v 
         ON r.report_id = v.report_id
 WHERE
-    accession 
-IN 
-    ('M23811', 'T74011')
+    v.gene = 'DDX41'
 ORDER BY
-    --CASE WHEN assessment = 'Pathogenic' THEN 1 WHEN assessment = 'Likely Pathogenic' THEN 2 ELSE 3 END, 
     chromosome::INTEGER,
     position::INTEGER
 ;

@@ -1,6 +1,5 @@
 package edu.kumc.qci.app;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,16 +14,13 @@ import org.apache.commons.cli.ParseException;
 
 import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
-import edu.kumc.qci.db.QueryCriteria;
-import edu.kumc.qci.db.QueryRow;
-import edu.kumc.qci.db.Reporter;
 
 public class Main {
 
     public static void main(String[] args) {
 
         Options options = new Options();
-        
+
         OptionGroup group = new OptionGroup();
 
         group.addOption(Option.builder("g")
@@ -72,8 +68,7 @@ public class Main {
             } else if (line.hasOption("?")) {
                 option_help(options);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
         }
     }
@@ -87,7 +82,7 @@ public class Main {
 
         Importer.importXml(Constants.DATA_PATH);
     }
-    
+
     private static void option_c(CommandLine line) throws Exception {
 
         Importer.truncateQciTables();
@@ -95,20 +90,13 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
-        QueryCriteria criteria = new QueryCriteria();
-        criteria.setDiagnoses(new int[] { 1,2,3 });
-
-        List<QueryRow> rows = Reporter.getQueryRows(criteria);
-        for (QueryRow row : rows) {
-            System.out.println(row.getDiagnosis());
-        }
     }
 
     public static String splitter(String text, int lineLength) {
 
         lineLength = Math.min(text.length(), lineLength);
         char[] textChars = text.toCharArray();
-        int numberOfLines = (int)Math.ceil(text.length() / (double)lineLength);
+        int numberOfLines = (int) Math.ceil(text.length() / (double) lineLength);
         String[] lines = new String[numberOfLines];
         for (int i = 0; i < textChars.length; i++) {
             int index = i / lineLength;
@@ -123,7 +111,7 @@ public class Main {
         formatter.printHelp(Constants.APP_NAME, options);
     }
 
-    private static HelpFormatter getHelpFormatter(String headerPrefix){
+    private static HelpFormatter getHelpFormatter(String headerPrefix) {
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(new OptionComparator());
