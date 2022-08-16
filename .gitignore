@@ -7,3 +7,9 @@ Illumina-QciDb/QciDbApp/target
 Illumina-QciDb/QciDbApp/.classpath
 Illumina-QciDb/QciDbApp/.project
 Illumina-QciDb/QciDbApp/.settings
+
+# build ignores
+C3od/C3odApp/target
+C3od/C3odApp/.classpath
+C3od/C3odApp/.project
+C3od/C3odApp/.settings

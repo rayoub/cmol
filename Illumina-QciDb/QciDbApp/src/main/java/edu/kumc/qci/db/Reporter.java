@@ -147,7 +147,7 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_report LIMIT 1000;");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_report;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
@@ -214,7 +214,7 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_variant LIMIT 1000;");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_variant;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
