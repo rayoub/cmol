@@ -75,7 +75,8 @@ public class Main {
 
     private static void option_g(CommandLine line) throws Exception {
 
-        Getter.getXml();
+        String token = Getter.getToken();
+        Getter.getXml(token);
     }
 
     private static void option_i(CommandLine line) throws Exception {

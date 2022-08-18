@@ -49,15 +49,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>..</targetPath>
-                <includes>
-                    <include>config.properties</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

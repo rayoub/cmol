@@ -21,14 +21,41 @@ import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.postgresql.ds.PGSimpleDataSource;
 
-import edu.kumc.qci.app.Config;
 import edu.kumc.qci.app.Constants;
 
 public class Getter {
 
     private static String BASE_URI = "https://api.ingenuity.com/v1";
 
-    public static void getXml() throws IOException, SQLException {
+    public static String getToken() {
+       
+        Client client = ClientBuilder.newBuilder()
+            .register(JacksonFeature.class)
+            .build();
+        
+        WebTarget target = client.target(BASE_URI).path("oauth").path("access_token")
+            .queryParam("grant_type", "client_credentials")
+            .queryParam("client_id", "a6a94c9ccc7c523e35ce24fbf041340a")
+            .queryParam("client_secret", "372c2d51ef7b55bb0b50eb2a7bc64e82");
+            
+        Invocation.Builder invoke = target.request(MediaType.APPLICATION_JSON);
+
+        Response response = invoke.get();
+
+        AccessToken tokenBean = new AccessToken();
+        try {
+
+            tokenBean = response.readEntity(AccessToken.class);
+        }
+        catch (ProcessingException e) {
+
+            System.out.println("An error occurred while getting the access token.");
+        }
+
+        return tokenBean.access_token;
+    }
+
+    public static void getXml(String token) throws IOException, SQLException {
 
         Client client = ClientBuilder.newBuilder()
             .register(JacksonFeature.class)
@@ -43,7 +70,7 @@ public class Getter {
         }
 
         Invocation.Builder invoke = target.request(MediaType.APPLICATION_JSON);
-        invoke.header("Authorization", Config.API_KEY);
+        invoke.header("Authorization", token);
 
         Response response = invoke.get();
 
@@ -68,7 +95,7 @@ public class Getter {
                     .queryParam("view","reportXml");
 
                 invoke = target.request(MediaType.APPLICATION_JSON);
-                invoke.header("Authorization", Config.API_KEY);
+                invoke.header("Authorization", token); 
 
                 response = invoke.get();
 
