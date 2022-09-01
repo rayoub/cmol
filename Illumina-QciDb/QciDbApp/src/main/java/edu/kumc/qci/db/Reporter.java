@@ -122,6 +122,8 @@ public class Reporter {
             if (rs.wasNull()) row.setTranscript("");
             row.setTranscriptChange(rs.getString("transcript_change"));
             if (rs.wasNull()) row.setTranscriptChange("");
+            row.setTranscriptExon(rs.getInt("transcript_exon"));
+            if (rs.wasNull()) row.setTranscriptExon(-1);
             row.setProtein(rs.getString("protein"));
             if (rs.wasNull()) row.setProtein("");
             row.setProteinChange(rs.getString("protein_change"));

@@ -13,7 +13,8 @@ public class QueryRow {
     private String gene;
     private double alleleFraction;
     private String transcript;
-    private String trasncriptChange;
+    private String transcriptChange;
+    private int transcriptExon;
     private String protein;
     private String proteinChange;
     private String assessment;
@@ -107,11 +108,19 @@ public class QueryRow {
     }
 
     public String getTrasncriptChange() {
-        return trasncriptChange;
+        return transcriptChange;
     }
 
     public void setTranscriptChange(String trasncriptChange) {
-        this.trasncriptChange = trasncriptChange;
+        this.transcriptChange = trasncriptChange;
+    }
+
+    public int getTranscriptExon() {
+        return transcriptExon;
+    }
+
+    public void setTranscriptExon(int transcriptExon) {
+        this.transcriptExon = transcriptExon;
     }
 
     public String getProtein() {

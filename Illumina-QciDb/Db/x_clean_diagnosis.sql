@@ -31,6 +31,7 @@ UPDATE qci_report SET diagnosis = 'Von Willebrand disease' WHERE diagnosis = 'Vo
 UPDATE qci_report SET diagnosis = 'Waldenstrom macroglobulinemia' WHERE diagnosis = 'Waldenstrom macroglobuilnemia';
 UPDATE qci_report SET diagnosis = 'Waldenstrom macroglobulinemia' WHERE diagnosis = 'Waldenstrom''S macroglobulinemia';
 
+TRUNCATE TABLE qci_diagnosis;
 INSERT INTO qci_diagnosis (descr) 
 SELECT DISTINCT diagnosis FROM qci_report ORDER BY diagnosis;
 

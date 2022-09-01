@@ -20,6 +20,7 @@ RETURNS TABLE (
     allele_fraction NUMERIC,
     transcript VARCHAR,
     transcript_change VARCHAR,
+    transcript_exon INTEGER,
     protein VARCHAR,
     protein_change VARCHAR,
     assessment VARCHAR
@@ -43,6 +44,7 @@ BEGIN
             qv.allele_fraction,
             qv.tc_transcript AS transcript,
             qv.tc_change AS trasnscript_change,
+            qv.tc_exon_number AS transcript_exon,
             qv.pc_protein AS protein,
             qv.pc_change AS protein_change,
             qv.assessment
@@ -82,6 +84,7 @@ BEGIN
             qv.allele_fraction,
             qv.tc_transcript AS transcript,
             qv.tc_change AS trasnscript_change,
+            qv.tc_exon_number AS transcript_exon,
             qv.pc_protein AS protein,
             qv.pc_change AS protein_change,
             qv.assessment
