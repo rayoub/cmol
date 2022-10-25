@@ -40,7 +40,28 @@ public class Db {
             SQLServerDataSource ds = Ds.getSSDataSource();
             SQLServerConnection connection = (SQLServerConnection) ds.getConnection();
             
-            String sql = "INSERT INTO qci_report VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) OPTION (QUERYTRACEON 460)";
+            String sql = "INSERT INTO qci_report " +
+                "([report_id]" +
+                ",[subject_id]" +
+                ",[accession]" +
+                ",[test_date]" +
+                ",[test_code]" +
+                ",[clinical_finding]" +
+                ",[diagnosis]" +
+                ",[interpretation]" +
+                ",[sex]" +
+                ",[date_of_birth]" +
+                ",[ordering_physician_client]" +
+                ",[ordering_physician_facility_name]" +
+                ",[ordering_physician_name]" +
+                ",[pathologist_name]" +
+                ",[primary_tumor_site]" +
+                ",[specimen_id]" +
+                ",[specimen_type]" +
+                ",[specimen_collection_date]" +
+                ",[lab_tested_cnv_gain]" +
+                ",[lab_tested_genes]) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             SQLServerPreparedStatement updt = (SQLServerPreparedStatement) connection.prepareStatement(sql);
                 
             for (Report report : reports) {
@@ -84,11 +105,34 @@ public class Db {
             SQLServerDataSource ds = Ds.getSSDataSource();
             SQLServerConnection connection = (SQLServerConnection) ds.getConnection();
             
-            String sql = "INSERT INTO qci_variant VALUES (" +
-                "?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?," +
-                "?,?)";
+            String sql = "INSERT INTO qci_variant " +
+                "([report_id]" +
+                ",[chromosome]" +
+                ",[position]" +
+                ",[reference]" +
+                ",[alternate]" +
+                ",[genotype]" +
+                ",[assessment]" +
+                ",[actionability]" +
+                ",[phenotype_id]" +
+                ",[phenotype_name]" +
+                ",[dbsnp]" +
+                ",[cadd]" +
+                ",[allele_fraction]" +
+                ",[read_depth]" +
+                ",[variation]" +
+                ",[gene]" +
+                ",[tc_transcript]" +
+                ",[tc_change]" +
+                ",[tc_exon_number]" +
+                ",[tc_region]" +
+                ",[pc_protein]" +
+                ",[pc_change]" +
+                ",[pc_translation_impact]" +
+                ",[gc_change]" +
+                ",[function]" +
+                ",[reference_count]) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             SQLServerPreparedStatement updt = (SQLServerPreparedStatement) connection.prepareStatement(sql);
                 
             for (Variant variant : variants) {
