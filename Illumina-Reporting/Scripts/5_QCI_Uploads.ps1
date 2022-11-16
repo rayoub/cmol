@@ -7,7 +7,8 @@ Add-Type -AssemblyName System.Drawing
 ######################################################################################################
 
 $sources = @(
-    'Not Provided',
+    'Bone Marrow',
+	'Not Provided',
     'Unknown',
     'Abdomen',
     'Acinar Cell Carcinoma',
@@ -90,7 +91,9 @@ $sources = @(
 )
 
 $available = @(
-    'Acute idiopathic thrombocytopenic purpura',
+    'Acute myeloid leukemia',
+	'Myelodysplastic neoplasm',
+	'Acute idiopathic thrombocytopenic purpura',
     'Acute leukemia',
     'Acute lymphoblastic leukemia',
     'Acute monocytic leukemia',
@@ -253,6 +256,7 @@ $available = @(
     'Monoclonal gammopathy',
     'Monocytosis',
     'MPNST',
+	'Myelodysplastic neoplasm',
     'Myelodysplastic syndrome',
     'Myelofibrosis',
     'Myeloid neoplasm',
