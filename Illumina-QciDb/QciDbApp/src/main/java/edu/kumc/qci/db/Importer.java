@@ -35,6 +35,20 @@ public class Importer {
         BLACK_LIST.add("DP_1302137400");
     }
 
+    public static void cleanQciTables() throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT clean_all();");
+    
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
+
     public static void truncateQciTables() throws SQLException {
 
         PGSimpleDataSource ds = Ds.getDataSource();

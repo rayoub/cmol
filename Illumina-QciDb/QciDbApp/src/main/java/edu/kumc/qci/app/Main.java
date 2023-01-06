@@ -32,8 +32,12 @@ public class Main {
                 .desc("import xml files")
                 .build());
         group.addOption(Option.builder("c")
-                .longOpt("clear")
-                .desc("clear database tables")
+                .longOpt("clean")
+                .desc("clean database tables")
+                .build());
+        group.addOption(Option.builder("t")
+                .longOpt("truncate")
+                .desc("truncate database tables")
                 .build());
         group.addOption(Option.builder("d")
                 .longOpt("debug")
@@ -63,6 +67,8 @@ public class Main {
                 option_i(line);
             } else if (line.hasOption("c")) {
                 option_c(line);
+            } else if (line.hasOption("t")) {
+                option_t(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -83,8 +89,13 @@ public class Main {
 
         Importer.importXml(Constants.DATA_PATH);
     }
-
+    
     private static void option_c(CommandLine line) throws Exception {
+
+        Importer.cleanQciTables();
+    }
+
+    private static void option_t(CommandLine line) throws Exception {
 
         Importer.truncateQciTables();
     }
