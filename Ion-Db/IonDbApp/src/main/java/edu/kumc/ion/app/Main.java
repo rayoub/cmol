@@ -1,8 +1,6 @@
 package edu.kumc.ion.app;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,8 +13,8 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.kumc.ion.db.Importer;
-import edu.kumc.ion.db.Parser;
+import edu.kumc.ion.db.Reporter;
+import edu.kumc.ion.db.Variant;
 
 public class Main {
 
@@ -59,10 +57,16 @@ public class Main {
     }
 
     private static void option_d(CommandLine line) throws Exception {
+        String sampleName = "CP019-DNA3-W52288_v1_CP019-RNA3-W52288_RNA_v1";
+//        String sampleName = "CP013-DNA4-H15895_v1_CP013-RNA4-H15895_RNA_v1";
 
-        String sampleName = "CP013-DNA4-H15895_v1_CP013-RNA4-H15895_RNA_v1";
 
-        Importer.importSample(sampleName);
+
+        List<Variant> variants = Reporter.getVariants();
+        for (Variant variant : variants) {
+            System.out.println(variant);
+        }
+
     }
 
     private static void option_help(Options options) {

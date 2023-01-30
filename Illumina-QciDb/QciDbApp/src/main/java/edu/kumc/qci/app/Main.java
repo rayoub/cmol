@@ -1,5 +1,7 @@
 package edu.kumc.qci.app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 import edu.kumc.qci.db.Getter;
 import edu.kumc.qci.db.Importer;
+import edu.kumc.qci.db.Notifier;
 
 public class Main {
 
@@ -38,6 +41,9 @@ public class Main {
         group.addOption(Option.builder("t")
                 .longOpt("truncate")
                 .desc("truncate database tables")
+                .build());
+        group.addOption(Option.builder("n")
+                .longOpt("genetic counseling notifications")
                 .build());
         group.addOption(Option.builder("d")
                 .longOpt("debug")
@@ -69,6 +75,8 @@ public class Main {
                 option_c(line);
             } else if (line.hasOption("t")) {
                 option_t(line);
+            } else if (line.hasOption("n")) {
+                option_n(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -98,6 +106,11 @@ public class Main {
     private static void option_t(CommandLine line) throws Exception {
 
         Importer.truncateQciTables();
+    }
+    
+    private static void option_n(CommandLine line) throws Exception {
+
+        Notifier.Notify();
     }
 
     private static void option_d(CommandLine line) throws Exception {

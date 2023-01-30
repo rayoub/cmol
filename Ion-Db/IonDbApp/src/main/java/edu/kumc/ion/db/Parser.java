@@ -82,4 +82,19 @@ public class Parser {
 
         return listOfValues;
     }
+
+    public static String getValue(Map<String, Integer> headers, List<String> values, String header) {
+
+        String value = "";
+
+        if (headers.containsKey(header)) {
+             
+            int i = headers.get(header);
+            if (values.size() > i) {
+                value = values.get(i);
+            }
+        }
+
+        return value;
+    }
 }

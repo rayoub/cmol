@@ -7,27 +7,55 @@ public class Variant extends PGobject {
     public static int INT_NULL = -99999;
     public static double DOUBLE_NULL = -99999.0;
 
-    private String chromosome;
-    private int position = INT_NULL;
+    private String sample;
+    private String locus;
+    private String genotype;
+    private String filter;
+    private String ref;
     private String genes;
     private String transcript;
     private String coding;
-    private String aminoAcidChange;
-
-    public String getChromosome() {
-        return chromosome;
+    private String protein;
+    
+    public String getSample() {
+        return sample;
     }
 
-    public void setChromosome(String chromosome) {
-        this.chromosome = chromosome;
+    public void setSample(String sample) {
+        this.sample = sample;
     }
 
-    public int getPosition() {
-        return position;
+
+    public String getLocus() {
+        return locus;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setLocus(String locus) {
+        this.locus = locus;
+    }
+    
+    public String getGenotype() {
+        return genotype;
+    }
+
+    public void setGenotype(String genotype) {
+        this.genotype = genotype;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     public String getGenes() {
@@ -54,24 +82,27 @@ public class Variant extends PGobject {
         this.coding = coding;
     }
 
-    public String getAminoAcidChange() {
-        return aminoAcidChange;
+    public String getProtein() {
+        return protein;
     }
 
-    public void setAminoAcidChange(String aminoAcidChange) {
-        this.aminoAcidChange = aminoAcidChange;
+    public void setProtein(String protein) {
+        this.protein = protein;
     }
 
     @Override
     public String getValue() {
         String row = "("  +
 
-            chromosome + "," + 
-            position  + "," + 
+            sample + "," + 
+            locus + "," + 
+            genotype + "," +
+            filter + "," +
+            ref + "," +
             genes + "," + 
             transcript + "," + 
             coding + "," + 
-            aminoAcidChange + ","
+            protein 
         + ")";
         return row;
     }

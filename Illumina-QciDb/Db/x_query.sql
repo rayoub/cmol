@@ -41,35 +41,47 @@
 --    v.tc_transcript
 --;
 
-SELECT
-    r.accession,
-    r.test_date,
-    r.test_code,
-    r.clinical_finding,
-    r.diagnosis,
-    r.primary_tumor_site,
-    r.specimen_type,
-    v.gene,
-    v.variation,
-    v.chromosome,
-    v.position,
-    v.reference,
-    v.alternate,
-    v.tc_transcript,
-    v.tc_change,
-    v.pc_protein,
-    v.pc_change,
-    v.read_depth,
-    v.allele_fraction,
-    v.assessment
-FROM    
-    qci_report r
-    INNER JOIN qci_variant v 
-        ON r.report_id = v.report_id
-WHERE
-    v.gene = 'DDX41'
-ORDER BY
-    chromosome::INTEGER,
-    position::INTEGER
-;
+--SELECT
+--    r.accession,
+--    r.test_date,
+--    r.test_code,
+--    r.clinical_finding,
+--    r.diagnosis,
+--    r.primary_tumor_site,
+--    r.specimen_type,
+--    v.gene,
+--    v.variation,
+--    v.chromosome,
+--    v.position,
+--    v.reference,
+--    v.alternate,
+--    v.tc_transcript,
+--    v.tc_change,
+--    v.pc_protein,
+--    v.pc_change,
+--    v.read_depth,
+--    v.allele_fraction,
+--    v.assessment
+--FROM    
+--    qci_report r
+--    INNER JOIN qci_variant v 
+--        ON r.report_id = v.report_id
+--WHERE
+--    v.gene = 'DDX41'
+--ORDER BY
+--    chromosome::INTEGER,
+--    position::INTEGER
+--;
 
+
+    SELECT
+        qr.accession, qr.*
+    FROM
+        qci_report qr 
+        INNER JOIN qci_variant qv 
+            ON qv.report_id = qr.report_id
+        INNER JOIN gc_gene g 
+            ON g.gene = qv.gene
+    WHERE 
+        qr.accession ~* '^[a-z][0-9]+$'
+    ;

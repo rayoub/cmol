@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -28,7 +27,7 @@ public class Importer {
         conn.close();
     }
 
-    public static void importSample(String sampleName) throws IOException {
+    public static void importSample(String sampleName) throws IOException, SQLException {
 
         String fileName = sampleName + "-full.tsv";
 
@@ -36,26 +35,40 @@ public class Importer {
         Map<String, Integer> headers = Parser.parseHeaders(fileName);
         List<List<String>> listOfValues = Parser.parseValues(fileName);
 
-        System.out.println("got Here");
+        /*
+        int i = 1;
+        for(List<String> values : listOfValues) {
+
+            System.out.println("-----------------------------------------------------------");
+            System.out.println("index = " + i);
+            for (String header : headers.keySet()) {
+                System.out.println(header + " = " + Parser.getValue(headers, values, header));
+            }
+            i++;
+            System.out.println("-----------------------------------------------------------");
+        }
+        */
+
         // fill list of variants
         List<Variant> variants = new ArrayList<>();
         for(List<String> values : listOfValues) {
 
             Variant variant = new Variant();
 
-            variant.setGenes(values.get(headers.get("gene")));
-            variant.setTranscript(values.get(headers.get("transcript")));
-            variant.setCoding(values.get(headers.get("coding")));
+            variant.setSample(sampleName);
+            variant.setLocus(Parser.getValue(headers, values, "locus"));
+            variant.setGenotype(Parser.getValue(headers, values, "genotype"));
+            variant.setFilter(Parser.getValue(headers, values, "filter"));
+            variant.setRef(Parser.getValue(headers, values, "ref"));
+            variant.setGenes(Parser.getValue(headers, values, "gene"));
+            variant.setTranscript(Parser.getValue(headers, values, "transcript"));
+            variant.setCoding(Parser.getValue(headers, values, "coding"));
+            variant.setProtein(Parser.getValue(headers, values, "protein"));
 
             variants.add(variant);
         }
 
-        System.out.println("got Here");
-        // test output
-        for (Variant variant : variants) {{
-
-            System.out.println(variant.toString());
-        }}
+        saveVariants(variants);
     }
     
     private static void saveVariants(List<Variant> variants) throws SQLException {
