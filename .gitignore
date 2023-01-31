@@ -22,3 +22,9 @@ Ion-Db/IonDbApp/target
 Ion-Db/IonDbApp/.classpath
 Ion-Db/IonDbApp/.project
 Ion-Db/IonDbApp/.settings
+
+# build ignores
+Cmol-Db/CmolDbApp/target
+Cmol-Db/CmolDbApp/.classpath
+Cmol-Db/CmolDbApp/.project
+Cmol-Db/CmolDbApp/.settings
