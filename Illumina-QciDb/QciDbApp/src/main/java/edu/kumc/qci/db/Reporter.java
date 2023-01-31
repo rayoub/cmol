@@ -22,7 +22,7 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_query(?,?,?,?,?,?,?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_qci_query(?,?,?,?,?,?,?);");
 
         // diagnoses
         if (criteria.getDiagnoses() == null || criteria.getDiagnoses().length == 0) {

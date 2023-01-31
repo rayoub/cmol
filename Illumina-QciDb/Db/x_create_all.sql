@@ -11,6 +11,8 @@
 \i insert_qci_report.sql
 \i insert_qci_variant.sql
 
+\i get_qci_query.sql
+
 \i clean_accession.sql
 \i clean_all.sql
 \i clean_diagnosis.sql

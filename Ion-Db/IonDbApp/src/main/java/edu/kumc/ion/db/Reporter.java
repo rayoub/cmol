@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 public class Reporter {
     
-    public static List<Variant> getVariants() throws SQLException {
+    public static List<Variant> getVariants(QueryCriteria criteria) throws SQLException { 
 
         List<Variant> variants = new ArrayList<>();
 
@@ -19,7 +20,15 @@ public class Reporter {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM ion_variant;");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?);");
+
+        // tc change
+        if (criteria.getSample() == null || criteria.getSample().isBlank()) {
+            stmt.setNull(1, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(1, criteria.getSample());
+        }
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

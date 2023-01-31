@@ -1,5 +1,5 @@
 
-CREATE OR REPLACE FUNCTION get_query (
+CREATE OR REPLACE FUNCTION get_qci_query (
     p_diagnoses INTEGER ARRAY DEFAULT NULL,
     p_from_date DATE DEFAULT NULL,
     p_to_date DATE DEFAULT NULL,
