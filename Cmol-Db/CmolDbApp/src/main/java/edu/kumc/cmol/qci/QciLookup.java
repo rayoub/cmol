@@ -7,16 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
+import edu.kumc.cmol.core.LookupVal;
 
 public class QciLookup {
 
-    public static List<Pair<String, String>> getDiagnoses() throws SQLException {
+    public static List<LookupVal> getDiagnoses() throws SQLException {
 
-        List<Pair<String, String>> vals = new ArrayList<>();
+        List<LookupVal> vals = new ArrayList<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
@@ -30,7 +30,7 @@ public class QciLookup {
            
             String id = Integer.toString(rs.getInt("id"));
             String descr = rs.getString("descr");
-            Pair<String, String> val = Pair.of(id, descr);
+            LookupVal val = new LookupVal(id, descr);
 
             vals.add(val);
         }

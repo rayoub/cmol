@@ -69,7 +69,6 @@ public class Main {
         for (Variant variant : variants) {
             System.out.println(variant);
         }
-
     }
 
     private static void option_help(Options options) {
