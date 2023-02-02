@@ -26,21 +26,13 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
-import edu.kumc.cmol.qci.Getter;
+import edu.kumc.cmol.qci.WS;
 
 public class Notifier {
-
-    private static String BASE_URI = "https://api.ingenuity.com/v1";
 
     public static void Notify() {
 
@@ -52,7 +44,7 @@ public class Notifier {
         toEmails.add("shyter@kumc.edu");
         toEmails.add("rayoub@kumc.edu");
         
-        String token = Getter.getToken();
+        String token = WS.getToken();
         if (token != null) {
             List<String> notified = sendEmail(token, accessionIds, toEmails);
             if (notified.size() > 0){
@@ -111,7 +103,7 @@ public class Notifier {
 
             for (String accessionId : accessionIds) {
 
-                InputStream inputStream = getPdf(token, accessionId);
+                InputStream inputStream = WS.getPdf(token, accessionId);
                 if (inputStream != null) {
 
                     try {
@@ -146,32 +138,6 @@ public class Notifier {
         }
 
         return notified;
-    }
-
-    public static InputStream getPdf(String token, String accessionId) {
-
-        Client client = ClientBuilder.newBuilder()
-            .register(JacksonFeature.class)
-            .build();
-
-        client.property("accept", "application/pdf");
-        
-        WebTarget target = client.target(BASE_URI)
-            .path("export")
-            .path(accessionId)
-            .queryParam("view","pdf");
-
-        Invocation.Builder invoke = target.request();
-        invoke.header("Authorization", token);
-
-        Response response = invoke.get();
-
-        InputStream inputStream = null;
-        if (response.getStatus() == 200) {
-            inputStream = response.readEntity(InputStream.class);
-        }
-
-        return inputStream;
     }
 
     public static List<String> getToNotify(int previousDays) {

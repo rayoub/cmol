@@ -7,14 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
 
-public class Reporter {
+public class Db {
 
     public static List<QueryRow> getQueryRows(QueryCriteria criteria) throws SQLException {
 
@@ -286,4 +289,96 @@ public class Reporter {
 
         return variants;
     }
+
+    public static String getLatestTestDate() throws SQLException {
+
+        Date latestTestDate = null;
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT MAX(test_date) AS test_date FROM qci_report;");
+
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            latestTestDate = rs.getDate("test_date");
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        if (latestTestDate != null) {
+            // conveniently returns the string in the format we need yyyy-mm-dd
+            return latestTestDate.toString();
+        }
+        else {
+            return null;
+        }
+    }
+
+    public static Set<String> getReportIds() throws SQLException {
+
+        Set<String> reportIds = new HashSet<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT report_id FROM qci_report;");
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            reportIds.add(rs.getString("report_id"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return reportIds;
+    }
+    
+    public static void saveReports(List<Report> reports) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        ((PGConnection) conn).addDataType("qci_report", Report.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_report(?);");
+     
+        Report a[] = new Report[reports.size()];
+        reports.toArray(a);
+        updt.setArray(1, conn.createArrayOf("qci_report", a));
+    
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
+
+    public static void saveVariants(List<Variant> variants) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        ((PGConnection) conn).addDataType("qci_variant", Variant.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_variant(?);");
+     
+        Variant a[] = new Variant[variants.size()];
+        variants.toArray(a);
+        updt.setArray(1, conn.createArrayOf("qci_variant", a));
+    
+        updt.execute();
+        updt.close();
+        
+        conn.close();
+    }
+
+
 }

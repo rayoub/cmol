@@ -14,8 +14,9 @@ import org.apache.commons.cli.ParseException;
 
 import edu.kumc.cmol.core.Constants;
 import edu.kumc.cmol.gc.Notifier;
-import edu.kumc.cmol.qci.Getter;
 import edu.kumc.cmol.qci.Importer;
+import edu.kumc.cmol.qci.Db;
+import edu.kumc.cmol.qci.WS;
 
 public class Main {
 
@@ -88,8 +89,9 @@ public class Main {
 
     private static void option_g(CommandLine line) throws Exception {
 
-        String token = Getter.getToken();
-        Getter.getXml(token);
+        String token = WS.getToken();
+        String latestTestDate = Db.getLatestTestDate();
+        WS.getXml(token, latestTestDate);
     }
 
     private static void option_i(CommandLine line) throws Exception {

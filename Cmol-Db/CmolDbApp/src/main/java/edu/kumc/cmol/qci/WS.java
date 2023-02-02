@@ -1,13 +1,9 @@
-package edu.kumc.qci.db;
+package edu.kumc.cmol.qci;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -19,12 +15,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.postgresql.ds.PGSimpleDataSource;
 
-import edu.kumc.qci.app.Constants;
+import edu.kumc.cmol.core.Constants;
 
-public class Getter {
-
+public class WS {
+    
     private static String BASE_URI = "https://api.ingenuity.com/v1";
 
     public static String getToken() {
@@ -50,12 +45,13 @@ public class Getter {
         catch (ProcessingException e) {
 
             System.out.println("An error occurred while getting the access token.");
+            e.printStackTrace();
         }
 
         return tokenBean.access_token;
     }
 
-    public static void getXml(String token) throws IOException, SQLException {
+    public static void getXml(String token, String latestTestDate) throws IOException {
 
         Client client = ClientBuilder.newBuilder()
             .register(JacksonFeature.class)
@@ -64,7 +60,6 @@ public class Getter {
         WebTarget target = client.target(BASE_URI).path("clinical")
             .queryParam("state", "final");
 
-        String latestTestDate = getLatestTestDate();
         if (latestTestDate != null) {
             target = target.queryParam("startReceivedDate", latestTestDate);
         }
@@ -106,31 +101,29 @@ public class Getter {
         }
     }
 
-    private static String getLatestTestDate() throws SQLException {
+    public static InputStream getPdf(String token, String accessionId) {
 
-        Date latestTestDate = null;
+        Client client = ClientBuilder.newBuilder()
+            .register(JacksonFeature.class)
+            .build();
 
-        PGSimpleDataSource ds = Ds.getDataSource();
+        client.property("accept", "application/pdf");
+        
+        WebTarget target = client.target(BASE_URI)
+            .path("export")
+            .path(accessionId)
+            .queryParam("view","pdf");
 
-        Connection conn = ds.getConnection();
-            
-        PreparedStatement stmt = conn.prepareCall("SELECT MAX(test_date) AS test_date FROM qci_report;");
+        Invocation.Builder invoke = target.request();
+        invoke.header("Authorization", token);
 
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            latestTestDate = rs.getDate("test_date");
+        Response response = invoke.get();
+
+        InputStream inputStream = null;
+        if (response.getStatus() == 200) {
+            inputStream = response.readEntity(InputStream.class);
         }
 
-        rs.close();
-        stmt.close();
-        conn.close();
-
-        if (latestTestDate != null) {
-            // conveniently returns the string in the format we need yyyy-mm-dd
-            return latestTestDate.toString();
-        }
-        else {
-            return null;
-        }
+        return inputStream;
     }
 }
