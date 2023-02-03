@@ -35,6 +35,6 @@
 
 \i get_ion_query.sql
 
-
+-- GC
 
 
