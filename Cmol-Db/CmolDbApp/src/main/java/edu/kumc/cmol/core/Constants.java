@@ -6,5 +6,6 @@ public class Constants {
     public static String DB_NAME = "cmol";
     public static String DB_USER = "postgres";
     public static String DB_PASSWORD = "postgres";
-    public static String DATA_PATH = "E:/git/cmol/Cmol-Db/Data";
+    public static String QCI_DATA_PATH = "E:/git/cmol/Cmol-Db/Data/QCI";
+    public static String ION_DATA_PATH = "E:/git/cmol/Cmol-Db/Data/Ion";
 }

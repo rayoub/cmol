@@ -96,7 +96,7 @@ public class Main {
 
     private static void option_i(CommandLine line) throws Exception {
 
-        Importer.importXml(Constants.DATA_PATH);
+        Importer.importXml(Constants.QCI_DATA_PATH);
     }
     
     private static void option_c(CommandLine line) throws Exception {

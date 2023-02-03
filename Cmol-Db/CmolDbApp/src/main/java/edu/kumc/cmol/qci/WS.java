@@ -83,7 +83,7 @@ public class WS {
         // will be 0 tests on error
         for (Test test : tests) {
 
-            File file = new File(Constants.DATA_PATH, test.dataPackageID + ".xml");
+            File file = new File(Constants.QCI_DATA_PATH, test.dataPackageID + ".xml");
             if (!file.exists()) {
 
                 target = client.target(test.exportUrl)
