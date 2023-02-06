@@ -7,9 +7,11 @@ Add-Type -AssemblyName System.Drawing
 ######################################################################################################
 
 $sources = @(
+    'Bone Marrow',
     'Not Provided',
     'Unknown',
     'Abdomen',
+    'Acinar Cell Carcinoma',
     'Adrenal Gland',
     'Anus',
     'Appendix',
@@ -89,6 +91,8 @@ $sources = @(
 )
 
 $available = @(
+    'Acute myeloid leukemia',
+	'Myelodysplastic neoplasm',
     'Acute idiopathic thrombocytopenic purpura',
     'Acute leukemia',
     'Acute lymphoblastic leukemia',
@@ -252,6 +256,7 @@ $available = @(
     'Monoclonal gammopathy',
     'Monocytosis',
     'MPNST',
+	'Myelodysplastic neoplasm',
     'Myelodysplastic syndrome',
     'Myelofibrosis',
     'Myeloid neoplasm',
@@ -791,17 +796,7 @@ if ($samples.Count -eq 0) {
     exit
 }
 
-# get the access token
-$tokenUri = "https://api.ingenuity.com/v1/oauth/access_token"
-$tokenForm = @{
-	grant_type = "client_credentials"
-	client_id = "a6a94c9ccc7c523e35ce24fbf041340a"
- 	client_secret = "372c2d51ef7b55bb0b50eb2a7bc64e82"
-}
-$tokenResponse = Invoke-RestMethod -Uri $tokenUri -Method Post -Body $tokenForm
-$token = $tokenResponse.access_token
-
-# iterate input rows and upload
+# iterate input rows
 foreach($cmolId in $samples){
     
     # get directory corresponding to cmol id
@@ -897,13 +892,6 @@ foreach($cmolId in $samples){
             CompressionLevel = "Optimal"
         }
         Compress-Archive @compress -Force
-
-        Start-Sleep -Seconds 1
-
-        $response = C:/windows/system32/curl -X POST -H ("Authorization: " + $token) -H "Content-Type: multipart/form-data" -F ("file=@" + $saveZip) "https://api.ingenuity.com/v1/datapackages"
-        $json = $response | ConvertFrom-Json # ignore unused variable
-
-        Write-Host $json
 
         # confirmation
         Write-Host "`nProcessed QCIIOne upload package for: $cmolId" -ForegroundColor Green
