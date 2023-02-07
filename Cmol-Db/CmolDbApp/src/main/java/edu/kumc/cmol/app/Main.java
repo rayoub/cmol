@@ -116,6 +116,9 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
+        String token = Notifier.getAccessToken();
+
+        System.out.println("token = " + token);
     }
 
     public static String splitter(String text, int lineLength) {

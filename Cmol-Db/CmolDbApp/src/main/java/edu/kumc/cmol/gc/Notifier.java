@@ -2,6 +2,7 @@ package edu.kumc.cmol.gc;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -9,8 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.mail.Authenticator;
@@ -29,12 +32,44 @@ import javax.mail.util.ByteArrayDataSource;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
+import com.microsoft.aad.msal4j.ClientCredentialFactory;
+import com.microsoft.aad.msal4j.ClientCredentialParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.IAuthenticationResult;
+import com.microsoft.aad.msal4j.IClientCredential;
+
 import edu.kumc.cmol.core.Ds;
 import edu.kumc.cmol.qci.WS;
 
 public class Notifier {
+    
+    private static String CLIENT_ID = "6973972a-823c-4b99-b3b3-3cac1e41e0b6";
+    private static String CLIENT_SECRET = "YB.8Q~-bYeTd_K0kbZhkLVykbAFgzoHDWr3MccW2";
+    private static String AUTHORITY = "https://login.microsoftonline.com/512a103e-41eb-42ff-be28-4a34173b1803/";
 
-    public static void Notify() {
+    private static String TENANT_ID = "512a103e-41eb-42ff-be28-4a34173b1803";
+    private static Set<String> SCOPE = Collections.singleton("api://" + TENANT_ID + "/.default");
+
+    public static String getAccessToken() throws MalformedURLException {
+
+        IClientCredential credential = ClientCredentialFactory.createFromSecret(CLIENT_SECRET);
+        ConfidentialClientApplication app = 
+            ConfidentialClientApplication
+                .builder(CLIENT_ID, credential)
+                .authority(AUTHORITY)
+                .build();
+
+        ClientCredentialParameters parameters =
+                ClientCredentialParameters
+                        .builder(SCOPE)
+                        .build();
+
+        IAuthenticationResult auth = app.acquireToken(parameters).join();
+
+        return auth.accessToken();
+    }
+
+    public static void Notify() throws MalformedURLException {
 
         List<String> accessionIds = getToNotify(90);
 
@@ -53,29 +88,51 @@ public class Notifier {
         }
     }
 
-    public static List<String> sendEmail(String token, List<String> accessionIds, List<String> toEmails) {
+    public static List<String> sendEmail(String token, List<String> accessionIds, List<String> toEmails) throws MalformedURLException {
 
         List<String> notified = new ArrayList<>();
 
+
+
+
+
+
+
+
+
+
+
+
+    
         // properties
-        Properties props = new Properties();
-		//props.put("mail.smtp.host", "smtp.kumc.edu"); 
-		//props.put("mail.smtp.socketFactory.port", "587"); 
+        //props.put("mail.smtp.host", "smtp.gmail.com"); 
+		//props.put("mail.smtp.socketFactory.port", "465"); 
 		//props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); 
 		//props.put("mail.smtp.auth", "true"); 
-		//props.put("mail.smtp.port", "587"); 
-		
-        props.put("mail.smtp.host", "smtp.gmail.com"); 
-		props.put("mail.smtp.socketFactory.port", "465"); 
-		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); 
-		props.put("mail.smtp.auth", "true"); 
-		props.put("mail.smtp.port", "465"); 
+		//props.put("mail.smtp.port", "465"); 
 		
         // authenticator
-        String fromEmail = "ronaldayoub@gmail.com";
-        String password = "cnfzwmbkvmdlgiid";
-        //String fromEmail = "r77755@kumc.edu";
-        //String password = "TrueMetal8975!";
+        //String fromEmail = "ronaldayoub@gmail.com";
+        //String password = "cnfzwmbkvmdlgiid";
+
+        // properties
+        Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.office365.com"); 
+		props.put("mail.smtp.auth", "true"); 
+		props.put("mail.smtp.port", "587"); 
+        props.put("mail.smtp.starttls.enable", "true");
+
+        // authenticator
+        String fromEmail = "r77755@kumc.edu";
+        String password = "TrueMetal8975!";
+       
+
+
+
+
+
+
+
 		Authenticator authenticator = new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(fromEmail, password);
@@ -196,4 +253,29 @@ public class Notifier {
             e.printStackTrace();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
