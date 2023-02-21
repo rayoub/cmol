@@ -5,11 +5,14 @@ public class GCReferral {
     private String reportId;
     private String mrn;
     private String accession;
+    private int age;
     private String testDate;
     private String testCode;
+    private String tumorSite;
     private String diagnosis;
     private String interpretation;
     private String physician;
+    private String genes;
 
     public String getReportId() {
         return reportId;
@@ -35,6 +38,14 @@ public class GCReferral {
         this.accession = accession;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getTestDate() {
         return testDate;
     }
@@ -49,6 +60,14 @@ public class GCReferral {
     
     public void setTestCode(String testCode) {
         this.testCode = testCode;
+    }
+    
+    public String getTumorSite() {
+        return tumorSite;
+    }
+
+    public void setTumorSite(String tumorSite) {
+        this.tumorSite = tumorSite;
     }
 
     public String getDiagnosis() {
@@ -73,6 +92,14 @@ public class GCReferral {
 
     public void setPhysician(String physician) {
         this.physician = physician;
+    }
+
+    public String getGenes() {
+        return genes;
+    }
+
+    public void setGenes(String genes) {
+        this.genes = genes;
     }
 }
    

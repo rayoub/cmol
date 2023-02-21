@@ -51,16 +51,22 @@ public class Db {
             if (rs.wasNull()) ref.setMrn("");
             ref.setAccession(rs.getString("accession"));
             if (rs.wasNull()) ref.setAccession("");
+            ref.setAge(rs.getInt("age"));
+            if (rs.wasNull()) ref.setAge(-1);
             ref.setTestDate(rs.getString("test_date"));
             if (rs.wasNull()) ref.setTestDate("");
             ref.setTestCode(rs.getString("test_code"));
             if (rs.wasNull()) ref.setTestCode("");
+            ref.setTumorSite(rs.getString("tumor_site"));
+            if (rs.wasNull()) ref.setTumorSite("");
             ref.setDiagnosis(rs.getString("diagnosis"));
             if (rs.wasNull()) ref.setDiagnosis("");
             ref.setInterpretation(rs.getString("interpretation"));
             if (rs.wasNull()) ref.setInterpretation("");
             ref.setPhysician(rs.getString("physician"));
             if (rs.wasNull()) ref.setPhysician("");
+            ref.setGenes(rs.getString("genes"));
+            if (rs.wasNull()) ref.setGenes("");
 
             rows.add(ref);
         }

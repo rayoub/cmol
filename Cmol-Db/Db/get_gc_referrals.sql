@@ -6,33 +6,98 @@ RETURNS TABLE (
     report_id VARCHAR,
     mrn VARCHAR,
     accession VARCHAR,
+    age INTEGER,
     test_date DATE,
     test_code VARCHAR,
+    tumor_site VARCHAR,
     diagnosis VARCHAR,
     interpretation VARCHAR,
-    physician VARCHAR
+    physician VARCHAR,
+    genes VARCHAR
 )
 AS $$
 BEGIN
 
     RETURN QUERY
+    WITH reports AS 
+    (
+        SELECT
+            qr.report_id,
+            qr.ordering_physician_client AS mrn,
+            qr.accession,
+            DATE_PART('year', AGE(qr.date_of_birth))::INTEGER AS age,
+            qr.test_date,
+            qr.test_code,
+            qr.primary_tumor_site AS tumor_site,
+            qr.diagnosis,
+            qr.interpretation,
+            REPLACE(qr.ordering_physician_name, ',', '')::VARCHAR AS physician,
+            qr.primary_tumor_site
+        FROM
+            qci_report qr 
+        WHERE 
+            qr.accession ~* '^[a-z][0-9]+$'
+            AND qr.ordering_physician_client IS NOT NULL
+            AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
+            AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
+    ),
+    genes AS 
+    (
+        SELECT
+            g.gene,
+            g.age_restricted,
+            g.exclude_brain,
+            g.exclude_renal,
+            g.biallelic_only,
+            g.gene 
+            ||
+            CASE WHEN g.age_restricted = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="age restricted < 30">1</span>' ELSE '' END
+            ||
+            CASE WHEN g.exclude_brain = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="excluding brain tumors">2</span>' ELSE '' END
+            ||
+            CASE WHEN g.exclude_renal = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="excluding kideny tumors">3</span>' ELSE '' END
+            ||
+            CASE WHEN g.exclude_renal = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="further investigation required to determine biallelic only">4</span>' ELSE '' END
+            AS gene_html
+        FROM
+            gc_gene g
+    )
     SELECT
-        qr.report_id,
-        qr.ordering_physician_client AS mrn,
-        qr.accession,
-        qr.test_date,
-        qr.test_code,
-        qr.diagnosis,
-        qr.interpretation,
-        REPLACE(qr.ordering_physician_name, ',', '')::VARCHAR AS physician
+        r.report_id,
+        r.mrn,
+        r.accession,
+        r.age,
+        r.test_date,
+        r.test_code,
+        r.tumor_site,
+        r.diagnosis,
+        r.interpretation,
+        r.physician,
+        STRING_AGG(DISTINCT g.gene_html, ', ' ORDER BY g.gene_html)::VARCHAR AS genes
     FROM
-        qci_report qr 
+        reports r
+        INNER JOIN qci_variant qv 
+            ON qv.report_id = r.report_id
+        INNER JOIN genes g 
+            ON g.gene = qv.gene
     WHERE 
-        qr.ordering_physician_client IS NOT NULL
-        AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
-        AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
+        (g.age_restricted = 0 OR r.age < 30)
+        AND (g.exclude_brain = 0 OR r.tumor_site <> 'Brain')
+        AND (g.exclude_renal = 0 OR r.tumor_site <> 'Kidney')
+    GROUP BY
+        r.report_id,
+        r.mrn,
+        r.accession,
+        r.age,
+        r.test_date,
+        r.test_code,
+        r.tumor_site,
+        r.diagnosis,
+        r.interpretation,
+        r.physician
     ORDER BY    
-        qr.test_date DESC;
+        r.test_date DESC,
+        r.accession;
 
 END;
 $$LANGUAGE plpgsql;
