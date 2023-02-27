@@ -67,6 +67,8 @@ public class Db {
             if (rs.wasNull()) ref.setPhysician("");
             ref.setGenes(rs.getString("genes"));
             if (rs.wasNull()) ref.setGenes("");
+            ref.setNotified(rs.getInt("notified"));
+            if (rs.wasNull()) ref.setNotified(0);
 
             rows.add(ref);
         }

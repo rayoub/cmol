@@ -13,7 +13,8 @@ RETURNS TABLE (
     diagnosis VARCHAR,
     interpretation VARCHAR,
     physician VARCHAR,
-    genes VARCHAR
+    genes VARCHAR,
+    notified INTEGER
 )
 AS $$
 BEGIN
@@ -61,43 +62,63 @@ BEGIN
             AS gene_html
         FROM
             gc_gene g
+    ),
+    grouped AS 
+    (
+        SELECT
+            r.report_id,
+            r.mrn,
+            r.accession,
+            r.age,
+            r.test_date,
+            r.test_code,
+            r.tumor_site,
+            r.diagnosis,
+            r.interpretation,
+            r.physician,
+            STRING_AGG(DISTINCT g.gene_html, ', ' ORDER BY g.gene_html)::VARCHAR AS genes
+        FROM
+            reports r
+            INNER JOIN qci_variant qv 
+                ON qv.report_id = r.report_id
+            INNER JOIN genes g 
+                ON g.gene = qv.gene
+        WHERE 
+            (g.age_restricted = 0 OR r.age < 30)
+            AND (g.exclude_brain = 0 OR r.tumor_site <> 'Brain')
+            AND (g.exclude_renal = 0 OR r.tumor_site <> 'Kidney')
+        GROUP BY
+            r.report_id,
+            r.mrn,
+            r.accession,
+            r.age,
+            r.test_date,
+            r.test_code,
+            r.tumor_site,
+            r.diagnosis,
+            r.interpretation,
+            r.physician
     )
     SELECT
-        r.report_id,
-        r.mrn,
-        r.accession,
-        r.age,
-        r.test_date,
-        r.test_code,
-        r.tumor_site,
-        r.diagnosis,
-        r.interpretation,
-        r.physician,
-        STRING_AGG(DISTINCT g.gene_html, ', ' ORDER BY g.gene_html)::VARCHAR AS genes
+        g.report_id,
+        g.mrn,
+        g.accession,
+        g.age,
+        g.test_date,
+        g.test_code,
+        g.tumor_site,
+        g.diagnosis,
+        g.interpretation,
+        g.physician,
+        g.genes,
+        CASE WHEN n.accession IS NOT NULL THEN 1 ELSE 0 END AS notified
     FROM
-        reports r
-        INNER JOIN qci_variant qv 
-            ON qv.report_id = r.report_id
-        INNER JOIN genes g 
-            ON g.gene = qv.gene
-    WHERE 
-        (g.age_restricted = 0 OR r.age < 30)
-        AND (g.exclude_brain = 0 OR r.tumor_site <> 'Brain')
-        AND (g.exclude_renal = 0 OR r.tumor_site <> 'Kidney')
-    GROUP BY
-        r.report_id,
-        r.mrn,
-        r.accession,
-        r.age,
-        r.test_date,
-        r.test_code,
-        r.tumor_site,
-        r.diagnosis,
-        r.interpretation,
-        r.physician
+        grouped g
+        LEFT JOIN gc_notified n 
+            ON n.accession = g.accession
     ORDER BY    
-        r.test_date DESC,
-        r.accession;
+        g.test_date DESC,
+        g.accession;
 
 END;
 $$LANGUAGE plpgsql;

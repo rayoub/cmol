@@ -13,6 +13,7 @@ public class GCReferral {
     private String interpretation;
     private String physician;
     private String genes;
+    private int notified;
 
     public String getReportId() {
         return reportId;
@@ -100,6 +101,14 @@ public class GCReferral {
 
     public void setGenes(String genes) {
         this.genes = genes;
+    }
+
+    public int getNotified() {
+        return notified;
+    }
+
+    public void setNotified(int notified) {
+        this.notified = notified;
     }
 }
    
