@@ -52,7 +52,7 @@ BEGIN
             g.biallelic_only,
             g.gene 
             ||
-            CASE WHEN g.age_restricted = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="age restricted < 30">1</span>' ELSE '' END
+            CASE WHEN g.age_restricted = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="age restricted to < 30">1</span>' ELSE '' END
             ||
             CASE WHEN g.exclude_brain = 1 THEN '<span class="badge rounded-pill bg-primary" style="margin-left:5px;" title="excluding brain tumors">2</span>' ELSE '' END
             ||

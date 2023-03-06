@@ -69,7 +69,7 @@ public class Notifier {
         return auth.accessToken();
     }
 
-    public static void Notify() throws MalformedURLException {
+    public static void Notify() throws SQLException, MalformedURLException {
 
         List<String> accessionIds = getToNotify(90);
 
@@ -83,7 +83,7 @@ public class Notifier {
         if (token != null) {
             List<String> notified = sendEmail(token, accessionIds, toEmails);
             if (notified.size() > 0){
-                saveNotified(notified);
+                Db.insertNotified(notified);
             }
         }
     }
@@ -228,30 +228,6 @@ public class Notifier {
         }
 
         return accessionIds;
-    }
-
-    public static void saveNotified(List<String> notified) {
-
-        PGSimpleDataSource ds = Ds.getDataSource();
-
-        try {
-
-            Connection conn = ds.getConnection();
-
-            PreparedStatement updt = conn.prepareStatement("SELECT insert_gc_notified(?);");
-        
-            String a[] = new String[notified.size()];
-            notified.toArray(a);
-            updt.setArray(1, conn.createArrayOf("VARCHAR", a));
-            updt.execute();
-
-            updt.close();
-            conn.close();
-        }
-        catch (SQLException e) {
-            // do nothing
-            e.printStackTrace();
-        }
     }
 
 

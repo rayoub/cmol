@@ -79,4 +79,38 @@ public class Db {
 
         return rows;
     }
+
+    public static void insertNotified(List<String> notified) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_gc_notified(?);");
+    
+        String a[] = new String[notified.size()];
+        notified.toArray(a);
+        updt.setArray(1, conn.createArrayOf("VARCHAR", a));
+        updt.execute();
+
+        updt.close();
+        conn.close();
+    }
+    
+    public static void removeNotified(List<String> notified) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT remove_gc_notified(?);");
+    
+        String a[] = new String[notified.size()];
+        notified.toArray(a);
+        updt.setArray(1, conn.createArrayOf("VARCHAR", a));
+        updt.execute();
+
+        updt.close();
+        conn.close();
+    }
 }
