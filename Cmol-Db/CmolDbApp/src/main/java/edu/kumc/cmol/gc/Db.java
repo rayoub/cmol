@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -15,7 +16,7 @@ import edu.kumc.cmol.core.Ds;
 
 public class Db {
     
-    public static List<GCReferral> getGCReferrals(String fromDate, String toDate) throws SQLException {
+    public static List<GCReferral> getGCReferrals(String fromDate, String toDate, int notifiedOrNot, int notified, int notNotified) throws SQLException {
 
         List<GCReferral> rows = new ArrayList<>();
 
@@ -76,6 +77,16 @@ public class Db {
         rs.close();
         stmt.close();
         conn.close();
+
+        // filter on notified or not
+        if (notifiedOrNot == 1) {
+            if (notified == 1) {
+                rows = rows.stream().filter(r -> r.getNotified() == 1).collect(Collectors.toList());
+            }
+            else {
+                rows = rows.stream().filter(r -> r.getNotified() == 0).collect(Collectors.toList());
+            }
+        }
 
         return rows;
     }
