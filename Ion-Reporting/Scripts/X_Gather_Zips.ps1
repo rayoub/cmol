@@ -4,6 +4,13 @@ $root = "R:\CMOL\Assay Results\Clinical Data\NGS Comprehensive Plus\"
 $paths = @(($root + "2022 (Run 001-015)"), ($root + "2023 (Run 016- )"))
 $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 
+# assays we already did
+$assayFolders = New-Object System.Collections.Generic.HashSet[String]
+$existingTsvs = Get-ChildItem -Path $data -Filter *.tsv 
+foreach($existingTsv in $existingTsvs) {
+    $assayFolders.Add(($existingTsv.Name -split ' ')[0]) | Out-Null
+}
+
 # get zip files
 $files = @()
 foreach($path in $paths) {
@@ -27,19 +34,22 @@ $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,Fil
 # iterate zip objects
 foreach($zip in $zips) {
 
-    Write-Host "Processing a zip file for" $zip.SampleFolder 
+    if ($assayFolders -notcontains $zip.AssayFolder) {
 
-    $shell = New-Object -com shell.application
+        Write-Host "Processing a zip file for" $zip.SampleFolder 
 
-    $variantsFolder = $zip.DirectoryName + "\" + $zip.FileName + "\Variants"
-    $tsvFolder = $shell.namespace($variantsFolder).items() | Select-Object -First 1
-    $tsvFile = $shell.namespace($variantsFolder + "\" + $tsvFolder.Name).items() | Where-Object { $_.Name -like "*full.tsv"} | Select-Object -First 1
+        $shell = New-Object -com shell.application
+
+        $variantsFolder = $zip.DirectoryName + "\" + $zip.FileName + "\Variants"
+        $tsvFolder = $shell.namespace($variantsFolder).items() | Select-Object -First 1
+        $tsvFile = $shell.namespace($variantsFolder + "\" + $tsvFolder.Name).items() | Where-Object { $_.Name -like "*full.tsv"} | Select-Object -First 1
+        
+        Write-Host "Extracting" $tsvFile.Name
+        $shell.namespace($data).copyhere($tsvFile, 16)
     
-    Write-Host "Extracting" $tsvFile.Name
-    $shell.namespace($data).copyhere($tsvFile, 16)
-  
-    $tsvFullName = $data + "\" + $tsvFile.Name
-    $tsvNewFullName = $data + "\" + "(" + $zip.AssayFolder + ")(" + $zip.SampleFolder + ")(" + $zip.FileName + ")" + [io.path]::GetFileNameWithoutExtension($tsvFile.Name) + ".tsv"
+        $tsvFullName = $data + "\" + $tsvFile.Name
+        $tsvNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $tsvFile.Name
 
-    Rename-Item -Path $tsvFullName -NewName $tsvNewFullName
+        Rename-Item -Path $tsvFullName -NewName $tsvNewFullName
+    }
 }
