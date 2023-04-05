@@ -17,7 +17,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
 
-public class Db {
+public class QciDb {
 
     public static List<QueryRow> getQueryRows(QueryCriteria criteria) throws SQLException {
 
@@ -104,7 +104,7 @@ public class Db {
 
             QueryRow row = new QueryRow();
 
-            row.setReportId(rs.getString("report_id"));
+            row.setSampleId(rs.getString("report_id"));
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
             row.setAccession(rs.getString("accession"));
@@ -146,9 +146,9 @@ public class Db {
         return rows;
     }
     
-    public static List<Report> getReports() throws SQLException {
+    public static List<QciSample> getSamples() throws SQLException {
 
-        List<Report> reports = new ArrayList<>();
+        List<QciSample> samples = new ArrayList<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
@@ -159,63 +159,63 @@ public class Db {
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
 
-            Report report = new Report();
+            QciSample sample = new QciSample();
 
-            report.setReportId(rs.getString("report_id"));
-            if (rs.wasNull()) report.setReportId("");
-            report.setSubjectId(rs.getString("subject_id"));
-            if (rs.wasNull()) report.setSubjectId("");
-            report.setAccession(rs.getString("accession"));
-            if (rs.wasNull()) report.setAccession("");
-            report.setTestDate(rs.getString("test_date"));
-            if (rs.wasNull()) report.setTestDate("");
-            report.setTestCode(rs.getString("test_code"));
-            if (rs.wasNull()) report.setTestCode("");
-            report.setClinicalFinding(rs.getString("clinical_finding"));
-            if (rs.wasNull()) report.setClinicalFinding("");
-            report.setDiagnosis(rs.getString("diagnosis"));
-            if (rs.wasNull()) report.setDiagnosis("");
-            report.setInterpretation(rs.getString("interpretation"));
-            if (rs.wasNull()) report.setInterpretation("");
+            sample.setSampleId(rs.getString("report_id"));
+            if (rs.wasNull()) sample.setSampleId("");
+            sample.setSubjectId(rs.getString("subject_id"));
+            if (rs.wasNull()) sample.setSubjectId("");
+            sample.setAccession(rs.getString("accession"));
+            if (rs.wasNull()) sample.setAccession("");
+            sample.setTestDate(rs.getString("test_date"));
+            if (rs.wasNull()) sample.setTestDate("");
+            sample.setTestCode(rs.getString("test_code"));
+            if (rs.wasNull()) sample.setTestCode("");
+            sample.setClinicalFinding(rs.getString("clinical_finding"));
+            if (rs.wasNull()) sample.setClinicalFinding("");
+            sample.setDiagnosis(rs.getString("diagnosis"));
+            if (rs.wasNull()) sample.setDiagnosis("");
+            sample.setInterpretation(rs.getString("interpretation"));
+            if (rs.wasNull()) sample.setInterpretation("");
             
-            report.setSex(rs.getString("sex"));
-            if (rs.wasNull()) report.setSex("");
-            report.setDateOfBirth(rs.getString("date_of_birth"));
-            if (rs.wasNull()) report.setDateOfBirth("");
-            report.setOrderingPhysicianClient(rs.getString("ordering_physician_client"));
-            if (rs.wasNull()) report.setOrderingPhysicianClient("");
-            report.setOrderingPhysicianFacilityName(rs.getString("ordering_physician_facility_name"));
-            if (rs.wasNull()) report.setOrderingPhysicianFacilityName("");
-            report.setOrderingPhysicianName(rs.getString("ordering_physician_name"));
-            if (rs.wasNull()) report.setOrderingPhysicianName("");
-            report.setPathologistName(rs.getString("pathologist_name"));
-            if (rs.wasNull()) report.setPathologistName("");
+            sample.setSex(rs.getString("sex"));
+            if (rs.wasNull()) sample.setSex("");
+            sample.setDateOfBirth(rs.getString("date_of_birth"));
+            if (rs.wasNull()) sample.setDateOfBirth("");
+            sample.setOrderingPhysicianClient(rs.getString("ordering_physician_client"));
+            if (rs.wasNull()) sample.setOrderingPhysicianClient("");
+            sample.setOrderingPhysicianFacilityName(rs.getString("ordering_physician_facility_name"));
+            if (rs.wasNull()) sample.setOrderingPhysicianFacilityName("");
+            sample.setOrderingPhysicianName(rs.getString("ordering_physician_name"));
+            if (rs.wasNull()) sample.setOrderingPhysicianName("");
+            sample.setPathologistName(rs.getString("pathologist_name"));
+            if (rs.wasNull()) sample.setPathologistName("");
             
-            report.setPrimaryTumorSite(rs.getString("primary_tumor_site"));
-            if (rs.wasNull()) report.setPrimaryTumorSite("");
-            report.setSpecimenId(rs.getString("specimen_id"));
-            if (rs.wasNull()) report.setSpecimenId("");
-            report.setSpecimenType(rs.getString("specimen_type"));
-            if (rs.wasNull()) report.setSpecimenType("");
-            report.setSpecimenCollectionDate(rs.getString("specimen_collection_date"));
-            if (rs.wasNull()) report.setSpecimenCollectionDate("");
+            sample.setPrimaryTumorSite(rs.getString("primary_tumor_site"));
+            if (rs.wasNull()) sample.setPrimaryTumorSite("");
+            sample.setSpecimenId(rs.getString("specimen_id"));
+            if (rs.wasNull()) sample.setSpecimenId("");
+            sample.setSpecimenType(rs.getString("specimen_type"));
+            if (rs.wasNull()) sample.setSpecimenType("");
+            sample.setSpecimenCollectionDate(rs.getString("specimen_collection_date"));
+            if (rs.wasNull()) sample.setSpecimenCollectionDate("");
 
-            report.setLabTestedCNVGain("");
-            report.setLabTestedGenes("");
+            sample.setLabTestedCNVGain("");
+            sample.setLabTestedGenes("");
 
-            reports.add(report);
+            samples.add(sample);
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return reports;
+        return samples;
     }
     
-    public static List<Variant> getVariants() throws SQLException {
+    public static List<QciVariant> getVariants() throws SQLException {
 
-        List<Variant> variants = new ArrayList<>();
+        List<QciVariant> variants = new ArrayList<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
@@ -226,13 +226,13 @@ public class Db {
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
 
-            Variant variant = new Variant();
+            QciVariant variant = new QciVariant();
 
-            variant.setReportId(rs.getString("report_id"));
+            variant.setSampleId(rs.getString("report_id"));
             variant.setChromosome(rs.getString("chromosome"));
             if (rs.wasNull()) variant.setChromosome("");
             variant.setPosition(rs.getInt("position"));
-            if (rs.wasNull()) variant.setPosition(Variant.INT_NULL);
+            if (rs.wasNull()) variant.setPosition(QciVariant.INT_NULL);
             variant.setReference(rs.getString("reference"));
             if (rs.wasNull()) variant.setReference("");
             variant.setAlternate(rs.getString("alternate"));
@@ -250,11 +250,11 @@ public class Db {
             variant.setDbsnp(rs.getString("dbsnp"));
             if (rs.wasNull()) variant.setDbsnp("");
             variant.setCadd(rs.getDouble("cadd"));
-            if (rs.wasNull()) variant.setCadd(Variant.DOUBLE_NULL);
+            if (rs.wasNull()) variant.setCadd(QciVariant.DOUBLE_NULL);
             variant.setAlleleFraction(rs.getDouble("allele_fraction"));
-            if (rs.wasNull()) variant.setAlleleFraction(Variant.DOUBLE_NULL);
+            if (rs.wasNull()) variant.setAlleleFraction(QciVariant.DOUBLE_NULL);
             variant.setReadDepth(rs.getInt("read_depth"));
-            if (rs.wasNull()) variant.setReadDepth(Variant.INT_NULL);
+            if (rs.wasNull()) variant.setReadDepth(QciVariant.INT_NULL);
             variant.setVariation(rs.getString("variation"));
             if (rs.wasNull()) variant.setVariation("");
             variant.setGene(rs.getString("gene"));
@@ -264,7 +264,7 @@ public class Db {
             variant.setTcChange(rs.getString("tc_change"));
             if (rs.wasNull()) variant.setTcChange("");
             variant.setTcExonNumber(rs.getInt("tc_exon_number"));
-            if (rs.wasNull()) variant.setTcExonNumber(Variant.INT_NULL);
+            if (rs.wasNull()) variant.setTcExonNumber(QciVariant.INT_NULL);
             variant.setTcRegion(rs.getString("tc_region"));
             if (rs.wasNull()) variant.setTcRegion("");
             variant.setPcProtein(rs.getString("pc_protein"));
@@ -278,7 +278,7 @@ public class Db {
             variant.setFunction(rs.getString("function"));
             if (rs.wasNull()) variant.setFunction("");
             variant.setReferenceCount(rs.getInt("reference_count"));
-            if (rs.wasNull()) variant.setReferenceCount(Variant.INT_NULL);
+            if (rs.wasNull()) variant.setReferenceCount(QciVariant.INT_NULL);
 
             variants.add(variant);
         }
@@ -318,9 +318,9 @@ public class Db {
         }
     }
 
-    public static Set<String> getReportIds() throws SQLException {
+    public static Set<String> getSampleIds() throws SQLException {
 
-        Set<String> reportIds = new HashSet<>();
+        Set<String> sampleIds = new HashSet<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
@@ -330,28 +330,28 @@ public class Db {
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            reportIds.add(rs.getString("report_id"));
+            sampleIds.add(rs.getString("report_id"));
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return reportIds;
+        return sampleIds;
     }
     
-    public static void saveReports(List<Report> reports) throws SQLException {
+    public static void saveSamples(List<QciSample> samples) throws SQLException {
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
 
-        ((PGConnection) conn).addDataType("qci_report", Report.class);
+        ((PGConnection) conn).addDataType("qci_report", QciSample.class);
 
         PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_report(?);");
      
-        Report a[] = new Report[reports.size()];
-        reports.toArray(a);
+        QciSample a[] = new QciSample[samples.size()];
+        samples.toArray(a);
         updt.setArray(1, conn.createArrayOf("qci_report", a));
     
         updt.execute();
@@ -360,17 +360,17 @@ public class Db {
         conn.close();
     }
 
-    public static void saveVariants(List<Variant> variants) throws SQLException {
+    public static void saveVariants(List<QciVariant> variants) throws SQLException {
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
 
-        ((PGConnection) conn).addDataType("qci_variant", Variant.class);
+        ((PGConnection) conn).addDataType("qci_variant", QciVariant.class);
 
         PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_variant(?);");
      
-        Variant a[] = new Variant[variants.size()];
+        QciVariant a[] = new QciVariant[variants.size()];
         variants.toArray(a);
         updt.setArray(1, conn.createArrayOf("qci_variant", a));
     
@@ -379,6 +379,4 @@ public class Db {
         
         conn.close();
     }
-
-
 }

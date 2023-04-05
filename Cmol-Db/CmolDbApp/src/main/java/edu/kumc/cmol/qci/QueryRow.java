@@ -2,7 +2,7 @@ package edu.kumc.cmol.qci;
 
 public class QueryRow {
 
-    private String reportId;
+    private String sampleId;
     private String mrn;
     private String accession;
     private String testDate;
@@ -19,12 +19,12 @@ public class QueryRow {
     private String proteinChange;
     private String assessment;
 
-    public String getReportId() {
-        return reportId;
+    public String getSampleId() {
+        return sampleId;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setSampleId(String sampleId) {
+        this.sampleId = sampleId;
     }
 
     public String getMrn() {

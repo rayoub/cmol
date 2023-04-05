@@ -2,7 +2,7 @@
 CREATE OR REPLACE FUNCTION get_ion_query (
     p_sample VARCHAR DEFAULT NULL)
 RETURNS TABLE (
-    sample VARCHAR,
+    zip_name VARCHAR,
     locus VARCHAR,
     genotype VARCHAR,
     filter VARCHAR,
@@ -17,7 +17,7 @@ BEGIN
 
     RETURN QUERY
     SELECT
-        iv.sample,
+        iv.zip_name,
         iv.locus,
         iv.genotype,
         iv.filter,

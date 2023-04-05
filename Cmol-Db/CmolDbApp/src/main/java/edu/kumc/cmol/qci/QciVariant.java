@@ -2,12 +2,12 @@ package edu.kumc.cmol.qci;
 
 import org.postgresql.util.PGobject;
 
-public class Variant extends PGobject {
+public class QciVariant extends PGobject {
 
     public static int INT_NULL = -99999;
     public static double DOUBLE_NULL = -99999.0;
 
-    private String reportId;
+    private String sampleId;
     private String chromosome;
     private int position = INT_NULL;
     private String reference;
@@ -34,12 +34,12 @@ public class Variant extends PGobject {
     private String function;
     private int referenceCount = INT_NULL;
     
-    public String getReportId() {
-        return reportId;
+    public String getSampleId() {
+        return sampleId;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setSampleId(String sampleId) {
+        this.sampleId = sampleId;
     }
 
     public String getChromosome() {
@@ -246,7 +246,7 @@ public class Variant extends PGobject {
     public String getValue() {
         String row = "("  +
 
-            reportId + "," +
+            sampleId + "," +
             chromosome + "," + 
             position  + "," + 
             reference + "," + 

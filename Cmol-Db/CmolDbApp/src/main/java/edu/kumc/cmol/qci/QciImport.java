@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 
 import edu.kumc.cmol.core.Ds;
 
-public class Importer {
+public class QciImport {
 
     private static Set<String> BLACK_LIST = new HashSet<>();
 
@@ -68,29 +68,29 @@ public class Importer {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        Set<String> reportIds = Db.getReportIds();
+        Set<String> sampleIds = QciDb.getSampleIds();
 
         List<Path> filePaths = Files.list(Paths.get(dataPath))
             .filter(p -> !p.endsWith("xml"))
             .collect(Collectors.toList());
 
-        List<Report> reports = new ArrayList<>();
-        List<Variant> variants = new ArrayList<>();
+        List<QciSample> samples = new ArrayList<>();
+        List<QciVariant> variants = new ArrayList<>();
         for(Path filePath : filePaths) {
 
-            String reportId = FilenameUtils.removeExtension(filePath.getFileName().toString());
-            if (!reportIds.contains(reportId) && !BLACK_LIST.contains(reportId)) {
+            String sampleId = FilenameUtils.removeExtension(filePath.getFileName().toString());
+            if (!sampleIds.contains(sampleId) && !BLACK_LIST.contains(sampleId)) {
 
                 Document xml = builder.parse(filePath.toFile());
 
-                Pair<Report, List<Variant>> pair = Parser.parseXml(reportId, xml);
+                Pair<QciSample, List<QciVariant>> pair = Parser.parseXml(sampleId, xml);
 
-                reports.add(pair.getLeft());
+                samples.add(pair.getLeft());
                 variants.addAll(pair.getRight());
             }
         }
         
-        Db.saveReports(reports);
-        Db.saveVariants(variants);
+        QciDb.saveSamples(samples);
+        QciDb.saveVariants(variants);
     }
 }

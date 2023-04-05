@@ -1,10 +1,10 @@
-package edu.kumc.cmol.ion; 
+package edu.kumc.cmol.qci;
 
 import org.postgresql.util.PGobject;
 
-public class Report extends PGobject {
+public class QciSample extends PGobject {
 
-    private String reportId;
+    private String sampleId;
 
     private String subjectId;
     private String accession;
@@ -30,12 +30,12 @@ public class Report extends PGobject {
     private String labTestedCNVGain;
     private String labTestedGenes;
    
-    public String getReportId() {
-        return reportId;
+    public String getSampleId() {
+        return sampleId;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setSampleId(String sampleId) {
+        this.sampleId = sampleId;
     }
 
     public String getSubjectId() {
@@ -194,7 +194,7 @@ public class Report extends PGobject {
     public String getValue() {
         String row = "("  +
             
-            reportId + "," +
+            sampleId + "," +
 
             subjectId.replace("(", "\\(").replace(")","\\)") + "," +
             accession.replace("(", "\\(").replace(")","\\)") + "," +

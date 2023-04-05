@@ -53,7 +53,7 @@ public class Parser {
 
         List<List<String>> listOfValues = new ArrayList<>();
 
-        String path = Paths.get(Constants.QCI_DATA_PATH).resolve(fileName).toString();
+        String path = Paths.get(Constants.ION_DATA_PATH).resolve(fileName).toString();
         BufferedReader inputStream = null;
         try {
 

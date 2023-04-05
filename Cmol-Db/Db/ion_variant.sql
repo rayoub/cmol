@@ -1,8 +1,10 @@
 
 CREATE TABLE ion_variant
 (
-    sample VARCHAR NOT NULL,
+    zip_name VARCHAR NOT NULL,
     locus VARCHAR NOT NULL,
+    type VARCHAR NOT NULL,
+    subtype VARCHAR NULL,
     genotype VARCHAR NULL,
     filter VARCHAR NULL,
     ref VARCHAR NULL,
@@ -11,5 +13,3 @@ CREATE TABLE ion_variant
     coding VARCHAR NULL,
     protein VARCHAR NULL
 );
-
-CREATE UNIQUE INDEX idx_ion_variant_unique ON ion_variant (sample, locus);

@@ -1,5 +1,7 @@
 package edu.kumc.cmol.app;
 
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +16,12 @@ import org.apache.commons.cli.ParseException;
 
 import edu.kumc.cmol.core.Constants;
 import edu.kumc.cmol.gc.Notifier;
-import edu.kumc.cmol.qci.Importer;
-import edu.kumc.cmol.qci.Db;
+import edu.kumc.cmol.ion.IonDb;
+import edu.kumc.cmol.ion.IonImport;
+import edu.kumc.cmol.ion.IonSample;
+import edu.kumc.cmol.ion.IonVariant;
+import edu.kumc.cmol.qci.QciDb;
+import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
 
 public class Main {
@@ -90,23 +96,23 @@ public class Main {
     private static void option_g(CommandLine line) throws Exception {
 
         String token = WS.getToken();
-        String latestTestDate = Db.getLatestTestDate();
+        String latestTestDate = QciDb.getLatestTestDate();
         WS.getXml(token, latestTestDate);
     }
 
     private static void option_i(CommandLine line) throws Exception {
 
-        Importer.importXml(Constants.QCI_DATA_PATH);
+        QciImport.importXml(Constants.QCI_DATA_PATH);
     }
     
     private static void option_c(CommandLine line) throws Exception {
 
-        Importer.cleanQciTables();
+        QciImport.cleanQciTables();
     }
 
     private static void option_t(CommandLine line) throws Exception {
 
-        Importer.truncateQciTables();
+        QciImport.truncateQciTables();
     }
     
     private static void option_n(CommandLine line) throws Exception {
@@ -116,9 +122,25 @@ public class Main {
 
     private static void option_d(CommandLine line) throws Exception {
 
-        String token = Notifier.getAccessToken();
+        
+        List<IonSample> samples = IonImport.getSamples();
 
-        System.out.println("token = " + token);
+        // remove samples we have already seen
+        Set<String> zipNames = IonDb.getZipNames();
+        for (int i = samples.size() - 1; i >= 0; i--) {
+            if (zipNames.contains(samples.get(i).getZipName())) {
+                samples.remove(i);
+            }
+        }
+
+        // save new samples
+        IonDb.saveSamples(samples);
+        for(IonSample sample : samples) {
+            
+            System.out.println("saving " + sample.getZipName());
+            List<IonVariant> variants = IonImport.getVariants(sample);
+            IonDb.saveVariants(variants);            
+        }
     }
 
     public static String splitter(String text, int lineLength) {

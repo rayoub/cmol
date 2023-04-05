@@ -5,8 +5,10 @@ AS $$
 BEGIN
 	
     INSERT INTO ion_variant (
-        sample,
+        zip_name,
         locus,
+        type, 
+        subtype,
         genotype,
         filter,
         ref,
@@ -16,8 +18,10 @@ BEGIN
         protein
     )
 	SELECT
-        sample, 
+        zip_name, 
         locus,
+        type,
+        subtype,
         genotype,
         filter,
         ref,

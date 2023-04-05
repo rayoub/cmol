@@ -21,64 +21,64 @@ public class Parser {
         xpf = XPathFactory.newInstance();
     }
 
-    public static Pair<Report, List<Variant>> parseXml(String reportId, Document xml) throws XPathExpressionException {
+    public static Pair<QciSample, List<QciVariant>> parseXml(String sampleId, Document xml) throws XPathExpressionException {
 
         Element doc = xml.getDocumentElement();
 
-        Report report = new Report();
-        setReportProperties(reportId, report, doc);
+        QciSample sample = new QciSample();
+        setSampleProperties(sampleId, sample, doc);
 
-        List<Variant> variants = new ArrayList<>();
+        List<QciVariant> variants = new ArrayList<>();
         NodeList nodes = doc.getElementsByTagName("variant");
         for (int i = 0; i < nodes.getLength(); i++) {
 
             Node node = nodes.item(i);
             if (node instanceof Element) {
                 Element element = (Element) node;
-                Variant variant = new Variant();
-                setVariantProperties(reportId, variant, element);
+                QciVariant variant = new QciVariant();
+                setVariantProperties(sampleId, variant, element);
                 variants.add(variant);
             }
         } 
         
-        return Pair.of(report, variants);
+        return Pair.of(sample, variants);
     }
 
-    private static void setReportProperties(String reportId, Report report, Element element) throws XPathExpressionException {
+    private static void setSampleProperties(String sampleId, QciSample sample, Element element) throws XPathExpressionException {
 
         XPath xpath = xpf.newXPath();
 
-        report.setReportId(reportId);
+        sample.setSampleId(sampleId);
 
-        report.setSubjectId(xpath.evaluate("/report/subjectId", element));
-        report.setAccession(xpath.evaluate("/report/accession", element));
-        report.setTestDate(xpath.evaluate("/report/testDate", element));
-        report.setTestCode(xpath.evaluate("/report/testCode", element));
-        report.setClinicalFinding(xpath.evaluate("/report/clinicalFinding", element));
-        report.setDiagnosis(xpath.evaluate("/report/diagnosis", element));
-        report.setInterpretation(xpath.evaluate("/report/interpretation", element));
+        sample.setSubjectId(xpath.evaluate("/report/subjectId", element));
+        sample.setAccession(xpath.evaluate("/report/accession", element));
+        sample.setTestDate(xpath.evaluate("/report/testDate", element));
+        sample.setTestCode(xpath.evaluate("/report/testCode", element));
+        sample.setClinicalFinding(xpath.evaluate("/report/clinicalFinding", element));
+        sample.setDiagnosis(xpath.evaluate("/report/diagnosis", element));
+        sample.setInterpretation(xpath.evaluate("/report/interpretation", element));
         
-        report.setSex(xpath.evaluate("/report/sex", element));
-        report.setDateOfBirth(xpath.evaluate("/report/dateOfBirth", element));
-        report.setOrderingPhysicianClient(xpath.evaluate("/report/orderingPhysicianClient", element));
-        report.setOrderingPhysicianFacilityName(xpath.evaluate("/report/orderingPhysicianFacilityName", element));
-        report.setOrderingPhysicianName(xpath.evaluate("/report/orderingPhysicianName", element));
-        report.setPathologistName(xpath.evaluate("/report/pathologistName", element));
+        sample.setSex(xpath.evaluate("/report/sex", element));
+        sample.setDateOfBirth(xpath.evaluate("/report/dateOfBirth", element));
+        sample.setOrderingPhysicianClient(xpath.evaluate("/report/orderingPhysicianClient", element));
+        sample.setOrderingPhysicianFacilityName(xpath.evaluate("/report/orderingPhysicianFacilityName", element));
+        sample.setOrderingPhysicianName(xpath.evaluate("/report/orderingPhysicianName", element));
+        sample.setPathologistName(xpath.evaluate("/report/pathologistName", element));
         
-        report.setPrimaryTumorSite(xpath.evaluate("/report/primaryTumorSite", element));
-        report.setSpecimenId(xpath.evaluate("/report/specimenId", element));
-        report.setSpecimenType(xpath.evaluate("/report/specimenType", element));
-        report.setSpecimenCollectionDate(xpath.evaluate("/report/specimenCollectionDate", element));
+        sample.setPrimaryTumorSite(xpath.evaluate("/report/primaryTumorSite", element));
+        sample.setSpecimenId(xpath.evaluate("/report/specimenId", element));
+        sample.setSpecimenType(xpath.evaluate("/report/specimenType", element));
+        sample.setSpecimenCollectionDate(xpath.evaluate("/report/specimenCollectionDate", element));
         
-        report.setLabTestedCNVGain(xpath.evaluate("/report/labTestedCNVGain", element));
-        report.setLabTestedGenes(xpath.evaluate("/report/labTestedGenes", element));
+        sample.setLabTestedCNVGain(xpath.evaluate("/report/labTestedCNVGain", element));
+        sample.setLabTestedGenes(xpath.evaluate("/report/labTestedGenes", element));
     }
 
-    private static void setVariantProperties(String reportId, Variant variant, Element element) throws XPathExpressionException {
+    private static void setVariantProperties(String sampleId, QciVariant variant, Element element) throws XPathExpressionException {
 
         XPath xpath = xpf.newXPath();
 
-        variant.setReportId(reportId);
+        variant.setSampleId(sampleId);
         
         variant.setChromosome(xpath.evaluate("chromosome", element));
         String position = xpath.evaluate("position", element);

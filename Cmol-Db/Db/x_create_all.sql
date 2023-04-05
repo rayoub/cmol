@@ -27,6 +27,7 @@
 
 -- Ion 
 
+\i ion_sample.sql
 \i ion_variant.sql
 
 \i ion_truncate.sql

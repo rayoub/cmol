@@ -3,6 +3,7 @@ RETURNS VOID
 AS $$
 BEGIN
 
+    TRUNCATE TABLE ion_sample;
     TRUNCATE TABLE ion_variant;
 
 END;

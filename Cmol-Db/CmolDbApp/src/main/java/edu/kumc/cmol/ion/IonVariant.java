@@ -2,13 +2,15 @@ package edu.kumc.cmol.ion;
 
 import org.postgresql.util.PGobject;
 
-public class Variant extends PGobject {
+public class IonVariant extends PGobject {
 
     public static int INT_NULL = -99999;
     public static double DOUBLE_NULL = -99999.0;
 
-    private String sample;
+    private String zipName;
     private String locus;
+    private String type;
+    private String subtype;
     private String genotype;
     private String filter;
     private String ref;
@@ -17,14 +19,13 @@ public class Variant extends PGobject {
     private String coding;
     private String protein;
     
-    public String getSample() {
-        return sample;
+    public String getZipName() {
+        return zipName;
     }
 
-    public void setSample(String sample) {
-        this.sample = sample;
+    public void setZipName(String sample) {
+        this.zipName = sample;
     }
-
 
     public String getLocus() {
         return locus;
@@ -32,6 +33,22 @@ public class Variant extends PGobject {
 
     public void setLocus(String locus) {
         this.locus = locus;
+    }
+    
+    public String getVariantType() {
+        return type;
+    }
+
+    public void setVariantType(String type) {
+        this.type = type;
+    }
+
+    public String getVariantSubtype() {
+        return subtype;
+    }
+
+    public void setVariantSubtype(String subtype) {
+        this.subtype = subtype;
     }
     
     public String getGenotype() {
@@ -94,8 +111,10 @@ public class Variant extends PGobject {
     public String getValue() {
         String row = "("  +
 
-            sample + "," + 
+            zipName + "," + 
             locus + "," + 
+            type + "," +
+            subtype + "," + 
             genotype + "," +
             filter + "," +
             ref + "," +
