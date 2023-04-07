@@ -3,7 +3,8 @@ package edu.kumc.cmol.core;
 public enum LookupType {
    
     DIAGNOSES(1),
-    SAMPLES(2);    
+    ASSAYIDS(2),
+    CMOLIDS(3);    
 
     private int id;
 

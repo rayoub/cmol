@@ -14,7 +14,7 @@ import edu.kumc.cmol.core.LookupVal;
 
 public class IonLookup {
 
-    public static List<LookupVal> getSamples() throws SQLException {
+    public static List<LookupVal> getAssayIds() throws SQLException {
 
         List<LookupVal> vals = new ArrayList<>();
 
@@ -22,8 +22,33 @@ public class IonLookup {
 
         Connection conn = ds.getConnection();
            
-        // maybe later switch based on lookupType
-        PreparedStatement stmt = conn.prepareCall("SELECT DISTINCT sample AS id, sample AS descr FROM ion_variant ORDER BY sample;");
+        PreparedStatement stmt = conn.prepareCall("SELECT DISTINCT assay_folder AS id, assay_folder AS descr FROM ion_sample ORDER BY assay_folder;");
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            
+            String id = rs.getString("id");
+            String descr = rs.getString("descr");
+            LookupVal val = new LookupVal(id, descr);
+
+            vals.add(val);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return vals;
+    }
+    public static List<LookupVal> getCmolIds() throws SQLException {
+
+        List<LookupVal> vals = new ArrayList<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+           
+        PreparedStatement stmt = conn.prepareCall("SELECT DISTINCT cmol_id AS id, cmol_id AS descr FROM ion_sample ORDER BY cmol_id;");
         
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

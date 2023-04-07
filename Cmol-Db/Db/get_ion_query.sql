@@ -1,5 +1,6 @@
 
 CREATE OR REPLACE FUNCTION get_ion_query (
+    p_assay_folder VARCHAR DEFAULT NULL,
     p_cmol_id VARCHAR DEFAULT NULL,
     p_gene VARCHAR DEFAULT NULL 
     )
@@ -41,6 +42,8 @@ BEGIN
         INNER JOIN ion_variant v
             ON s.zip_name = v.zip_name
     WHERE 
+        (p_assay_folder IS NULL OR s.assay_folder = p_assay_folder)
+        AND
         (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
         AND 
         (p_gene IS NULL OR v.genes LIKE '%' || p_gene || '%')

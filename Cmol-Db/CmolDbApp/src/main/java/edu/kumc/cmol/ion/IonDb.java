@@ -25,22 +25,30 @@ public class IonDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?);");
-
-        // cmol id
-        if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?,?);");
+        
+        // assay folder
+        if (criteria.getAssayFolder() == null || criteria.getAssayFolder().isBlank()) {
             stmt.setNull(1, Types.VARCHAR);
         }
         else {
-            stmt.setString(1, criteria.getCmolId());
+            stmt.setString(1, criteria.getAssayFolder());
+        }
+
+        // cmol id
+        if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
+            stmt.setNull(2, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(2, criteria.getCmolId());
         }
        
         // gene
         if (criteria.getGene() == null || criteria.getGene().isBlank()) {
-            stmt.setNull(2, Types.VARCHAR);
+            stmt.setNull(3, Types.VARCHAR);
         }
         else {
-            stmt.setString(2, criteria.getGene());
+            stmt.setString(3, criteria.getGene());
         }
 
         ResultSet rs = stmt.executeQuery();
