@@ -2,101 +2,98 @@ package edu.kumc.cmol.ion;
 
 public class QueryRow {
 
-    private String reportId;
-    private String mrn;
-    private String accession;
-    private String testDate;
-    private String testCode;
-    private String diagnosis;
-    private String interpretation;
-    private String physician;
-    private String gene;
-    private double alleleFraction;
+    private String assayFolder;
+    private String cmolId;
+    private String accessionId;
+    private String locus;
+    private String type;
+    private String subtype;
+    private String genotype;
+    private String filter;
+    private String ref;
+    private String genes;
     private String transcript;
-    private String transcriptChange;
-    private int transcriptExon;
+    private String coding;
     private String protein;
-    private String proteinChange;
-    private String assessment;
 
-    public String getReportId() {
-        return reportId;
+    public String getAssayFolder() {
+        return assayFolder;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setAssayFolder(String assayFolder) {
+        this.assayFolder = assayFolder;
     }
 
-    public String getMrn() {
-        return mrn;
+    public String getCmolId() {
+        return cmolId;
     }
 
-    public void setMrn(String mrn) {
-        this.mrn = mrn;
+    public void setCmolId(String cmolId) {
+        this.cmolId = cmolId;
     }
 
-    public String getAccession() {
-        return accession;
+    public String getAccessionId() {
+        return accessionId;
     }
 
-    public void setAccession(String accession) {
-        this.accession = accession;
+    public void setAccessionId(String accessionId) {
+        this.accessionId = accessionId;
     }
 
-    public String getTestDate() {
-        return testDate;
+    public String getLocus() {
+        return locus;
     }
 
-    public void setTestDate(String testDate) {
-        this.testDate = testDate;
+    public void setLocus(String locus) {
+        this.locus = locus;
     }
 
-    public String getTestCode() {
-        return testCode;
-    }
-    
-    public void setTestCode(String testCode) {
-        this.testCode = testCode;
+    public String getType() {
+        return type;
     }
 
-    public String getDiagnosis() {
-        return diagnosis;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
+    public String getSubtype() {
+        return subtype;
     }
 
-    public String getInterpretation() {
-        return interpretation;
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
     }
 
-    public void setInterpretation(String interpretation) {
-        this.interpretation = interpretation;
+    public String getGenotype() {
+        return genotype;
     }
 
-    public String getPhysician() {
-        return physician;
+    public void setGenotype(String genotype) {
+        this.genotype = genotype;
     }
 
-    public void setPhysician(String physician) {
-        this.physician = physician;
+    public String getFilter() {
+        return filter;
     }
 
-    public String getGene() {
-        return gene;
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
-    public void setGene(String gene) {
-        this.gene = gene;
+    public String getRef() {
+        return ref;
     }
 
-    public double getAlleleFraction() {
-        return alleleFraction;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
-    public void setAlleleFraction(double alleleFraction) {
-        this.alleleFraction = alleleFraction;
+    public String getGenes() {
+        return genes;
+    }
+
+    public void setGenes(String genes) {
+        this.genes = genes;
     }
 
     public String getTranscript() {
@@ -107,20 +104,12 @@ public class QueryRow {
         this.transcript = transcript;
     }
 
-    public String getTrasncriptChange() {
-        return transcriptChange;
+    public String getCoding() {
+        return coding;
     }
 
-    public void setTranscriptChange(String trasncriptChange) {
-        this.transcriptChange = trasncriptChange;
-    }
-
-    public int getTranscriptExon() {
-        return transcriptExon;
-    }
-
-    public void setTranscriptExon(int transcriptExon) {
-        this.transcriptExon = transcriptExon;
+    public void setCoding(String coding) {
+        this.coding = coding;
     }
 
     public String getProtein() {
@@ -129,22 +118,6 @@ public class QueryRow {
 
     public void setProtein(String protein) {
         this.protein = protein;
-    }
-
-    public String getProteinChange() {
-        return proteinChange;
-    }
-
-    public void setProteinChange(String proteinChange) {
-        this.proteinChange = proteinChange;
-    }
-
-    public String getAssessment() {
-        return assessment;
-    }
-
-    public void setAssessment(String assessment) {
-        this.assessment = assessment;
     }
 }
    

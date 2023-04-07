@@ -1,9 +1,15 @@
 
 CREATE OR REPLACE FUNCTION get_ion_query (
-    p_sample VARCHAR DEFAULT NULL)
+    p_cmol_id VARCHAR DEFAULT NULL,
+    p_gene VARCHAR DEFAULT NULL 
+    )
 RETURNS TABLE (
-    zip_name VARCHAR,
+    assay_folder VARCHAR,
+    cmol_id VARCHAR,
+    accession_id VARCHAR,
     locus VARCHAR,
+    type VARCHAR,
+    subtype VARCHAR,
     genotype VARCHAR,
     filter VARCHAR,
     ref VARCHAR,
@@ -17,21 +23,31 @@ BEGIN
 
     RETURN QUERY
     SELECT
-        iv.zip_name,
-        iv.locus,
-        iv.genotype,
-        iv.filter,
-        iv.ref,
-        iv.genes,
-        iv.transcript,
-        iv.coding,
-        iv.protein
+        s.assay_folder,
+        s.cmol_id,
+        s.accession_id,
+        v.locus,
+        v.type, 
+        v.subtype,
+        v.genotype,
+        v.filter,
+        v.ref,
+        v.genes,
+        v.transcript,
+        v.coding,
+        v.protein
     FROM
-        ion_variant iv
+        ion_sample s
+        INNER JOIN ion_variant v
+            ON s.zip_name = v.zip_name
     WHERE 
-        (p_sample IS NULL OR iv.sample LIKE '%' || p_sample || '%')
-    ORDER BY    
-        iv.sample;
+        (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
+        AND 
+        (p_gene IS NULL OR v.genes LIKE '%' || p_gene || '%')
+    ORDER BY
+        s.assay_folder,
+        s.cmol_id,    
+        v.locus;
 
 END;
 $$LANGUAGE plpgsql;

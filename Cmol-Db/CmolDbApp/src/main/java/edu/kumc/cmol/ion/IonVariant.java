@@ -23,8 +23,8 @@ public class IonVariant extends PGobject {
         return zipName;
     }
 
-    public void setZipName(String sample) {
-        this.zipName = sample;
+    public void setZipName(String zipName) {
+        this.zipName = zipName;
     }
 
     public String getLocus() {

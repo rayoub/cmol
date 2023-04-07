@@ -2,22 +2,19 @@ package edu.kumc.cmol.ion;
 
 public class QueryCriteria {
 
-    private String sample;
-    private String accessionId;
+    private String cmolId;
+    private String gene;
 
-    public String getSample() {
-        return sample;
+    public String getCmolId() {
+        return cmolId;
     }
-
-    public void setSample(String sample) {
-        this.sample = sample;
+    public void setCmolId(String cmolId) {
+        this.cmolId = cmolId;
     }
-
-    public String getAccessionId() {
-        return accessionId;
+    public String getGene() {
+        return gene;
     }
-
-    public void setAccessionId(String accessionId) {
-        this.accessionId = accessionId;
+    public void setGene(String gene) {
+        this.gene = gene;
     }
 }

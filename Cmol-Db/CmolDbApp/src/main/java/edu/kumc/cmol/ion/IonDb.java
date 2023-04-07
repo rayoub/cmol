@@ -17,54 +17,67 @@ import edu.kumc.cmol.core.Ds;
 
 public class IonDb {
     
-    public static List<IonVariant> getVariants(QueryCriteria criteria) throws SQLException { 
+    public static List<QueryRow> getQueryRows(QueryCriteria criteria) throws SQLException { 
 
-        List<IonVariant> variants = new ArrayList<>();
+        List<QueryRow> rows = new ArrayList<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?);");
 
-        // tc change
-        if (criteria.getSample() == null || criteria.getSample().isBlank()) {
+        // cmol id
+        if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
             stmt.setNull(1, Types.VARCHAR);
         }
         else {
-            stmt.setString(1, criteria.getSample());
+            stmt.setString(1, criteria.getCmolId());
+        }
+       
+        // gene
+        if (criteria.getGene() == null || criteria.getGene().isBlank()) {
+            stmt.setNull(2, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(2, criteria.getGene());
         }
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
 
-            IonVariant variant = new IonVariant();
+            QueryRow row = new QueryRow();
 
-            variant.setZipName(rs.getString("zipName"));
-            variant.setLocus(rs.getString("locus"));
-            variant.setGenotype(rs.getString("genotype"));
-            if (rs.wasNull()) variant.setGenotype("");
-            variant.setFilter(rs.getString("filter"));
-            if (rs.wasNull()) variant.setFilter("");
-            variant.setRef(rs.getString("ref"));
-            if (rs.wasNull()) variant.setRef("");
-            variant.setGenes(rs.getString("genes"));
-            if (rs.wasNull()) variant.setGenes("");
-            variant.setTranscript(rs.getString("transcript"));
-            if (rs.wasNull()) variant.setTranscript("");
-            variant.setCoding(rs.getString("coding"));
-            if (rs.wasNull()) variant.setCoding("");
-            variant.setProtein(rs.getString("protein"));
-            if (rs.wasNull()) variant.setProtein("");
+            row.setAssayFolder(rs.getString("assay_folder"));
+            row.setCmolId(rs.getString("cmol_id"));
+            row.setAccessionId(rs.getString("accession_id"));
+            row.setLocus(rs.getString("locus"));
+            row.setType(rs.getString("type"));
+            row.setSubtype(rs.getString("subtype"));
+            if (rs.wasNull()) row.setSubtype("");
+            row.setGenotype(rs.getString("genotype"));
+            if (rs.wasNull()) row.setGenotype("");
+            row.setFilter(rs.getString("filter"));
+            if (rs.wasNull()) row.setFilter("");
+            row.setRef(rs.getString("ref"));
+            if (rs.wasNull()) row.setRef("");
+            row.setGenes(rs.getString("genes"));
+            if (rs.wasNull()) row.setGenes("");
+            row.setTranscript(rs.getString("transcript"));
+            if (rs.wasNull()) row.setTranscript("");
+            row.setCoding(rs.getString("coding"));
+            if (rs.wasNull()) row.setCoding("");
+            row.setProtein(rs.getString("protein"));
+            if (rs.wasNull()) row.setProtein("");
 
-            variants.add(variant);
+            rows.add(row);
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return variants;
+        return rows;
     }
 
     public static Set<String> getZipNames() throws SQLException {
@@ -88,9 +101,6 @@ public class IonDb {
 
         return zipNames;
     }
-
-
-
 
     public static void saveSamples(List<IonSample> samples) throws SQLException {
 
