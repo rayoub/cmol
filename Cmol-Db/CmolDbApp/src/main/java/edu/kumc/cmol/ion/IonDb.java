@@ -42,13 +42,20 @@ public class IonDb {
         else {
             stmt.setString(2, criteria.getCmolId());
         }
-       
-        // gene
-        if (criteria.getGene() == null || criteria.getGene().isBlank()) {
-            stmt.setNull(3, Types.VARCHAR);
+        
+        // genes
+        boolean genesIsNull = true;
+        String genes = criteria.getGenes();
+        if (genes != null) {
+            genes = genes.replaceAll("\\s","");
+            if (!genes.isEmpty()) {
+                String[] a = genes.split(";");
+                stmt.setArray(3, conn.createArrayOf("VARCHAR", a));
+                genesIsNull = false;
+            }
         }
-        else {
-            stmt.setString(3, criteria.getGene());
+        if (genesIsNull) {
+            stmt.setNull(3, Types.ARRAY);
         }
 
         ResultSet rs = stmt.executeQuery();

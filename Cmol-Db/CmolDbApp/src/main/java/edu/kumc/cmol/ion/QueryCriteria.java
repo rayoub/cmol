@@ -4,7 +4,7 @@ public class QueryCriteria {
 
     private String assayFolder;
     private String cmolId;
-    private String gene;
+    private String genes;
     
     public String getAssayFolder() {
         return assayFolder;
@@ -20,10 +20,10 @@ public class QueryCriteria {
     public void setCmolId(String cmolId) {
         this.cmolId = cmolId;
     }
-    public String getGene() {
-        return gene;
+    public String getGenes() {
+        return genes;
     }
-    public void setGene(String gene) {
-        this.gene = gene;
+    public void setGenes(String genes) {
+        this.genes = genes;
     }
 }
