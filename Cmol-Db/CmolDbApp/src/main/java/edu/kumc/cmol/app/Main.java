@@ -31,32 +31,28 @@ public class Main {
         Options options = new Options();
 
         OptionGroup group = new OptionGroup();
+        
+        group.addOption(Option.builder("q")
+            .desc("get QCI XML files")
+            .build());
+        group.addOption(Option.builder("r")
+            .desc("import QCI XML files")
+            .build());
+        group.addOption(Option.builder("s")
+            .desc("clean QCI tables")
+            .build());
 
-        group.addOption(Option.builder("g")
-                .longOpt("get")
-                .desc("get xml files")
-                .build());
         group.addOption(Option.builder("i")
-                .longOpt("import")
-                .desc("import xml files")
-                .build());
-        group.addOption(Option.builder("c")
-                .longOpt("clean")
-                .desc("clean database tables")
-                .build());
-        group.addOption(Option.builder("t")
-                .longOpt("truncate")
-                .desc("truncate database tables")
-                .build());
-        group.addOption(Option.builder("n")
-                .longOpt("genetic counseling notifications")
-                .build());
+            .desc("import Ion samples")
+            .build());
+        
         group.addOption(Option.builder("d")
-                .longOpt("debug")
-                .build());
+            .longOpt("debug")
+            .build());
+
         group.addOption(Option.builder("?")
-                .longOpt("help")
-                .build());
+            .longOpt("help")
+            .build());
 
         group.setRequired(true);
         options.addOptionGroup(group);
@@ -73,16 +69,14 @@ public class Main {
         }
 
         try {
-            if (line.hasOption("g")) {
-                option_g(line);
+            if (line.hasOption("q")) {
+                option_q(line);
+            } else if (line.hasOption("r")) {
+                option_r(line);
+            } else if (line.hasOption("s")) {
+                option_s(line);
             } else if (line.hasOption("i")) {
                 option_i(line);
-            } else if (line.hasOption("c")) {
-                option_c(line);
-            } else if (line.hasOption("t")) {
-                option_t(line);
-            } else if (line.hasOption("n")) {
-                option_n(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -93,36 +87,25 @@ public class Main {
         }
     }
 
-    private static void option_g(CommandLine line) throws Exception {
+    private static void option_q(CommandLine line) throws Exception {
 
         String token = WS.getToken();
         String latestTestDate = QciDb.getLatestTestDate();
         WS.getXml(token, latestTestDate);
     }
 
-    private static void option_i(CommandLine line) throws Exception {
+    private static void option_r(CommandLine line) throws Exception {
 
         QciImport.importXml(Constants.QCI_DATA_PATH);
     }
     
-    private static void option_c(CommandLine line) throws Exception {
+    private static void option_s(CommandLine line) throws Exception {
 
         QciImport.cleanQciTables();
     }
 
-    private static void option_t(CommandLine line) throws Exception {
+    private static void option_i(CommandLine line) throws Exception {
 
-        QciImport.truncateQciTables();
-    }
-    
-    private static void option_n(CommandLine line) throws Exception {
-
-        Notifier.Notify();
-    }
-
-    private static void option_d(CommandLine line) throws Exception {
-
-        
         List<IonSample> samples = IonImport.getSamples();
 
         // remove samples we have already seen
@@ -141,6 +124,10 @@ public class Main {
             List<IonVariant> variants = IonImport.getVariants(sample);
             IonDb.saveVariants(variants);            
         }
+    }
+    
+    private static void option_d(CommandLine line) throws Exception { 
+
     }
 
     public static String splitter(String text, int lineLength) {
