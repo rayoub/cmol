@@ -1,25 +1,37 @@
 
-$srl = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Sample Receipt Logs\Clinical Sample Receipt Log.xlsx"
+# set locations 
+$data = "E:\git\cmol\Cmol-Db\Data\Ion\"
+$srlSrc = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Sample Receipt Logs\Clinical Sample Receipt Log.xlsx"
+$srl = $data + "Clinical Sample Receipt Log.xlsx"
+$map = $data + "mrnmap.csv"
 
-# load srl
-$excel = New-Object -ComObject Excel.Application
-$book = $excel.workbooks.open($srl)
-$sheet = $book.sheets("Oncomine Comp DNA RNA")
+# copy srl
+Copy-Item $srlSrc $srl
 
-# output accn/mrn map
-for ($i = 7; $i -lt 10000; $i++){
+& {
 
-    $mrn = $sheet.cells($i,3).text().trim()
-    $accn = $sheet.cells($i,4).text().trim()
-    if ([String]::IsNullOrEmpty($mrn)){
+    # load srl
+    $excel = New-Object -ComObject Excel.Application
+    $book = $excel.workbooks.open($srl, $null, $true)
+    $sheet = $book.sheets("Oncomine Comp DNA RNA")
 
-        # no more rows
-        break
+    # output accn/mrn map
+    if (Test-Path $map) {
+        Remove-Item $map
+    }
+    for ($i = 7; $i -lt 10000; $i++){
+
+        $mrn = $sheet.cells($i,3).text().trim()
+        if (-not [String]::IsNullOrEmpty($mrn)) {
+            $accn = $sheet.cells($i,4).text().trim()
+            $line = $mrn + "," + $accn
+            Add-Content -Path $map -Value $line
+        }
     }
 
-    Write-Host $accn $mrn
+    # clean up 
+    $book.close()
+    $excel.quit()
 }
 
-# clean up 
-$book.close()
-$excel.quit()
+[GC]::Collect()
