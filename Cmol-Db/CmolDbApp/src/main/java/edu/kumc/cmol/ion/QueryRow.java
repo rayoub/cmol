@@ -4,6 +4,7 @@ public class QueryRow {
 
     private String assayFolder;
     private String cmolId;
+    private String mrn;
     private String accessionId;
     private String locus;
     private String type;
@@ -30,6 +31,14 @@ public class QueryRow {
 
     public void setCmolId(String cmolId) {
         this.cmolId = cmolId;
+    }
+
+    public String getMrn() {
+        return mrn;
+    }
+
+    public void setMrn(String mrn) {
+        this.mrn = mrn;
     }
 
     public String getAccessionId() {

@@ -15,9 +15,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.kumc.cmol.core.Constants;
-import edu.kumc.cmol.gc.Notifier;
 import edu.kumc.cmol.ion.IonDb;
 import edu.kumc.cmol.ion.IonImport;
+import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
 import edu.kumc.cmol.qci.QciDb;
@@ -44,6 +44,10 @@ public class Main {
 
         group.addOption(Option.builder("i")
             .desc("import Ion samples")
+            .build());
+        
+        group.addOption(Option.builder("j")
+            .desc("import Ion MRNs")
             .build());
         
         group.addOption(Option.builder("d")
@@ -77,6 +81,8 @@ public class Main {
                 option_s(line);
             } else if (line.hasOption("i")) {
                 option_i(line);
+            } else if (line.hasOption("j")) {
+                option_j(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -124,6 +130,12 @@ public class Main {
             List<IonVariant> variants = IonImport.getVariants(sample);
             IonDb.saveVariants(variants);            
         }
+    }
+    
+    private static void option_j(CommandLine line) throws Exception {
+
+        List<IonMrn> mrns = IonImport.getMrns();
+        IonDb.saveMrns(mrns);
     }
     
     private static void option_d(CommandLine line) throws Exception { 

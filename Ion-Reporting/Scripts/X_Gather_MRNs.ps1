@@ -3,7 +3,7 @@
 $data = "E:\git\cmol\Cmol-Db\Data\Ion\"
 $srlSrc = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Sample Receipt Logs\Clinical Sample Receipt Log.xlsx"
 $srl = $data + "Clinical Sample Receipt Log.xlsx"
-$map = $data + "mrnmap.csv"
+$mrns = $data + "mrns.csv"
 
 # copy srl
 Copy-Item $srlSrc $srl
@@ -15,9 +15,9 @@ Copy-Item $srlSrc $srl
     $book = $excel.workbooks.open($srl, $null, $true)
     $sheet = $book.sheets("Oncomine Comp DNA RNA")
 
-    # output accn/mrn map
-    if (Test-Path $map) {
-        Remove-Item $map
+    # output mrns
+    if (Test-Path $mrns) {
+        Remove-Item $mrns
     }
     for ($i = 7; $i -lt 10000; $i++){
 
@@ -25,7 +25,7 @@ Copy-Item $srlSrc $srl
         if (-not [String]::IsNullOrEmpty($mrn)) {
             $accn = $sheet.cells($i,4).text().trim()
             $line = $mrn + "," + $accn
-            Add-Content -Path $map -Value $line
+            Add-Content -Path $mrns -Value $line
         }
     }
 

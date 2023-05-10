@@ -1,5 +1,7 @@
 package edu.kumc.cmol.ion;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,8 +9,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.postgresql.ds.PGSimpleDataSource;
@@ -105,5 +109,33 @@ public class IonImport {
         }
 
         return variants;
+    }
+    
+    public static List<IonMrn> getMrns() throws IOException  {
+
+        Set<String> unique = new HashSet<>();
+        List<IonMrn> mrns = new ArrayList<>();
+
+        String fileName = Constants.ION_DATA_PATH + "/mrns.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2 && !parts[0].isBlank() && !parts[1].isBlank()) {
+                
+                    IonMrn mrn = new IonMrn();
+                    mrn.setMrn(parts[0].trim());
+                    mrn.setAccn(parts[1].trim());
+
+                    if (!unique.contains(mrn.getMrn())) {
+                        unique.add(mrn.getMrn());
+                        mrns.add(mrn);
+                    }
+                }
+            }
+        }
+
+        return mrns;
     }
 }

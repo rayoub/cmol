@@ -26,21 +26,28 @@ public class IonDb {
         Connection conn = ds.getConnection();
             
         PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?,?);");
-        
-        // assay folder
-        if (criteria.getAssayFolder() == null || criteria.getAssayFolder().isBlank()) {
-            stmt.setNull(1, Types.VARCHAR);
-        }
-        else {
-            stmt.setString(1, criteria.getAssayFolder());
-        }
 
         // cmol id
         if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
-            stmt.setNull(2, Types.VARCHAR);
+            stmt.setNull(1, Types.VARCHAR);
         }
         else {
-            stmt.setString(2, criteria.getCmolId());
+            stmt.setString(1, criteria.getCmolId());
+        }
+        
+        // mrns
+        boolean mrnsIsNull = true;
+        String mrns = criteria.getMrns();
+        if (mrns != null) {
+            mrns = mrns.replaceAll("\\s","");
+            if (!mrns.isEmpty()) {
+                String[] a = mrns.split(";");
+                stmt.setArray(2, conn.createArrayOf("VARCHAR", a));
+                mrnsIsNull = false;
+            }
+        }
+        if (mrnsIsNull) {
+            stmt.setNull(2, Types.ARRAY);
         }
         
         // genes
@@ -65,6 +72,7 @@ public class IonDb {
 
             row.setAssayFolder(rs.getString("assay_folder"));
             row.setCmolId(rs.getString("cmol_id"));
+            row.setMrn(rs.getString("mrn"));
             row.setAccessionId(rs.getString("accession_id"));
             row.setLocus(rs.getString("locus"));
             row.setType(rs.getString("type"));
@@ -150,6 +158,26 @@ public class IonDb {
         IonVariant a[] = new IonVariant[variants.size()];
         variants.toArray(a);
         updt.setArray(1, conn.createArrayOf("ion_variant", a));
+
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
+    
+    public static void saveMrns(List<IonMrn> mrns) throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        ((PGConnection) conn).addDataType("ion_mrn", IonMrn.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_ion_mrn(?);");
+
+        IonMrn a[] = new IonMrn[mrns.size()];
+        mrns.toArray(a);
+        updt.setArray(1, conn.createArrayOf("ion_mrn", a));
 
         updt.execute();
         updt.close();
