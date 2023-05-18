@@ -4,7 +4,7 @@ AS $$
 BEGIN
 
     UPDATE 
-        qci_report
+        qci_sample
     SET 
         specimen_type = specimen_id,
         specimen_id = null
@@ -15,7 +15,7 @@ BEGIN
         OR specimen_id = 'Buccal Swab';
 
     UPDATE 
-        qci_report 
+        qci_sample 
     SET 
         specimen_id = null
     WHERE   

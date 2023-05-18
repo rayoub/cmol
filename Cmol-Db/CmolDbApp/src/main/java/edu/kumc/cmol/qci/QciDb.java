@@ -104,7 +104,7 @@ public class QciDb {
 
             QueryRow row = new QueryRow();
 
-            row.setSampleId(rs.getString("report_id"));
+            row.setSampleId(rs.getString("sample_id"));
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
             row.setAccession(rs.getString("accession"));
@@ -154,17 +154,17 @@ public class QciDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_report;");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM qci_sample;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
 
             QciSample sample = new QciSample();
 
-            sample.setSampleId(rs.getString("report_id"));
+            sample.setSampleId(rs.getString("sample_id"));
             if (rs.wasNull()) sample.setSampleId("");
-            sample.setSubjectId(rs.getString("subject_id"));
-            if (rs.wasNull()) sample.setSubjectId("");
+            sample.setMrn(rs.getString("mrn"));
+            if (rs.wasNull()) sample.setMrn("");
             sample.setAccession(rs.getString("accession"));
             if (rs.wasNull()) sample.setAccession("");
             sample.setTestDate(rs.getString("test_date"));
@@ -182,14 +182,11 @@ public class QciDb {
             if (rs.wasNull()) sample.setSex("");
             sample.setDateOfBirth(rs.getString("date_of_birth"));
             if (rs.wasNull()) sample.setDateOfBirth("");
-            sample.setOrderingPhysicianClient(rs.getString("ordering_physician_client"));
-            if (rs.wasNull()) sample.setOrderingPhysicianClient("");
-            sample.setOrderingPhysicianFacilityName(rs.getString("ordering_physician_facility_name"));
-            if (rs.wasNull()) sample.setOrderingPhysicianFacilityName("");
-            sample.setOrderingPhysicianName(rs.getString("ordering_physician_name"));
-            if (rs.wasNull()) sample.setOrderingPhysicianName("");
-            sample.setPathologistName(rs.getString("pathologist_name"));
-            if (rs.wasNull()) sample.setPathologistName("");
+
+            sample.setHospitalName(rs.getString("hospital_name"));
+            if (rs.wasNull()) sample.setHospitalName("");
+            sample.setPhysicianName(rs.getString("physician_name"));
+            if (rs.wasNull()) sample.setPhysicianName("");
             
             sample.setPrimaryTumorSite(rs.getString("primary_tumor_site"));
             if (rs.wasNull()) sample.setPrimaryTumorSite("");
@@ -228,7 +225,7 @@ public class QciDb {
 
             QciVariant variant = new QciVariant();
 
-            variant.setSampleId(rs.getString("report_id"));
+            variant.setSampleId(rs.getString("sample_id"));
             variant.setChromosome(rs.getString("chromosome"));
             if (rs.wasNull()) variant.setChromosome("");
             variant.setPosition(rs.getInt("position"));
@@ -298,7 +295,7 @@ public class QciDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT MAX(test_date) AS test_date FROM qci_report;");
+        PreparedStatement stmt = conn.prepareCall("SELECT MAX(test_date) AS test_date FROM qci_sample;");
 
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
@@ -326,11 +323,11 @@ public class QciDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT report_id FROM qci_report;");
+        PreparedStatement stmt = conn.prepareCall("SELECT sample_id FROM qci_sample;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            sampleIds.add(rs.getString("report_id"));
+            sampleIds.add(rs.getString("sample_id"));
         }
 
         rs.close();
@@ -346,13 +343,13 @@ public class QciDb {
 
         Connection conn = ds.getConnection();
 
-        ((PGConnection) conn).addDataType("qci_report", QciSample.class);
+        ((PGConnection) conn).addDataType("qci_sample", QciSample.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_report(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_qci_sample(?);");
      
         QciSample a[] = new QciSample[samples.size()];
         samples.toArray(a);
-        updt.setArray(1, conn.createArrayOf("qci_report", a));
+        updt.setArray(1, conn.createArrayOf("qci_sample", a));
     
         updt.execute();
         updt.close();

@@ -1,7 +1,7 @@
 
 -- QCI 
 
-\i qci_report.sql
+\i qci_sample.sql
 \i qci_variant.sql
 \i qci_diagnosis.sql
 

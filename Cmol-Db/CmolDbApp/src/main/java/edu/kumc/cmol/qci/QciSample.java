@@ -6,8 +6,9 @@ public class QciSample extends PGobject {
 
     private String sampleId;
 
-    private String subjectId;
+    private String mrn;
     private String accession;
+    private String receivedDate;
     private String testDate;
     private String testCode;
     private String clinicalFinding;
@@ -17,10 +18,8 @@ public class QciSample extends PGobject {
     private String sex;
     private String dateOfBirth;
     
-    private String orderingPhysicianClient;
-    private String orderingPhysicianFacilityName;
-    private String orderingPhysicianName;
-    private String pathologistName;
+    private String hospitalName;
+    private String physicianName;
     
     private String primaryTumorSite;
     private String specimenId;
@@ -37,13 +36,13 @@ public class QciSample extends PGobject {
     public void setSampleId(String sampleId) {
         this.sampleId = sampleId;
     }
-
-    public String getSubjectId() {
-        return subjectId;
+    
+    public String getMrn() {
+        return mrn;
     }
 
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
+    public void setMrn(String mrn) {
+        this.mrn = mrn;
     }
 
     public String getAccession() {
@@ -52,6 +51,14 @@ public class QciSample extends PGobject {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public String getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(String receivedDate) {
+        this.receivedDate = receivedDate;
     }
 
     public String getTestDate() {
@@ -110,36 +117,20 @@ public class QciSample extends PGobject {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getOrderingPhysicianClient() {
-        return orderingPhysicianClient;
+    public String getHospitalName() {
+        return hospitalName;
     }
 
-    public void setOrderingPhysicianClient(String orderingPhysicianClient) {
-        this.orderingPhysicianClient = orderingPhysicianClient;
+    public void setHospitalName(String orderingPhysicianFacilityName) {
+        this.hospitalName = orderingPhysicianFacilityName;
     }
 
-    public String getOrderingPhysicianFacilityName() {
-        return orderingPhysicianFacilityName;
+    public String getPhysicianName() {
+        return physicianName;
     }
 
-    public void setOrderingPhysicianFacilityName(String orderingPhysicianFacilityName) {
-        this.orderingPhysicianFacilityName = orderingPhysicianFacilityName;
-    }
-
-    public String getOrderingPhysicianName() {
-        return orderingPhysicianName;
-    }
-
-    public void setOrderingPhysicianName(String orderingPhysicianName) {
-        this.orderingPhysicianName = orderingPhysicianName;
-    }
-
-    public String getPathologistName() {
-        return pathologistName;
-    }
-
-    public void setPathologistName(String pathologistName) {
-        this.pathologistName = pathologistName;
+    public void setPhysicianName(String orderingPhysicianClient) {
+        this.physicianName = orderingPhysicianClient;
     }
 
     public String getPrimaryTumorSite() {
@@ -196,8 +187,9 @@ public class QciSample extends PGobject {
             
             sampleId + "," +
 
-            subjectId.replace("(", "\\(").replace(")","\\)") + "," +
+            mrn + "," +
             accession.replace("(", "\\(").replace(")","\\)") + "," +
+            receivedDate + "," +
             testDate + "," +
             testCode.replace("(", "\\(").replace(")","\\)") + "," +
             clinicalFinding + "," +
@@ -207,15 +199,13 @@ public class QciSample extends PGobject {
             sex + "," +
             dateOfBirth + "," +
 
-            orderingPhysicianClient + "," +
-            orderingPhysicianFacilityName.replace(",","\\,") + "," +
-            orderingPhysicianName.replace(",", "\\,") + "," +
-            pathologistName.replace(",","\\,") + "," +
+            hospitalName.replace(",","\\,") + "," +
+            physicianName.replace(",", "\\,") + "," +
             
             primaryTumorSite + "," +
-            specimenId.replace("(", "\\(").replace(")","\\)") + "," +
+            specimenId.replace("(", "\\(").replace(")","\\)") + "," + // remove
             specimenType.replace("(", "\\(").replace(")","\\)") + "," +
-            specimenCollectionDate + "," +
+            specimenCollectionDate + "," + // remove
 
             labTestedCNVGain + "," +
             labTestedGenes
@@ -223,19 +213,4 @@ public class QciSample extends PGobject {
         + ")";
         return row;
     }
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -5,7 +5,7 @@ AS $$
 BEGIN
 	
     INSERT INTO qci_variant (
-        report_id,
+        sample_id,
         chromosome,
         position,
         reference,
@@ -33,7 +33,7 @@ BEGIN
         reference_count
     )
 	SELECT
-        report_id,
+        sample_id,
         chromosome,
         position,
         reference,

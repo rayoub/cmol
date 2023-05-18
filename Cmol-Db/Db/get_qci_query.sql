@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION get_qci_query (
     p_tc_change VARCHAR DEFAULT NULL, 
     p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
-    report_id VARCHAR,
+    sample_id VARCHAR,
     mrn VARCHAR,
     accession VARCHAR,
     test_date DATE,
@@ -32,14 +32,14 @@ BEGIN
 
         RETURN QUERY
         SELECT
-            qr.report_id,
-            qr.ordering_physician_client AS mrn,
+            qr.sample_id,
+            qr.mrn,
             qr.accession,
             qr.test_date,
             qr.test_code,
             qr.diagnosis,
             qr.interpretation,
-            REPLACE(qr.ordering_physician_name, ',', '')::VARCHAR AS physician,
+            REPLACE(qr.physician_name, ',', '')::VARCHAR AS physician,
             qv.gene,
             qv.allele_fraction,
             qv.tc_transcript AS transcript,
@@ -49,15 +49,15 @@ BEGIN
             qv.pc_change AS protein_change,
             qv.assessment
         FROM
-            qci_report qr 
+            qci_sample qr 
             INNER JOIN qci_variant qv 
-                ON qv.report_id = qr.report_id
+                ON qv.sample_id = qr.sample_id
             LEFT JOIN UNNEST(p_mrns) pm(mrn)
-                ON pm.mrn = qr.ordering_physician_client
+                ON pm.mrn = qr.mrn
             LEFT JOIN UNNEST(p_genes) pg(gene)
                 ON LOWER(pg.gene) = LOWER(qv.gene)
         WHERE 
-            qr.ordering_physician_client IS NOT NULL
+            qr.mrn IS NOT NULL
             AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
             AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
@@ -72,14 +72,14 @@ BEGIN
 
         RETURN QUERY
         SELECT
-            qr.report_id,
-            qr.ordering_physician_client AS mrn,
+            qr.sample_id,
+            qr.mrn,
             qr.accession,
             qr.test_date,
             qr.test_code,
             qr.diagnosis,
             qr.interpretation,
-            REPLACE(qr.ordering_physician_name, ',', '')::VARCHAR AS physician,
+            REPLACE(qr.physician_name, ',', '')::VARCHAR AS physician,
             qv.gene,
             qv.allele_fraction,
             qv.tc_transcript AS transcript,
@@ -89,19 +89,19 @@ BEGIN
             qv.pc_change AS protein_change,
             qv.assessment
         FROM
-            qci_report qr 
+            qci_sample qr 
             INNER JOIN qci_variant qv 
-                ON qv.report_id = qr.report_id
+                ON qv.sample_id = qr.sample_id
             INNER JOIN qci_diagnosis qd 
                 ON qd.descr = qr.diagnosis
             INNER JOIN UNNEST(p_diagnoses) pd(diagnosis)
                 ON pd.diagnosis = qd.id
             LEFT JOIN UNNEST(p_mrns) pm(mrn)
-                ON pm.mrn = qr.ordering_physician_client
+                ON pm.mrn = qr.mrn
             LEFT JOIN UNNEST(p_genes) pg(gene)
                 ON LOWER(pg.gene) = LOWER(qv.gene)
         WHERE 
-            qr.ordering_physician_client IS NOT NULL
+            qr.mrn IS NOT NULL
             AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
             AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)

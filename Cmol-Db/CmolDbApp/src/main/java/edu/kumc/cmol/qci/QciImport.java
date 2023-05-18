@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -83,10 +84,17 @@ public class QciImport {
 
                 Document xml = builder.parse(filePath.toFile());
 
-                Pair<QciSample, List<QciVariant>> pair = Parser.parseXml(sampleId, xml);
+                Pair<QciSample, List<QciVariant>> pair = null;
+                try {
+                    pair = Parser.parseXml(sampleId, xml);
+                } catch (ParseException e) {
+                    pair = null;
+                }
 
-                samples.add(pair.getLeft());
-                variants.addAll(pair.getRight());
+                if (pair != null) {
+                    samples.add(pair.getLeft());
+                    variants.addAll(pair.getRight());
+                }
             }
         }
         

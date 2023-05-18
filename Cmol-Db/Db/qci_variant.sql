@@ -1,7 +1,7 @@
 
 CREATE TABLE qci_variant
 (
-    report_id VARCHAR NOT NULL,
+    sample_id VARCHAR NOT NULL,
     chromosome VARCHAR NULL,
     position INTEGER NULL,
     reference VARCHAR NULL,

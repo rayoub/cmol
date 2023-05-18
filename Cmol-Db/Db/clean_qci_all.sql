@@ -11,8 +11,8 @@ BEGIN
     -- must come after the first few
     PERFORM clean_qci_specimen_type();
     PERFORM clean_qci_pts();
-    PERFORM clean_qci_opfn();
-    PERFORM clean_qci_opc();
+    PERFORM clean_qci_hospital_name();
+    PERFORM clean_qci_mrn();
     PERFORM clean_qci_diagnosis();
 
 END;

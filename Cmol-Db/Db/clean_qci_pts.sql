@@ -5,7 +5,7 @@ BEGIN
 
     -- only one type of null
     UPDATE 
-        qci_report 
+        qci_sample 
     SET
         primary_tumor_site = 'Not Provided'
     WHERE
@@ -14,7 +14,7 @@ BEGIN
 
     -- title case everything that is not all caps
     UPDATE
-        qci_report
+        qci_sample
     SET
         primary_tumor_site = INITCAP(primary_tumor_site)
     WHERE

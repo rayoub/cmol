@@ -6,12 +6,12 @@ BEGIN
     DELETE FROM 
         qci_variant 
     WHERE 
-        report_id IN
+        sample_id IN
             (
                 SELECT
-                    report_id
+                    sample_id
                 FROM    
-                    qci_report
+                    qci_sample
                 WHERE   
                     test_code IS NULL OR
                     test_code IN (
@@ -32,7 +32,7 @@ BEGIN
             );
 
     DELETE FROM    
-        qci_report
+        qci_sample
     WHERE   
         test_code IS NULL OR
         test_code IN (
@@ -54,7 +54,7 @@ BEGIN
     -- combine test codes
 
     UPDATE 
-        qci_report 
+        qci_sample 
     SET 
         test_code = 'NGS Common' 
     WHERE
@@ -68,7 +68,7 @@ BEGIN
         );
 
     UPDATE 
-        qci_report 
+        qci_sample 
     SET 
         test_code = 'NGS Heme' 
     WHERE
@@ -78,7 +78,7 @@ BEGIN
         );
 
     UPDATE 
-        qci_report
+        qci_sample
     SET
         test_code = 'NGS Heme One'
     WHERE
@@ -87,7 +87,7 @@ BEGIN
         );
 
     UPDATE 
-        qci_report
+        qci_sample
     SET
         test_code = 'NGS Comprehensive One'
     WHERE
@@ -96,7 +96,7 @@ BEGIN
         );
 
     UPDATE 
-        qci_report
+        qci_sample
     SET
         test_code = 'NGS Common One'
     WHERE
@@ -109,14 +109,14 @@ BEGIN
     -- however, preserve 'Common 14' for now since that is a special case
 
     UPDATE
-        qci_report
+        qci_sample
     SET
         test_code = 'NGS Heme'
     WHERE   
         test_code = 'Heme 141';
 
     UPDATE
-        qci_report
+        qci_sample
     SET
         test_code = 'NGS Comprehensive'
     WHERE   

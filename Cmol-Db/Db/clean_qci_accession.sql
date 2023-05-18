@@ -6,18 +6,18 @@ BEGIN
     DELETE FROM 
         qci_variant 
     WHERE 
-        report_id IN
+        sample_id IN
             (
                 SELECT
-                    report_id
+                    sample_id
                 FROM    
-                    qci_report
+                    qci_sample
                 WHERE   
                     LOWER(accession) LIKE 'val_%'
             );
 
     DELETE FROM
-        qci_report 
+        qci_sample 
     WHERE 
         LOWER(accession) LIKE 'val_%';
 

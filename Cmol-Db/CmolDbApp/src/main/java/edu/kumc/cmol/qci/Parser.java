@@ -1,7 +1,11 @@
 package edu.kumc.cmol.qci;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -21,7 +25,7 @@ public class Parser {
         xpf = XPathFactory.newInstance();
     }
 
-    public static Pair<QciSample, List<QciVariant>> parseXml(String sampleId, Document xml) throws XPathExpressionException {
+    public static Pair<QciSample, List<QciVariant>> parseXml(String sampleId, Document xml) throws XPathExpressionException, ParseException {
 
         Element doc = xml.getDocumentElement();
 
@@ -44,13 +48,13 @@ public class Parser {
         return Pair.of(sample, variants);
     }
 
-    private static void setSampleProperties(String sampleId, QciSample sample, Element element) throws XPathExpressionException {
+    private static void setSampleProperties(String sampleId, QciSample sample, Element element) throws XPathExpressionException, ParseException {
 
         XPath xpath = xpf.newXPath();
 
         sample.setSampleId(sampleId);
 
-        sample.setSubjectId(xpath.evaluate("/report/subjectId", element));
+        sample.setReceivedDate(xpath.evaluate("/report/review_state_date", element));
         sample.setAccession(xpath.evaluate("/report/accession", element));
         sample.setTestDate(xpath.evaluate("/report/testDate", element));
         sample.setTestCode(xpath.evaluate("/report/testCode", element));
@@ -60,10 +64,6 @@ public class Parser {
         
         sample.setSex(xpath.evaluate("/report/sex", element));
         sample.setDateOfBirth(xpath.evaluate("/report/dateOfBirth", element));
-        sample.setOrderingPhysicianClient(xpath.evaluate("/report/orderingPhysicianClient", element));
-        sample.setOrderingPhysicianFacilityName(xpath.evaluate("/report/orderingPhysicianFacilityName", element));
-        sample.setOrderingPhysicianName(xpath.evaluate("/report/orderingPhysicianName", element));
-        sample.setPathologistName(xpath.evaluate("/report/pathologistName", element));
         
         sample.setPrimaryTumorSite(xpath.evaluate("/report/primaryTumorSite", element));
         sample.setSpecimenId(xpath.evaluate("/report/specimenId", element));
@@ -72,6 +72,21 @@ public class Parser {
         
         sample.setLabTestedCNVGain(xpath.evaluate("/report/labTestedCNVGain", element));
         sample.setLabTestedGenes(xpath.evaluate("/report/labTestedGenes", element));
+       
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date receivedDate = formatter.parse(sample.getReceivedDate());
+        Date checkDate = formatter.parse("2023-02-06");
+
+        if (receivedDate.compareTo(checkDate) < 0) {
+            sample.setMrn(xpath.evaluate("/report/orderingPhysicianClient", element));
+            sample.setHospitalName(xpath.evaluate("/report/orderingPhysicianFacilityName", element));
+            sample.setPhysicianName(xpath.evaluate("/report/orderingPhysicianName", element));
+        }
+        else {
+            sample.setMrn(xpath.evaluate("/report/specimenDissection", element));
+            sample.setHospitalName(xpath.evaluate("/report/orderingPhysicianClient", element));
+            sample.setPhysicianName(xpath.evaluate("/report/orderingPhysicianFacilityName", element));
+        }
     }
 
     private static void setVariantProperties(String sampleId, QciVariant variant, Element element) throws XPathExpressionException {
