@@ -22,7 +22,7 @@ CREATE TABLE qci_sample
     lab_tested_genes VARCHAR NULL
 );
 
-CREATE UNIQUE INDEX idx_qci_report_unique ON qci_sample (sample_id);
+CREATE UNIQUE INDEX idx_qci_sample_unique ON qci_sample (sample_id);
 
 
 
