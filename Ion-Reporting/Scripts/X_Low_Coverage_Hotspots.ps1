@@ -41,7 +41,7 @@ for ($i = 0; $i -lt $bedFileLines.Length; $i++) {
 
 # get low-coverage regions from the CSV file
 $csvFile = Get-CSVFileName -initialDirectory $PSScriptRoot
-$csvRegions = Import-Csv $csvFile | Where-Object { [int]$_.Total -le 200 } | Sort-Object -Property Chr
+$csvRegions = Import-Csv $csvFile | Where-Object { [int]$_.Total -le 100 } | Sort-Object -Property Chr
 
 # iterate hotspots and see if any of them fall into low coverage regions
 $matched = @()
@@ -75,5 +75,5 @@ for ($i = 0; $i -lt $bedFileLines.Length; $i++) {
 $matched | Sort-Object -Property Gene, HSChr, HSStart, HSEnd, LCChr, LCStart, LCEnd -Unique | Export-Csv -Path .\lowcoveragehotspots.csv -NoTypeInformation
 
 # output matched genes to text
-$matched | Select-Object -Property Gene | Sort-Object -Property Gene -Unique | Select-Object -ExpandProperty Gene | Set-Content -Path .\lowcoveragegenes.txt
+($matched | Select-Object -Property Gene | Sort-Object -Property Gene -Unique | Select-Object -ExpandProperty Gene) -join ',' | Set-Content -Path .\lowcoveragegenes.txt
 
