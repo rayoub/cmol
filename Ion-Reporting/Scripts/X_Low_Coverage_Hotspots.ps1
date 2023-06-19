@@ -75,5 +75,5 @@ for ($i = 0; $i -lt $bedFileLines.Length; $i++) {
 $matched | Sort-Object -Property Gene, HSChr, HSStart, HSEnd, LCChr, LCStart, LCEnd -Unique | Export-Csv -Path .\lowcoveragehotspots.csv -NoTypeInformation
 
 # output matched genes to text
-($matched | Select-Object -Property Gene | Sort-Object -Property Gene -Unique | Select-Object -ExpandProperty Gene) -join ',' | Set-Content -Path .\lowcoveragegenes.txt
+($matched | Select-Object -Property Gene | Sort-Object -Property Gene -Unique | Select-Object -ExpandProperty Gene) -join ', ' | Set-Content -Path .\lowcoveragegenes.txt
 
