@@ -99,9 +99,17 @@ public class IonImport {
             variant.setVariantSubtype(Parser.getValue(headers, values, "subtype"));
             variant.setGenotype(Parser.getValue(headers, values, "genotype"));
             variant.setFilter(Parser.getValue(headers, values, "filter"));
+            variant.setCoverage(Parser.getValue(headers, values, "coverage"));
+            variant.setAlleleCoverage(Parser.getValue(headers, values, "allele_coverage").replace(",", ";"));
+            variant.setAlleleRatio(Parser.getValue(headers, values, "allele_ratio").replace(",", ";"));
+            variant.setAlleleFrequency(Parser.getValue(headers, values, "allele_frequency_%"));
             variant.setRef(Parser.getValue(headers, values, "ref"));
+            variant.setNormalizedAlt(Parser.getValue(headers, values, "normalizedAlt"));
             variant.setGenes(Parser.getValue(headers, values, "gene"));
             variant.setTranscript(Parser.getValue(headers, values, "transcript"));
+            variant.setLocation(Parser.getValue(headers, values, "location"));
+            variant.setFunction(Parser.getValue(headers, values, "function"));
+            variant.setExon(Parser.getValue(headers, values, "exon"));
             variant.setCoding(Parser.getValue(headers, values, "coding"));
             variant.setProtein(Parser.getValue(headers, values, "protein"));
 

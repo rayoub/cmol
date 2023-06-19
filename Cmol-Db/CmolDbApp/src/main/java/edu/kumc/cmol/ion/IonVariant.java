@@ -13,12 +13,20 @@ public class IonVariant extends PGobject {
     private String subtype;
     private String genotype;
     private String filter;
+    private String coverage;
+    private String alleleCoverage;
+    private String alleleRatio;
+    private String alleleFrequency;
     private String ref;
+    private String normalizedAlt;
     private String genes;
     private String transcript;
+    private String location;
+    private String function;
+    private String exon;
     private String coding;
     private String protein;
-    
+
     public String getZipName() {
         return zipName;
     }
@@ -34,7 +42,7 @@ public class IonVariant extends PGobject {
     public void setLocus(String locus) {
         this.locus = locus;
     }
-    
+
     public String getVariantType() {
         return type;
     }
@@ -50,7 +58,7 @@ public class IonVariant extends PGobject {
     public void setVariantSubtype(String subtype) {
         this.subtype = subtype;
     }
-    
+
     public String getGenotype() {
         return genotype;
     }
@@ -67,12 +75,52 @@ public class IonVariant extends PGobject {
         this.filter = filter;
     }
 
+    public String getCoverage() {
+        return coverage;
+    }
+
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
+
+    public String getAlleleCoverage() {
+        return alleleCoverage;
+    }
+
+    public void setAlleleCoverage(String alleleCoverage) {
+        this.alleleCoverage = alleleCoverage;
+    }
+
+    public String getAlleleRatio() {
+        return alleleRatio;
+    }
+
+    public void setAlleleRatio(String alleleRatio) {
+        this.alleleRatio = alleleRatio;
+    }
+
+    public String getAlleleFrequency() {
+        return alleleFrequency;
+    }
+
+    public void setAlleleFrequency(String alleleFrequency) {
+        this.alleleFrequency = alleleFrequency;
+    }
+
     public String getRef() {
         return ref;
     }
 
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    public String getNormalizedAlt() {
+        return normalizedAlt;
+    }
+
+    public void setNormalizedAlt(String normalizedAlt) {
+        this.normalizedAlt = normalizedAlt;
     }
 
     public String getGenes() {
@@ -89,6 +137,30 @@ public class IonVariant extends PGobject {
 
     public void setTranscript(String transcript) {
         this.transcript = transcript;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getFunction() {
+        return function;
+    }
+
+    public void setFunction(String function) {
+        this.function = function;
+    }
+
+    public String getExon() {
+        return exon;
+    }
+
+    public void setExon(String exon) {
+        this.exon = exon;
     }
 
     public String getCoding() {
@@ -117,9 +189,17 @@ public class IonVariant extends PGobject {
             subtype + "," + 
             genotype + "," +
             filter + "," +
+            coverage + "," + 
+            alleleCoverage + "," + 
+            alleleRatio + "," +
+            alleleFrequency + "," +
             ref + "," +
+            normalizedAlt + "," + 
             genes + "," + 
             transcript + "," + 
+            location + "," + 
+            function + "," + 
+            exon + "," + 
             coding + "," + 
             protein 
         + ")";
