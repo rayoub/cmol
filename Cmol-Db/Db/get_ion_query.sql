@@ -1,9 +1,12 @@
 
 CREATE OR REPLACE FUNCTION get_ion_query (
+    p_from_date DATE DEFAULT NULL,
+    p_to_date DATE DEFAULT NULL,
     p_cmol_id VARCHAR DEFAULT NULL,
     p_mrns VARCHAR ARRAY DEFAULT NULL, 
-    p_genes VARCHAR ARRAY DEFAULT NULL
-    )
+    p_genes VARCHAR ARRAY DEFAULT NULL,
+    p_tc_change VARCHAR DEFAULT NULL, 
+    p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
     analysis_date DATE,
     assay_folder VARCHAR,
@@ -68,9 +71,13 @@ BEGIN
         LEFT JOIN UNNEST(p_genes) pg(gene)
             ON LOWER(v.genes) LIKE '%' || LOWER(pg.gene) || '%'
     WHERE 
-        (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
+        (p_from_date IS NULL OR s.analysis_date >= p_from_date)
+        AND (p_to_date IS NULL OR s.analysis_date <= p_to_date)
+        AND (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
         AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
         AND (p_genes IS NULL OR pg.gene IS NOT NULL)
+        AND (p_tc_change IS NULL OR v.coding LIKE '%' || p_tc_change || '%')
+        AND (p_pc_change IS NULL OR v.protein LIKE '%' || p_pc_change || '%')
     ORDER BY
         s.analysis_date DESC,
         s.assay_folder,
