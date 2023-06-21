@@ -10,7 +10,8 @@ public class IonSample extends PGobject {
     private String sampleFolder;
     private String cmolId;
     private String accessionId;
-    
+    private String analysisDate;
+
     public String getFileName() {
         return fileName;
     }
@@ -58,6 +59,14 @@ public class IonSample extends PGobject {
     public void setAccessionId(String accessionId) {
         this.accessionId = accessionId;
     }
+    
+    public String getAnalysisDate() {
+        return analysisDate;
+    }
+
+    public void setAnalysisDate(String analysisDate) {
+        this.analysisDate = analysisDate;
+    }
 
     @Override
     public String getValue() {
@@ -67,7 +76,8 @@ public class IonSample extends PGobject {
             assayFolder + "," + 
             sampleFolder + "," +
             cmolId + "," +
-            accessionId 
+            accessionId  + "," +
+            analysisDate
         + ")";
         return row;
     }

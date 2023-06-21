@@ -56,6 +56,13 @@ public class IonImport {
             sample.setSampleFolder(parts[1]);
             sample.setCmolId(parts[1].split("_")[0]);
             sample.setAccessionId(parts[1].split("_")[1]);
+            
+            String[] zipParts = sample.getZipName().split("_");
+            for (String part : zipParts) {
+                if (part.startsWith("20") && part.length() == 10) {
+                    sample.setAnalysisDate(part);
+                }
+            }
 
             samples.add(sample);
         }

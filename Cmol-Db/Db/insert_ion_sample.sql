@@ -9,14 +9,16 @@ BEGIN
         assay_folder,
         sample_folder,
         cmol_id,
-        accession_id
+        accession_id,
+        analysis_date
     )
 	SELECT
         zip_name, 
         assay_folder,
         sample_folder,
         cmol_id,
-        accession_id
+        accession_id,
+        analysis_date
 	FROM
 		UNNEST(p_tab);
 
