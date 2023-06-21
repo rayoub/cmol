@@ -70,6 +70,7 @@ public class IonDb {
 
             QueryRow row = new QueryRow();
 
+            row.setAnalysisDate(rs.getString("analysis_date"));
             row.setAssayFolder(rs.getString("assay_folder"));
             row.setCmolId(rs.getString("cmol_id"));
             row.setMrn(rs.getString("mrn"));
@@ -84,10 +85,26 @@ public class IonDb {
             if (rs.wasNull()) row.setFilter("");
             row.setRef(rs.getString("ref"));
             if (rs.wasNull()) row.setRef("");
+            row.setNormalizedAlt(rs.getString("normalized_alt"));
+            if (rs.wasNull()) row.setNormalizedAlt("");
+            row.setCoverage(rs.getString("coverage"));
+            if (rs.wasNull()) row.setCoverage("");
+            row.setAlleleCoverage(rs.getString("allele_coverage"));
+            if (rs.wasNull()) row.setAlleleCoverage("");
+            row.setAlleleRatio(rs.getString("allele_ratio"));
+            if (rs.wasNull()) row.setAlleleRatio("");
+            row.setAlleleFrequency(rs.getString("allele_frequency"));
+            if (rs.wasNull()) row.setAlleleFrequency("");
             row.setGenes(rs.getString("genes"));
             if (rs.wasNull()) row.setGenes("");
             row.setTranscript(rs.getString("transcript"));
             if (rs.wasNull()) row.setTranscript("");
+            row.setLocation(rs.getString("location"));
+            if (rs.wasNull()) row.setLocation("");
+            row.setFunction(rs.getString("function"));
+            if (rs.wasNull()) row.setFunction("");
+            row.setExon(rs.getString("exon"));
+            if (rs.wasNull()) row.setExon("");
             row.setCoding(rs.getString("coding"));
             if (rs.wasNull()) row.setCoding("");
             row.setProtein(rs.getString("protein"));

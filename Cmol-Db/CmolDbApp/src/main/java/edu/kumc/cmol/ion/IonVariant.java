@@ -13,12 +13,12 @@ public class IonVariant extends PGobject {
     private String subtype;
     private String genotype;
     private String filter;
+    private String ref;
+    private String normalizedAlt;
     private String coverage;
     private String alleleCoverage;
     private String alleleRatio;
     private String alleleFrequency;
-    private String ref;
-    private String normalizedAlt;
     private String genes;
     private String transcript;
     private String location;
@@ -75,6 +75,22 @@ public class IonVariant extends PGobject {
         this.filter = filter;
     }
 
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
+    public String getNormalizedAlt() {
+        return normalizedAlt;
+    }
+
+    public void setNormalizedAlt(String normalizedAlt) {
+        this.normalizedAlt = normalizedAlt;
+    }
+
     public String getCoverage() {
         return coverage;
     }
@@ -105,22 +121,6 @@ public class IonVariant extends PGobject {
 
     public void setAlleleFrequency(String alleleFrequency) {
         this.alleleFrequency = alleleFrequency;
-    }
-
-    public String getRef() {
-        return ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
-
-    public String getNormalizedAlt() {
-        return normalizedAlt;
-    }
-
-    public void setNormalizedAlt(String normalizedAlt) {
-        this.normalizedAlt = normalizedAlt;
     }
 
     public String getGenes() {
@@ -189,12 +189,12 @@ public class IonVariant extends PGobject {
             subtype + "," + 
             genotype + "," +
             filter + "," +
+            ref + "," +
+            normalizedAlt + "," + 
             coverage + "," + 
             alleleCoverage + "," + 
             alleleRatio + "," +
             alleleFrequency + "," +
-            ref + "," +
-            normalizedAlt + "," + 
             genes + "," + 
             transcript + "," + 
             location + "," + 
