@@ -729,9 +729,13 @@ if ($reportType -ieq "Comp") {
     $code = "Comprehensive 275"
     $tpp = "QCIIOne_Comprehensive_Cancer_Panel_275"
 }
-elseif ($reportType -ieq "Heme") {
+elseif ($reportType -ieq "Heme141") {
     $code = "Heme 141"
     $tpp = "QCIIOne_Hematologic_Neoplasms_Panel_141"
+}
+elseif ($reportType -ieq "Heme50") {
+    $code = "Heme 50"
+    $tpp = "QCIIOne_Hematologic_Neoplasms_Panel_50"
 }
 else {
     Write-Host "`nERROR: An invalid report type was entered." -ForegroundColor Red
