@@ -10,6 +10,7 @@ public class QueryRow {
     private String diagnosis;
     private String interpretation;
     private String physician;
+    private String locus;
     private String gene;
     private double alleleFraction;
     private String transcript;
@@ -81,6 +82,14 @@ public class QueryRow {
 
     public void setPhysician(String physician) {
         this.physician = physician;
+    }
+
+    public String getLocus() {
+        return locus;
+    }
+
+    public void setLocus(String locus) {
+        this.locus = locus;
     }
 
     public String getGene() {

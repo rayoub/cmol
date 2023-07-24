@@ -119,6 +119,8 @@ public class QciDb {
             if (rs.wasNull()) row.setInterpretation("");
             row.setPhysician(rs.getString("physician"));
             if (rs.wasNull()) row.setPhysician("");
+            row.setLocus(rs.getString("locus"));
+            if (rs.wasNull()) row.setLocus("");
             row.setGene(rs.getString("gene"));
             if (rs.wasNull()) row.setGene("");
             row.setAlleleFraction(rs.getDouble("allele_fraction"));
