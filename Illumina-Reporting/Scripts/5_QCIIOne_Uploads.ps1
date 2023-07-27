@@ -734,7 +734,7 @@ elseif ($reportType -ieq "Heme141") {
     $tpp = "QCIIOne_Hematologic_Neoplasms_Panel_141"
 }
 elseif ($reportType -ieq "Heme50") {
-    $code = "Heme 50"
+    $code = "Heme 50_One"
     $tpp = "QCIIOne_Hematologic_Neoplasms_Panel_50"
 }
 else {
