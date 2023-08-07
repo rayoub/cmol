@@ -174,6 +174,34 @@ public class IonDb {
 
         return zipNames;
     }
+    
+    public static List<IonStat> getStats() throws SQLException {
+
+        List<IonStat> stats = new ArrayList<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT descr, stat FROM get_ion_stats();");
+
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+
+            IonStat stat = new IonStat();
+
+            stat.setDescr(rs.getString("descr"));
+            stat.setStat(rs.getInt("stat"));
+
+            stats.add(stat);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return stats;
+    }
 
     public static void saveSamples(List<IonSample> samples) throws SQLException {
 
