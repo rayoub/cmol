@@ -25,7 +25,7 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
 
 # assays we already did
-$existingTsvs = Get-ChildItem -Path $data -Filter *.tsv 
+$existingTsvs = Get-ChildItem -Path $data -Filter *full.tsv 
 $assayFolders = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingTsv in $existingTsvs) {
     $assayFolders.Add(($existingTsv.Name -split ' ')[0]) | Out-Null
@@ -42,7 +42,7 @@ foreach($zip in $zips) {
 
         $variantsFolder = $zip.DirectoryName + "\" + $zip.FileName + "\Variants"
         $tsvFolder = $shell.namespace($variantsFolder).items() | Select-Object -First 1
-        $tsvFiles = $shell.namespace($variantsFolder + "\" + $tsvFolder.Name).items() | Where-Object { $_.Name -like "*.tsv"}
+        $tsvFiles = $shell.namespace($variantsFolder + "\" + $tsvFolder.Name).items() | Where-Object { $_.Name -like "*full.tsv"}
        
         foreach($tsvFile in $tsvFiles) {
 
