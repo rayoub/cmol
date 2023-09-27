@@ -25,10 +25,10 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
 
 # assays we already did
-$existingTsvs = Get-ChildItem -Path $data -Filter *full.tsv 
+$existingVcfs = Get-ChildItem -Path $data -Filter *SelectedVariants*.vcf 
 $assayFolders = New-Object System.Collections.Generic.HashSet[String]
-foreach($existingTsv in $existingTsvs) {
-    $assayFolders.Add(($existingTsv.Name -split ' ')[0]) | Out-Null
+foreach($existingVcf in $existingVcfs) {
+    $assayFolders.Add(($existingVcf.Name -split ' ')[0]) | Out-Null
 }
 
 # iterate zip objects
@@ -41,19 +41,19 @@ foreach($zip in $zips) {
         $shell = New-Object -com shell.application
 
         $variantsFolder = $zip.DirectoryName + "\" + $zip.FileName + "\Variants"
-        $tsvFolder = $shell.namespace($variantsFolder).items() | Select-Object -First 1
-        $tsvFile = $shell.namespace($variantsFolder + "\" + $tsvFolder.Name).items() | Where-Object { $_.Name -like "*full.tsv"} | Select-Object -First 1
+        $vcfFolder = $shell.namespace($variantsFolder).items() | Select-Object -First 1
+        $vcfFile = $shell.namespace($variantsFolder + "\" + $vcfFolder.Name).items() | Where-Object { $_.Name -like "*SelectedVariants*.vcf"} | Select-Object -First 1
       
-        if ($null -ne $tsvFile) {
-
-            $tsvFileName = $tsvFile.Name.replace(":","_")
-            Write-Host "Extracting" $tsvFileName
-            $shell.namespace($data).copyhere($tsvFile, 16) | Out-Null
+		if ($null -ne $vcfFile) {
+            
+			$vcfFileName = $vcfFile.Name.replace(":","_")
+            Write-Host "Extracting" $vcfFileName
+            $shell.namespace($data).copyhere($vcfFile, 16) | Out-Null
         
-            $tsvFullName = $data + "\" + $tsvFileName
-            $tsvNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $tsvFileName
+            $vcfFullName = $data + "\" + $vcfFileName
+            $vcfNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $vcfFileName
 
-            Rename-Item -Path $tsvFullName -NewName $tsvNewFullName
-        }
+            Rename-Item -Path $vcfFullName -NewName $vcfNewFullName
+		}
     }
 }
