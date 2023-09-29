@@ -11,7 +11,7 @@ import java.util.Map;
 
 import edu.kumc.cmol.core.Constants;
 
-public class Parser {
+public class TsvParser {
 
     public static Map<String, Integer> parseHeaders(String fileName) throws IOException {
 

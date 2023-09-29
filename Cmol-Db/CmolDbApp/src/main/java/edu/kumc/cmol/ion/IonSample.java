@@ -4,20 +4,30 @@ import org.postgresql.util.PGobject;
 
 public class IonSample extends PGobject {
 
-    private String fileName;
+    private String vcfFileName;
+    private String tsvFileName;
+
     private String zipName;
     private String assayFolder;
     private String sampleFolder;
     private String cmolId;
     private String accessionId;
     private String analysisDate;
-
-    public String getFileName() {
-        return fileName;
+    
+    public String getVcfFileName() {
+        return vcfFileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setVcfFileName(String vcfFileName) {
+        this.vcfFileName = vcfFileName;
+    }
+
+    public String getTsvFileName() {
+        return tsvFileName;
+    }
+
+    public void setTsvFileName(String tsvFileName) {
+        this.tsvFileName = tsvFileName;
     }
 
     public String getZipName() {

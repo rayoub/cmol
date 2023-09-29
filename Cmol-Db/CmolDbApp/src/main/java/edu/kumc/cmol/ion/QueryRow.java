@@ -25,6 +25,7 @@ public class QueryRow {
     private String exon;
     private String coding;
     private String protein;
+    private String copyNumber;
 
     public String getAnalysisDate() {
         return analysisDate;
@@ -208,6 +209,14 @@ public class QueryRow {
 
     public void setProtein(String protein) {
         this.protein = protein;
+    }
+
+    public String getCopyNumber() {
+        return copyNumber;
+    }
+
+    public void setCopyNumber(String copyNumber) {
+        this.copyNumber = copyNumber;
     }
 }
    

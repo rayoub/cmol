@@ -26,7 +26,8 @@ public class IonVariant extends PGobject {
     private String exon;
     private String coding;
     private String protein;
-
+    private String copyNumber;
+    
     public String getZipName() {
         return zipName;
     }
@@ -179,6 +180,15 @@ public class IonVariant extends PGobject {
         this.protein = protein;
     }
 
+    public String getCopyNumber() {
+        return copyNumber;
+    }
+
+    public void setCopyNumber(String copyNumber) {
+        this.copyNumber = copyNumber;
+    }
+
+
     @Override
     public String getValue() {
         String row = "("  +
@@ -201,7 +211,8 @@ public class IonVariant extends PGobject {
             function + "," + 
             exon + "," + 
             coding + "," + 
-            protein 
+            protein + "," + 
+            copyNumber
         + ")";
         return row;
     }

@@ -142,6 +142,8 @@ public class IonDb {
             if (rs.wasNull()) row.setCoding("");
             row.setProtein(rs.getString("protein"));
             if (rs.wasNull()) row.setProtein("");
+            row.setCopyNumber(rs.getString("copy_number"));
+            if (rs.wasNull()) row.setCopyNumber("");
 
             rows.add(row);
         }

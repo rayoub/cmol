@@ -24,7 +24,8 @@ BEGIN
         function,
         exon,
         coding,
-        protein
+        protein,
+        copy_number
     )
 	SELECT
         zip_name,
@@ -45,7 +46,8 @@ BEGIN
         function,
         exon,
         coding,
-        protein
+        protein,
+        copy_number
 	FROM
 		UNNEST(p_tab);
 

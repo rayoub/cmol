@@ -140,6 +140,13 @@ public class Main {
     
     private static void option_d(CommandLine line) throws Exception { 
 
+        List<IonSample> samples = IonImport.getSamples();
+
+        for(IonSample sample : samples) {
+            
+            System.out.println("saving " + sample.getZipName());
+            List<IonVariant> variants = IonImport.getVariants(sample);
+        }
     }
 
     public static String splitter(String text, int lineLength) {

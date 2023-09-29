@@ -19,5 +19,6 @@ CREATE TABLE ion_variant
     function VARCHAR NULL,
     exon VARCHAR NULL,
     coding VARCHAR NULL,
-    protein VARCHAR NULL
+    protein VARCHAR NULL,
+    copy_number VARCHAR NULL
 );

@@ -30,7 +30,8 @@ RETURNS TABLE (
     function VARCHAR,
     exon VARCHAR,
     coding VARCHAR,
-    protein VARCHAR
+    protein VARCHAR,
+    copy_number VARCHAR
 )
 AS $$
 BEGIN
@@ -59,7 +60,8 @@ BEGIN
         v.function,
         v.exon,
         v.coding,
-        v.protein
+        v.protein,
+        v.copy_number
     FROM
         ion_sample s
         INNER JOIN ion_mrn m

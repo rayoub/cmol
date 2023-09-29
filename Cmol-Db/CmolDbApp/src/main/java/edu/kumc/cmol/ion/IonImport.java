@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +20,10 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Constants;
 import edu.kumc.cmol.core.Ds;
+import htsjdk.variant.variantcontext.Genotype;
+import htsjdk.variant.variantcontext.GenotypesContext;
+import htsjdk.variant.variantcontext.VariantContext;
+import htsjdk.variant.vcf.VCFFileReader;
 
 public class IonImport {
 
@@ -38,19 +43,31 @@ public class IonImport {
 
     public static List<IonSample> getSamples() throws IOException  {
 
-        List<String> fileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
+        List<String> tsvFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
             .map(path -> path.getFileName().toString())
             .filter(fileName -> fileName.endsWith(".tsv"))
             .collect(Collectors.toList());
 
         // parse samples
         List<IonSample> samples = new ArrayList<>();
-        for (String fileName : fileNames) {
+        for (String tsvFileName : tsvFileNames) {
 
-            String[] parts = fileName.split(" ");
+            String[] parts = tsvFileName.split(" ");
+
+            // get corresponding vcf file name
+            List<String> vcfFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
+                .map(path -> path.getFileName().toString())
+                .filter(fileName -> fileName.startsWith(parts[0] + " " + parts[1] + " " + parts[2]) && fileName.endsWith(".vcf"))
+                .collect(Collectors.toList());
+
+            String vcfFileName = "";
+            if (vcfFileNames.size() > 0) {
+                vcfFileName = vcfFileNames.get(0);
+            }
 
             IonSample sample = new IonSample();
-            sample.setFileName(fileName);
+            sample.setVcfFileName(vcfFileName);
+            sample.setTsvFileName(tsvFileName);
             sample.setZipName(parts[2]);
             sample.setAssayFolder(parts[0]);
             sample.setSampleFolder(parts[1]);
@@ -73,26 +90,16 @@ public class IonImport {
 
     public static List<IonVariant> getVariants(IonSample sample) throws IOException {
 
-        // parse file for sample
-        Map<String, Integer> headers = Parser.parseHeaders(sample.getFileName());
-        List<List<String>> listOfValues = Parser.parseValues(sample.getFileName());
-
-        /*
-         * int i = 1;
-         * for(List<String> values : listOfValues) {
-         * 
-         * System.out.println(
-         * "-----------------------------------------------------------");
-         * System.out.println("index = " + i);
-         * for (String header : headers.keySet()) {
-         * System.out.println(header + " = " + Parser.getValue(headers, values,
-         * header));
-         * }
-         * i++;
-         * System.out.println(
-         * "-----------------------------------------------------------");
-         * }
-         */
+        // open vcf file for sample
+        VCFFileReader reader = null;
+        if (!sample.getVcfFileName().isEmpty()) {
+            Path path = Path.of(Paths.get(Constants.ION_DATA_PATH).resolve(sample.getVcfFileName()).toString());
+            reader = new VCFFileReader(path, false);
+        }
+      
+        // parse tsv file for sample
+        Map<String, Integer> headers = TsvParser.parseHeaders(sample.getTsvFileName());
+        List<List<String>> listOfValues = TsvParser.parseValues(sample.getTsvFileName());
 
         // fill list of variants
         List<IonVariant> variants = new ArrayList<>();
@@ -101,26 +108,52 @@ public class IonImport {
             IonVariant variant = new IonVariant();
 
             variant.setZipName(sample.getZipName());
-            variant.setLocus(Parser.getValue(headers, values, "locus"));
-            variant.setVariantType(Parser.getValue(headers, values, "type"));
-            variant.setVariantSubtype(Parser.getValue(headers, values, "subtype"));
-            variant.setGenotype(Parser.getValue(headers, values, "genotype"));
-            variant.setFilter(Parser.getValue(headers, values, "filter"));
-            variant.setCoverage(Parser.getValue(headers, values, "coverage"));
-            variant.setAlleleCoverage(Parser.getValue(headers, values, "allele_coverage").replace(",", ";"));
-            variant.setAlleleRatio(Parser.getValue(headers, values, "allele_ratio").replace(",", ";"));
-            variant.setAlleleFrequency(Parser.getValue(headers, values, "allele_frequency_%"));
-            variant.setRef(Parser.getValue(headers, values, "ref"));
-            variant.setNormalizedAlt(Parser.getValue(headers, values, "normalizedAlt"));
-            variant.setGenes(Parser.getValue(headers, values, "gene"));
-            variant.setTranscript(Parser.getValue(headers, values, "transcript"));
-            variant.setLocation(Parser.getValue(headers, values, "location"));
-            variant.setFunction(Parser.getValue(headers, values, "function"));
-            variant.setExon(Parser.getValue(headers, values, "exon"));
-            variant.setCoding(Parser.getValue(headers, values, "coding"));
-            variant.setProtein(Parser.getValue(headers, values, "protein"));
+            variant.setLocus(TsvParser.getValue(headers, values, "locus"));
+            variant.setVariantType(TsvParser.getValue(headers, values, "type"));
+            variant.setVariantSubtype(TsvParser.getValue(headers, values, "subtype"));
+            variant.setGenotype(TsvParser.getValue(headers, values, "genotype"));
+            variant.setFilter(TsvParser.getValue(headers, values, "filter"));
+            variant.setCoverage(TsvParser.getValue(headers, values, "coverage"));
+            variant.setAlleleCoverage(TsvParser.getValue(headers, values, "allele_coverage").replace(",", ";"));
+            variant.setAlleleRatio(TsvParser.getValue(headers, values, "allele_ratio").replace(",", ";"));
+            variant.setAlleleFrequency(TsvParser.getValue(headers, values, "allele_frequency_%"));
+            variant.setRef(TsvParser.getValue(headers, values, "ref"));
+            variant.setNormalizedAlt(TsvParser.getValue(headers, values, "normalizedAlt"));
+            variant.setGenes(TsvParser.getValue(headers, values, "gene"));
+            variant.setTranscript(TsvParser.getValue(headers, values, "transcript"));
+            variant.setLocation(TsvParser.getValue(headers, values, "location"));
+            variant.setFunction(TsvParser.getValue(headers, values, "function"));
+            variant.setExon(TsvParser.getValue(headers, values, "exon"));
+            variant.setCoding(TsvParser.getValue(headers, values, "coding"));
+            variant.setProtein(TsvParser.getValue(headers, values, "protein"));
+            
+            if (reader != null) {
+                String chr = variant.getLocus().split(":")[0];
+                int position = Integer.parseInt(variant.getLocus().split("_")[0].split("-")[0].split(":")[1]);
+                try {
+                    for (VariantContext context : reader) {
+                        if (context.getContig().equals(chr) && context.getStart() == position) {
+                            GenotypesContext gcontext = context.getGenotypes();
+                            Genotype g = gcontext.get(0);
+                            String cn = (String)g.getAnyAttribute("CN"); 
+                            if (cn == null || cn == "null") {
+                                cn = "";
+                            }
+                            variant.setCopyNumber(cn);
+                            break;
+                        }
+                    }
+                }
+                catch(Exception e) {
+                    // do nothing
+                }
+            }
 
             variants.add(variant);
+        }
+
+        if (reader != null) {
+            reader.close();
         }
 
         return variants;
