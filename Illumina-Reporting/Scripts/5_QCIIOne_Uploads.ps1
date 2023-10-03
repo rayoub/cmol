@@ -730,7 +730,7 @@ if ($reportType -ieq "Comp") {
     $tpp = "QCIIOne_Comprehensive_Cancer_Panel_275"
 }
 elseif ($reportType -ieq "Heme141") {
-    $code = "Heme 141"
+    $code = "Heme 141_One"
     $tpp = "QCIIOne_Hematologic_Neoplasms_Panel_141"
 }
 elseif ($reportType -ieq "Heme50") {
