@@ -1,5 +1,4 @@
 ##fileformat=VCFv4.2
-##fileDate=20230913
 ##fileEncoding=UTF-8
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HOTSPOTS
