@@ -41,15 +41,16 @@ public class IonImport {
         conn.close();
     }
 
-    public static List<IonSample> getSamples() throws IOException  {
+    public static List<IonSample> getSamples(DownloadType downloadType) throws IOException  {
+
+        List<IonSample> samples = new ArrayList<>();
 
         List<String> tsvFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
             .map(path -> path.getFileName().toString())
-            .filter(fileName -> fileName.endsWith(".tsv"))
+            .filter(fileName -> fileName.endsWith(".tsv") && fileName.contains(downloadType.getPattern()))
             .collect(Collectors.toList());
 
         // parse samples
-        List<IonSample> samples = new ArrayList<>();
         for (String tsvFileName : tsvFileNames) {
 
             String[] parts = tsvFileName.split(" ");
@@ -68,11 +69,19 @@ public class IonImport {
             IonSample sample = new IonSample();
             sample.setVcfFileName(vcfFileName);
             sample.setTsvFileName(tsvFileName);
+            sample.setDownloadType(downloadType.getPattern());
             sample.setZipName(parts[2]);
             sample.setAssayFolder(parts[0]);
             sample.setSampleFolder(parts[1]);
-            sample.setCmolId(parts[1].split("_")[0]);
-            sample.setAccessionId(parts[1].split("_")[1]);
+
+            if (parts[1].contains("_")) {
+                sample.setCmolId(parts[1].split("_")[0]);
+                sample.setAccessionId(parts[1].split("_")[1]);
+            }
+            else {
+                sample.setCmolId(parts[1]);
+                sample.setAccessionId(parts[1]);
+            }
             
             String[] zipParts = sample.getZipName().split("_");
             for (String part : zipParts) {
@@ -82,7 +91,7 @@ public class IonImport {
             }
 
             samples.add(sample);
-        }
+        } 
 
         // return samples 
         return samples;

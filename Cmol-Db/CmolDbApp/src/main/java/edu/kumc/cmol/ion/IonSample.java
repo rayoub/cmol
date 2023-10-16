@@ -7,6 +7,7 @@ public class IonSample extends PGobject {
     private String vcfFileName;
     private String tsvFileName;
 
+    private String downloadType;
     private String zipName;
     private String assayFolder;
     private String sampleFolder;
@@ -28,6 +29,14 @@ public class IonSample extends PGobject {
 
     public void setTsvFileName(String tsvFileName) {
         this.tsvFileName = tsvFileName;
+    }
+    
+    public String getDownloadType() {
+        return downloadType;
+    }
+
+    public void setDownloadType(String downloadType) {
+        this.downloadType = downloadType;
     }
 
     public String getZipName() {
@@ -82,6 +91,7 @@ public class IonSample extends PGobject {
     public String getValue() {
         String row = "("  +
 
+            downloadType + "," + 
             zipName + "," + 
             assayFolder + "," + 
             sampleFolder + "," +

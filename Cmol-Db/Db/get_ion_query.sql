@@ -73,7 +73,8 @@ BEGIN
         LEFT JOIN UNNEST(p_genes) pg(gene)
             ON LOWER(v.genes) LIKE '%' || LOWER(pg.gene) || '%'
     WHERE 
-        (p_from_date IS NULL OR s.analysis_date >= p_from_date)
+        s.download_type = 'SelectedVariants'
+        AND (p_from_date IS NULL OR s.analysis_date >= p_from_date)
         AND (p_to_date IS NULL OR s.analysis_date <= p_to_date)
         AND (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
         AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)

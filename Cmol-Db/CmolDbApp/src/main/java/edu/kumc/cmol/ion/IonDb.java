@@ -155,7 +155,7 @@ public class IonDb {
         return rows;
     }
 
-    public static Set<String> getZipNames() throws SQLException {
+    public static Set<String> getZipNames(DownloadType downloadType) throws SQLException {
 
         Set<String> zipNames = new HashSet<>();
 
@@ -163,7 +163,7 @@ public class IonDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT zip_name FROM ion_sample;");
+        PreparedStatement stmt = conn.prepareCall("SELECT zip_name FROM ion_sample WHERE download_type = '" + downloadType.getPattern() + "';");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

@@ -7,7 +7,7 @@ $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 # get zip files
 $files = @()
 foreach($path in $paths) {
-    $files += Get-ChildItem -Path $path -Filter CP*.zip -Recurse -Depth 2
+    $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
 }
 
 # create zip objects
@@ -24,17 +24,17 @@ for($i = 0; $i -lt $files.Length; $i++){
 # sort zip objects
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
 
-# assays we already did
-$existingTsvs = Get-ChildItem -Path $data -Filter *full.tsv 
-$assayFolders = New-Object System.Collections.Generic.HashSet[String]
+# zips we already did
+$existingTsvs = Get-ChildItem -Path $data -Filter *.tsv 
+$existingZips = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingTsv in $existingTsvs) {
-    $assayFolders.Add(($existingTsv.Name -split ' ')[0]) | Out-Null
+    $existingZips.Add(($existingTsv.Name -split ' ')[2]) | Out-Null
 }
 
 # iterate zip objects
 foreach($zip in $zips) {
 
-    if ($assayFolders -notcontains $zip.AssayFolder) {
+    if ($existingZips -notcontains [io.path]::GetFileNameWithoutExtension($zip.FileName)) {
 
         Write-Host "Processing a zip file for" $zip.SampleFolder 
 

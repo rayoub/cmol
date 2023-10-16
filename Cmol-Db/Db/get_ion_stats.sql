@@ -12,7 +12,9 @@ BEGIN
         'sample count'::VARCHAR AS descr,
         COUNT(DISTINCT s.sample_folder)::INTEGER AS stat
     FROM
-        ion_sample AS s;
+        ion_sample AS s
+    WHERE
+        download_type = 'SelectedVariants';
 
 END;
 $$LANGUAGE plpgsql;

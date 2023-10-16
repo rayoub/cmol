@@ -1,6 +1,7 @@
 
 CREATE TABLE ion_sample
 (
+    download_type VARCHAR NOT NULL,
     zip_name VARCHAR NOT NULL,
     assay_folder VARCHAR NOT NULL,
     sample_folder VARCHAR NULL,

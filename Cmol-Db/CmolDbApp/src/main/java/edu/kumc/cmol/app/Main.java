@@ -15,6 +15,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.kumc.cmol.core.Constants;
+import edu.kumc.cmol.ion.DownloadType;
 import edu.kumc.cmol.ion.IonDb;
 import edu.kumc.cmol.ion.IonImport;
 import edu.kumc.cmol.ion.IonMrn;
@@ -43,10 +44,14 @@ public class Main {
             .build());
 
         group.addOption(Option.builder("i")
-            .desc("import Ion samples")
+            .desc("import Ion selected variants")
             .build());
         
         group.addOption(Option.builder("j")
+            .desc("import Ion filtered variants")
+            .build());
+        
+        group.addOption(Option.builder("k")
             .desc("import Ion MRNs")
             .build());
         
@@ -83,6 +88,8 @@ public class Main {
                 option_i(line);
             } else if (line.hasOption("j")) {
                 option_j(line);
+            } else if (line.hasOption("k")) {
+                option_k(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -112,10 +119,10 @@ public class Main {
 
     private static void option_i(CommandLine line) throws Exception {
 
-        List<IonSample> samples = IonImport.getSamples();
+        List<IonSample> samples = IonImport.getSamples(DownloadType.SelectedVariants);
 
         // remove samples we have already seen
-        Set<String> zipNames = IonDb.getZipNames();
+        Set<String> zipNames = IonDb.getZipNames(DownloadType.SelectedVariants);
         for (int i = samples.size() - 1; i >= 0; i--) {
             if (zipNames.contains(samples.get(i).getZipName())) {
                 samples.remove(i);
@@ -134,19 +141,34 @@ public class Main {
     
     private static void option_j(CommandLine line) throws Exception {
 
+        List<IonSample> samples = IonImport.getSamples(DownloadType.Filtered);
+
+        // remove samples we have already seen
+        Set<String> zipNames = IonDb.getZipNames(DownloadType.Filtered);
+        for (int i = samples.size() - 1; i >= 0; i--) {
+            if (zipNames.contains(samples.get(i).getZipName())) {
+                samples.remove(i);
+            }
+        }
+
+        // save new samples
+        IonDb.saveSamples(samples);
+        for(IonSample sample : samples) {
+            
+            System.out.println("saving " + sample.getZipName());
+            List<IonVariant> variants = IonImport.getVariants(sample);
+            IonDb.saveVariants(variants);            
+        }
+    }
+    
+    private static void option_k(CommandLine line) throws Exception {
+
         List<IonMrn> mrns = IonImport.getMrns();
         IonDb.saveMrns(mrns);
     }
     
     private static void option_d(CommandLine line) throws Exception { 
 
-        List<IonSample> samples = IonImport.getSamples();
-
-        for(IonSample sample : samples) {
-            
-            System.out.println("saving " + sample.getZipName());
-            List<IonVariant> variants = IonImport.getVariants(sample);
-        }
     }
 
     public static String splitter(String text, int lineLength) {

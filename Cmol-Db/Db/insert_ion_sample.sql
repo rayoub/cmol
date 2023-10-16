@@ -5,6 +5,7 @@ AS $$
 BEGIN
 	
     INSERT INTO ion_sample (
+        download_type,
         zip_name,
         assay_folder,
         sample_folder,
@@ -13,6 +14,7 @@ BEGIN
         analysis_date
     )
 	SELECT
+        download_type,
         zip_name, 
         assay_folder,
         sample_folder,
