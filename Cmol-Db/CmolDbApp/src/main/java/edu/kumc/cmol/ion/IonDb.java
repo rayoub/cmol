@@ -177,32 +177,26 @@ public class IonDb {
         return zipNames;
     }
     
-    public static List<IonStat> getStats() throws SQLException {
+    public static int getSampleCount(DownloadType downloadType) throws SQLException {
 
-        List<IonStat> stats = new ArrayList<>();
+        int sampleCount = -1;
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT descr, stat FROM get_ion_stats();");
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT zip_name) AS sn FROM ion_sample WHERE download_type = '" + downloadType.getPattern() + "';"); 
 
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-
-            IonStat stat = new IonStat();
-
-            stat.setDescr(rs.getString("descr"));
-            stat.setStat(rs.getInt("stat"));
-
-            stats.add(stat);
+            sampleCount = rs.getInt("sn");
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return stats;
+        return sampleCount;
     }
 
     public static void saveSamples(List<IonSample> samples) throws SQLException {
