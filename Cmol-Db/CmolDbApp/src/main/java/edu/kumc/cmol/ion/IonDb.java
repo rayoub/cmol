@@ -177,6 +177,39 @@ public class IonDb {
         return zipNames;
     }
     
+    public static List<IonCnvStat> getCnvStats() throws SQLException {
+
+        List<IonCnvStat> stats = new ArrayList<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT gene, sn, gn, gn_pct, min_cn, max_cn, avg_cn FROM get_ion_cnv_stats();");
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+
+            IonCnvStat stat = new IonCnvStat();
+
+            stat.setGene(rs.getString("gene"));
+            stat.setSn(rs.getInt("sn"));
+            stat.setGn(rs.getInt("gn"));
+            stat.setGnPct(rs.getDouble("gn_pct"));
+            stat.setMinCn(rs.getDouble("min_cn"));
+            stat.setMaxCn(rs.getDouble("max_cn"));
+            stat.setAvgCn(rs.getDouble("avg_cn"));
+
+            stats.add(stat);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return stats;
+    }
+    
     public static int getSampleCount(DownloadType downloadType) throws SQLException {
 
         int sampleCount = -1;

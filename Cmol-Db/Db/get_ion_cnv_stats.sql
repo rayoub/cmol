@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION get_ion_cnv_stats ()
 RETURNS TABLE (
-    descr VARCHAR,
+    gene VARCHAR,
 	sn INTEGER,
 	gn INTEGER,
 	gn_pct NUMERIC,
