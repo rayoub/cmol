@@ -1,5 +1,5 @@
 
-CREATE OR REPLACE FUNCTION get_ion_cnv_stats ()
+CREATE OR REPLACE FUNCTION get_ion_cnv_stats (p_type_id INTEGER)
 RETURNS TABLE (
     gene VARCHAR,
 	sn INTEGER,
@@ -18,15 +18,32 @@ BEGIN
 		SELECT
 			s.zip_name,
 			v.genes AS gene, -- only one in all cases for cnv
-			v.copy_number::NUMERIC AS cn
+			v.copy_number::NUMERIC,
+			v.copy_number_type
 		FROM
 			ion_sample AS s
 			INNER JOIN ion_variant AS v  -- assumed 1-1
 				ON s.zip_name = v.zip_name
 		WHERE
 			s.download_type = 'Filtered'	
+			AND type = 'CNV'
 			AND	genes IS NOT NULL
-			AND copy_number IS NOT NULL AND copy_number <> 'null'
+			AND copy_number IS NOT NULL 
+			AND subtype IS NULL
+	),
+	gene_cn_filtered AS 
+	(
+		SELECT
+			g.zip_name,
+			g.gene,
+			g.copy_number 
+		FROM
+			gene_cn g 
+		WHERE
+			(p_type_id = 1 AND g.copy_number_type = 'Amplification')
+			OR (p_type_id = 2 AND g.copy_number_type = 'Deletion')
+			OR (p_type_id = 3 AND g.copy_number_type IS NULL AND g.copy_number > 4)
+			OR (p_type_id = 4 AND g.copy_number_type IS NULL AND g.copy_number < 2)
 	),
 	sample_n AS
 	(
@@ -43,11 +60,11 @@ BEGIN
 			g.gene,
 			(SELECT s.n FROM sample_n s) AS sn,
 			COUNT(DISTINCT g.zip_name) AS gn,
-			MIN(cn) AS min_cn,
-			MAX(cn) AS max_cn,
-			AVG(cn) AS avg_cn
+			MIN(g.copy_number) AS min_cn,
+			MAX(g.copy_number) AS max_cn,
+			AVG(g.copy_number) AS avg_cn
 		FROM
-			gene_cn g
+			gene_cn_filtered g
 		GROUP BY 
 			g.gene
 		ORDER BY

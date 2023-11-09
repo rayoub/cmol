@@ -144,6 +144,8 @@ public class IonDb {
             if (rs.wasNull()) row.setProtein("");
             row.setCopyNumber(rs.getString("copy_number"));
             if (rs.wasNull()) row.setCopyNumber("");
+            row.setCopyNumberType(rs.getString("copy_number_type"));
+            if (rs.wasNull()) row.setCopyNumberType("");
 
             rows.add(row);
         }
@@ -177,7 +179,7 @@ public class IonDb {
         return zipNames;
     }
     
-    public static List<IonCnvStat> getCnvStats() throws SQLException {
+    public static List<IonCnvStat> getCnvStats(CnvType cnvType) throws SQLException {
 
         List<IonCnvStat> stats = new ArrayList<>();
 
@@ -185,7 +187,7 @@ public class IonDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT gene, sn, gn, gn_pct, min_cn, max_cn, avg_cn FROM get_ion_cnv_stats();");
+        PreparedStatement stmt = conn.prepareCall("SELECT gene, sn, gn, gn_pct, min_cn, max_cn, avg_cn FROM get_ion_cnv_stats(" + cnvType.getId() + ");");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

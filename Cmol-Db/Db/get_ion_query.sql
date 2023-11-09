@@ -31,7 +31,8 @@ RETURNS TABLE (
     exon VARCHAR,
     coding VARCHAR,
     protein VARCHAR,
-    copy_number VARCHAR
+    copy_number VARCHAR,
+    copy_number_type VARCHAR
 )
 AS $$
 BEGIN
@@ -61,7 +62,8 @@ BEGIN
         v.exon,
         v.coding,
         v.protein,
-        v.copy_number
+        v.copy_number,
+        v.copy_number_type
     FROM
         ion_sample s
         INNER JOIN ion_mrn m

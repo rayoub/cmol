@@ -26,6 +26,7 @@ public class QueryRow {
     private String coding;
     private String protein;
     private String copyNumber;
+    private String copyNumberType;
 
     public String getAnalysisDate() {
         return analysisDate;
@@ -217,6 +218,14 @@ public class QueryRow {
 
     public void setCopyNumber(String copyNumber) {
         this.copyNumber = copyNumber;
+    }
+    
+    public String getCopyNumberType() {
+        return copyNumberType;
+    }
+
+    public void setCopyNumberType(String copyNumberType) {
+        this.copyNumberType = copyNumberType;
     }
 }
    

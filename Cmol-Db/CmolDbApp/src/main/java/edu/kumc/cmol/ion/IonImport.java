@@ -1,6 +1,7 @@
 package edu.kumc.cmol.ion;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +18,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.postgresql.ds.PGSimpleDataSource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kumc.cmol.core.Constants;
 import edu.kumc.cmol.core.Ds;
@@ -135,13 +138,19 @@ public class IonImport {
             variant.setExon(TsvParser.getValue(headers, values, "exon"));
             variant.setCoding(TsvParser.getValue(headers, values, "coding"));
             variant.setProtein(TsvParser.getValue(headers, values, "protein"));
-            
-            if (reader != null) {
+           
+            variant.setCopyNumber("");
+            variant.setCopyNumberType("");
+            if (variant.getVariantType().equals("CNV") && reader != null) {
+
                 String chr = variant.getLocus().split(":")[0];
                 int position = Integer.parseInt(variant.getLocus().split("_")[0].split("-")[0].split(":")[1]);
                 try {
                     for (VariantContext context : reader) {
+                            
                         if (context.getContig().equals(chr) && context.getStart() == position) {
+                            
+                            // copy number 
                             GenotypesContext gcontext = context.getGenotypes();
                             Genotype g = gcontext.get(0);
                             String cn = (String)g.getAnyAttribute("CN"); 
@@ -149,6 +158,19 @@ public class IonImport {
                                 cn = "";
                             }
                             variant.setCopyNumber(cn);
+
+                            // strip
+                            String json = context.getAttributeAsString("FUNC", "");
+                            if (json.startsWith("[[")) {
+                                json = json.substring(1, json.length() - 1).replace("'", "\"");
+                            }
+
+                            // copy number type
+                            ObjectMapper mapper = new ObjectMapper();
+                            CnvFUNC[] objs = mapper.readValue(json, CnvFUNC[].class);
+                            CnvFUNC obj = objs[0];
+                            variant.setCopyNumberType(obj.oncomineVariantClass);
+
                             break;
                         }
                     }

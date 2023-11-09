@@ -4,7 +4,6 @@ RETURNS VOID
 AS $$
 BEGIN
 	
-
     INSERT INTO ion_variant (
         zip_name,
         locus,
@@ -25,7 +24,8 @@ BEGIN
         exon,
         coding,
         protein,
-        copy_number
+        copy_number,
+        copy_number_type
     )
 	SELECT
         zip_name,
@@ -47,7 +47,8 @@ BEGIN
         exon,
         coding,
         protein,
-        copy_number
+        copy_number,
+        copy_number_type
 	FROM
 		UNNEST(p_tab);
 
