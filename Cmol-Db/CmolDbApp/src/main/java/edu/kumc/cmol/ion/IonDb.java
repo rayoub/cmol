@@ -26,30 +26,33 @@ public class IonDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?,?,?,?,?,?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_ion_query(?,?,?,?,?,?,?,?);");
+
+        // download type
+        stmt.setString(1, criteria.getDownloadType());
 
         // from date
         if (criteria.getFromDate() == null || criteria.getFromDate().isBlank()) {
-            stmt.setNull(1, Types.DATE);
+            stmt.setNull(2, Types.DATE);
         }
         else {
-            stmt.setDate(1, Date.valueOf(criteria.getFromDate()));
+            stmt.setDate(2, Date.valueOf(criteria.getFromDate()));
         }
         
         // to date
         if (criteria.getToDate() == null || criteria.getToDate().isBlank()) {
-            stmt.setNull(2, Types.DATE);
+            stmt.setNull(3, Types.DATE);
         }
         else {
-            stmt.setDate(2, Date.valueOf(criteria.getToDate()));
+            stmt.setDate(3, Date.valueOf(criteria.getToDate()));
         }
 
         // cmol id
         if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
-            stmt.setNull(3, Types.VARCHAR);
+            stmt.setNull(4, Types.VARCHAR);
         }
         else {
-            stmt.setString(3, criteria.getCmolId());
+            stmt.setString(4, criteria.getCmolId());
         }
         
         // mrns
@@ -59,12 +62,12 @@ public class IonDb {
             mrns = mrns.replaceAll("\\s","");
             if (!mrns.isEmpty()) {
                 String[] a = mrns.split(";");
-                stmt.setArray(4, conn.createArrayOf("VARCHAR", a));
+                stmt.setArray(5, conn.createArrayOf("VARCHAR", a));
                 mrnsIsNull = false;
             }
         }
         if (mrnsIsNull) {
-            stmt.setNull(4, Types.ARRAY);
+            stmt.setNull(5, Types.ARRAY);
         }
         
         // genes
@@ -74,28 +77,28 @@ public class IonDb {
             genes = genes.replaceAll("\\s","");
             if (!genes.isEmpty()) {
                 String[] a = genes.split(";");
-                stmt.setArray(5, conn.createArrayOf("VARCHAR", a));
+                stmt.setArray(6, conn.createArrayOf("VARCHAR", a));
                 genesIsNull = false;
             }
         }
         if (genesIsNull) {
-            stmt.setNull(5, Types.ARRAY);
+            stmt.setNull(6, Types.ARRAY);
         }
 
         // tc change
         if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
-            stmt.setNull(6, Types.VARCHAR);
+            stmt.setNull(7, Types.VARCHAR);
         }
         else {
-            stmt.setString(6, criteria.getTranscriptChange());
+            stmt.setString(7, criteria.getTranscriptChange());
         }
 
         // pc change
         if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-            stmt.setNull(7, Types.VARCHAR);
+            stmt.setNull(8, Types.VARCHAR);
         }
         else {
-            stmt.setString(7, criteria.getProteinChange());
+            stmt.setString(8, criteria.getProteinChange());
         }
 
         ResultSet rs = stmt.executeQuery();

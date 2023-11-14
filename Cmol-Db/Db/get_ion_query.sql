@@ -1,5 +1,6 @@
 
 CREATE OR REPLACE FUNCTION get_ion_query (
+    p_download_type VARCHAR,
     p_from_date DATE DEFAULT NULL,
     p_to_date DATE DEFAULT NULL,
     p_cmol_id VARCHAR DEFAULT NULL,
@@ -75,7 +76,7 @@ BEGIN
         LEFT JOIN UNNEST(p_genes) pg(gene)
             ON LOWER(v.genes) LIKE '%' || LOWER(pg.gene) || '%'
     WHERE 
-        s.download_type = 'SelectedVariants'
+        s.download_type = p_download_type
         AND (p_from_date IS NULL OR s.analysis_date >= p_from_date)
         AND (p_to_date IS NULL OR s.analysis_date <= p_to_date)
         AND (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)

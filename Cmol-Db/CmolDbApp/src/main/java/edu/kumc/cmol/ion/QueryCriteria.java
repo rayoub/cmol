@@ -2,6 +2,7 @@ package edu.kumc.cmol.ion;
 
 public class QueryCriteria {
 
+    private String downloadType;
     private String fromDate;
     private String toDate;
     private String cmolId;
@@ -9,6 +10,14 @@ public class QueryCriteria {
     private String genes;
     private String transcriptChange;
     private String proteinChange;
+    
+    public String getDownloadType() {
+        return downloadType;
+    }
+
+    public void setDownloadType(String downloadType) {
+        this.downloadType = downloadType;
+    }
 
     public String getFromDate() {
         return fromDate;
