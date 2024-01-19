@@ -1,7 +1,7 @@
 
 # set locations 
 $root = "R:\CMOL\Assay Results\Clinical Data\NGS Comprehensive Plus\"
-$paths = @(($root + "2022 (Run 001-015)"), ($root + "2023 (Run 016- )"))
+$paths = @(($root + "2022 (Run 001-015)"), ($root + "2023 (Run 016-090)"), ($root + "2024 (Run 091-)"))
 $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 
 # get zip files
@@ -13,11 +13,13 @@ foreach($path in $paths) {
 # create zip objects
 $zips = @($null) * $files.Length
 for($i = 0; $i -lt $files.Length; $i++){
-    $zips[$i] = [PSCustomObject]@{ 
-        DirectoryName = $files[$i].DirectoryName;
-        FileName = $files[$i].Name;
-        SampleFolder = $files[$i].Directory.Name;
-        AssayFolder = $files[$i].Directory.Parent.Name
+    if ($files[$i].DirectoryName.Split(" ").Length -eq 1) {
+        $zips[$i] = [PSCustomObject]@{ 
+            DirectoryName = $files[$i].DirectoryName;
+            FileName = $files[$i].Name;
+            SampleFolder = $files[$i].Directory.Name;
+            AssayFolder = $files[$i].Directory.Parent.Name
+        }
     }
 }
 
