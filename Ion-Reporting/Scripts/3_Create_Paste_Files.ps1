@@ -442,7 +442,7 @@ foreach($id in $patientRows.Keys){
         $a.Columns("E").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # dob , sex 
-        $a.Columns("F").text.trim() + ", " + $a.Columns("G").text.trim().toupper() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+        $a.Columns("F").text.trim() + ", " + $a.Columns("G").text.trim().toupper().substring(0,1) + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
 
         # pathoology id        
         $a.Columns("H").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
