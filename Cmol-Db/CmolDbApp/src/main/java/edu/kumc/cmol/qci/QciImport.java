@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import edu.kumc.cmol.core.Ds;
 
@@ -82,18 +83,23 @@ public class QciImport {
             String sampleId = FilenameUtils.removeExtension(filePath.getFileName().toString());
             if (!sampleIds.contains(sampleId) && !BLACK_LIST.contains(sampleId)) {
 
-                Document xml = builder.parse(filePath.toFile());
-
-                Pair<QciSample, List<QciVariant>> pair = null;
                 try {
-                    pair = Parser.parseXml(sampleId, xml);
-                } catch (ParseException e) {
-                    pair = null;
-                }
+                    Document xml = builder.parse(filePath.toFile());
 
-                if (pair != null) {
-                    samples.add(pair.getLeft());
-                    variants.addAll(pair.getRight());
+                    Pair<QciSample, List<QciVariant>> pair = null;
+                    try {
+                        pair = Parser.parseXml(sampleId, xml);
+                    } catch (ParseException e) {
+                        pair = null;
+                    }
+
+                    if (pair != null) {
+                        samples.add(pair.getLeft());
+                        variants.addAll(pair.getRight());
+                    }
+                }
+                catch (SAXParseException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         }

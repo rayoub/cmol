@@ -13,7 +13,7 @@ foreach($path in $paths) {
 # create zip objects
 $zips = @($null) * $files.Length
 for($i = 0; $i -lt $files.Length; $i++){
-    if ($files[$i].DirectoryName.Split(" ").Length -eq 1) {
+    if ($files[$i].Directory.Name.Split(" ").Length -eq 1) {
         $zips[$i] = [PSCustomObject]@{ 
             DirectoryName = $files[$i].DirectoryName;
             FileName = $files[$i].Name;
@@ -35,7 +35,6 @@ foreach($existingTsv in $existingTsvs) {
 
 # iterate zip objects
 foreach($zip in $zips) {
-
     if ($existingZips -notcontains [io.path]::GetFileNameWithoutExtension($zip.FileName)) {
 
         Write-Host "Processing a zip file for" $zip.SampleFolder 
