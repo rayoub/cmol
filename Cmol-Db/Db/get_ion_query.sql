@@ -33,7 +33,8 @@ RETURNS TABLE (
     coding VARCHAR,
     protein VARCHAR,
     copy_number VARCHAR,
-    copy_number_type VARCHAR
+    copy_number_type VARCHAR,
+    fold_diff VARCHAR
 )
 AS $$
 BEGIN
@@ -64,7 +65,8 @@ BEGIN
         v.coding,
         v.protein,
         v.copy_number,
-        v.copy_number_type
+        v.copy_number_type,
+        v.fold_diff
     FROM
         ion_sample s
         INNER JOIN ion_mrn m

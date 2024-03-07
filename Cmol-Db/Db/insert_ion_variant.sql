@@ -25,7 +25,8 @@ BEGIN
         coding,
         protein,
         copy_number,
-        copy_number_type
+        copy_number_type,
+        fold_diff
     )
 	SELECT
         zip_name,
@@ -48,7 +49,8 @@ BEGIN
         coding,
         protein,
         copy_number,
-        copy_number_type
+        copy_number_type,
+        fold_diff
 	FROM
 		UNNEST(p_tab);
 

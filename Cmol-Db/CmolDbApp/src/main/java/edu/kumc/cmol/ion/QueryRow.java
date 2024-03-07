@@ -27,6 +27,7 @@ public class QueryRow {
     private String protein;
     private String copyNumber;
     private String copyNumberType;
+    private String foldDiff;
 
     public String getAnalysisDate() {
         return analysisDate;
@@ -226,6 +227,14 @@ public class QueryRow {
 
     public void setCopyNumberType(String copyNumberType) {
         this.copyNumberType = copyNumberType;
+    }
+
+    public String getFoldDiff() {
+        return foldDiff;
+    }
+
+    public void setFoldDiff(String foldDiff) {
+        this.foldDiff = foldDiff;
     }
 }
    

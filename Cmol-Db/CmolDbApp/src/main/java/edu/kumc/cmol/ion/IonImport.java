@@ -141,6 +141,7 @@ public class IonImport {
            
             variant.setCopyNumber("");
             variant.setCopyNumberType("");
+            variant.setFoldDiff("");
             if (variant.getVariantType().equals("CNV") && reader != null) {
 
                 String chr = variant.getLocus().split(":")[0];
@@ -150,14 +151,22 @@ public class IonImport {
                             
                         if (context.getContig().equals(chr) && context.getStart() == position) {
                             
-                            // copy number 
                             GenotypesContext gcontext = context.getGenotypes();
                             Genotype g = gcontext.get(0);
+
+                            // copy number 
                             String cn = (String)g.getAnyAttribute("CN"); 
-                            if (cn == null || cn == "null") {
+                            if (cn == null || cn.equals("null")) {
                                 cn = "";
                             }
                             variant.setCopyNumber(cn);
+
+                            // fold diff 
+                            String fd = (String)g.getAnyAttribute("FD"); 
+                            if (fd == null || fd.equals("null")) {
+                                fd = "";
+                            }
+                            variant.setFoldDiff(fd);
 
                             // strip
                             String json = context.getAttributeAsString("FUNC", "");

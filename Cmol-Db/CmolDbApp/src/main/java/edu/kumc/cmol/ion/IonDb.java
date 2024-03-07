@@ -149,6 +149,8 @@ public class IonDb {
             if (rs.wasNull()) row.setCopyNumber("");
             row.setCopyNumberType(rs.getString("copy_number_type"));
             if (rs.wasNull()) row.setCopyNumberType("");
+            row.setFoldDiff(rs.getString("fold_diff"));
+            if (rs.wasNull()) row.setFoldDiff("");
 
             rows.add(row);
         }

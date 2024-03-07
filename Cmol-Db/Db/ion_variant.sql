@@ -21,5 +21,6 @@ CREATE TABLE ion_variant
     coding VARCHAR NULL,
     protein VARCHAR NULL,
     copy_number VARCHAR NULL,
-    copy_number_type VARCHAR NULL
+    copy_number_type VARCHAR NULL,
+    fold_diff VARCHAR NULL
 );
