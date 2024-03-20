@@ -119,6 +119,7 @@ foreach($dirName in $patientRows.Keys){
         $doc.bookmarks("OrderingFacility").range.text = $a.Columns("P").text.trim()
         $doc.bookmarks("MRN").range.text = $a.Columns("C").text.trim()
         $doc.bookmarks("DOBandSex").range.text = $a.Columns("F").text.trim() + ", " + $a.Columns("G").text.trim()
+        $doc.bookmarks("SurgPathID").range.text = $a.Columns("H").text.trim()
 
         # column 2
         $doc.bookmarks("CollectionDate").range.text = $a.Columns("E").text.trim()
