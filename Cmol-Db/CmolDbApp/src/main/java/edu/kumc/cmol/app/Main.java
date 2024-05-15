@@ -21,6 +21,7 @@ import edu.kumc.cmol.ion.IonImport;
 import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
+import edu.kumc.cmol.lab.ArchiveImport;
 import edu.kumc.cmol.qci.QciDb;
 import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
@@ -32,6 +33,10 @@ public class Main {
         Options options = new Options();
 
         OptionGroup group = new OptionGroup();
+        
+        group.addOption(Option.builder("a")
+            .desc("import Lab archive files")
+            .build());
         
         group.addOption(Option.builder("q")
             .desc("get QCI XML files")
@@ -78,7 +83,9 @@ public class Main {
         }
 
         try {
-            if (line.hasOption("q")) {
+            if (line.hasOption("a")) {
+                option_a(line);
+            } else if (line.hasOption("q")) {
                 option_q(line);
             } else if (line.hasOption("r")) {
                 option_r(line);
@@ -100,6 +107,11 @@ public class Main {
         }
     }
 
+    private static void option_a(CommandLine line) throws Exception {
+
+        ArchiveImport.importArchiveFiles(Constants.LAB_DATA_PATH);
+    }
+    
     private static void option_q(CommandLine line) throws Exception {
 
         String token = WS.getToken();

@@ -11,14 +11,15 @@ public class OptionComparator implements Comparator<Option> {
     private static final Map<String, Integer> _map = new HashMap<String, Integer>();
     
     static {
-        _map.put("q",1);
-        _map.put("r",2);
-        _map.put("s",3);
-        _map.put("i",4);
-        _map.put("j",5);
-        _map.put("k",6);
-        _map.put("d",7);
-        _map.put("?",8);
+        _map.put("a",1);
+        _map.put("q",2);
+        _map.put("r",3);
+        _map.put("s",4);
+        _map.put("i",5);
+        _map.put("j",6);
+        _map.put("k",7);
+        _map.put("d",8);
+        _map.put("?",9);
     }
 
     public int compare(Option x, Option y) {
