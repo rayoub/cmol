@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION get_qci_query (
     p_to_date DATE DEFAULT NULL,
     p_mrns VARCHAR ARRAY DEFAULT NULL, 
     p_genes VARCHAR ARRAY DEFAULT NULL, 
+    p_exon INTEGER DEFAULT NULL, 
     p_tc_change VARCHAR DEFAULT NULL, 
     p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
@@ -64,6 +65,7 @@ BEGIN
             AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
             AND (p_genes IS NULL OR pg.gene IS NOT NULL)
+            AND (p_exon IS NULL OR qv.tc_exon_number = p_exon)
             AND (p_tc_change IS NULL OR qv.tc_change LIKE '%' || p_tc_change || '%')
             AND (p_pc_change IS NULL OR qv.pc_change LIKE '%' || p_pc_change || '%')
             AND qr.test_code NOT LIKE '%Common%'
@@ -109,6 +111,7 @@ BEGIN
             AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
             AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
             AND (p_genes IS NULL OR pg.gene IS NOT NULL)
+            AND (p_exon IS NULL OR qv.tc_exon_number = p_exon) 
             AND (p_tc_change IS NULL OR qv.tc_change LIKE '%' || p_tc_change || '%')
             AND (p_pc_change IS NULL OR qv.pc_change LIKE '%' || p_pc_change || '%')
             AND qr.test_code NOT LIKE '%Common%'

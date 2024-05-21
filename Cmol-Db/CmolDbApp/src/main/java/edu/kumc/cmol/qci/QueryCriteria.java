@@ -7,6 +7,7 @@ public class QueryCriteria {
     private String toDate;
     private String mrns;
     private String genes;
+    private String exon;
     private String transcriptChange;
     private String proteinChange;
 
@@ -48,6 +49,14 @@ public class QueryCriteria {
 
     public void setGenes(String genes) {
         this.genes = genes;
+    }
+  
+    public String getExon() {
+        return exon;
+    }
+
+    public void setExon(String exon) {
+        this.exon = exon;
     }
 
     public String getTranscriptChange() {
