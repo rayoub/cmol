@@ -101,7 +101,7 @@ public class WS {
         }
     }
 
-    public static InputStream getPdf(String token, String accessionId) {
+    public static InputStream getPdf(String token, String sampleId) {
 
         Client client = ClientBuilder.newBuilder()
             .register(JacksonFeature.class)
@@ -111,7 +111,7 @@ public class WS {
         
         WebTarget target = client.target(BASE_URI)
             .path("export")
-            .path(accessionId)
+            .path(sampleId)
             .queryParam("view","pdf");
 
         Invocation.Builder invoke = target.request();
