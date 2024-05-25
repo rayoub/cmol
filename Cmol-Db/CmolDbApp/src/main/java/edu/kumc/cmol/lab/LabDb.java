@@ -24,7 +24,7 @@ public class LabDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_lab_query(?,?,?,?,?,?);");
+        PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_lab_query(?,?,?,?,?,?,?);");
 
         // from date
         if (criteria.getFromDate() == null || criteria.getFromDate().isBlank()) {
@@ -71,21 +71,29 @@ public class LabDb {
         if (genesIsNull) {
             stmt.setNull(4, Types.ARRAY);
         }
-
-        // tc change
-        if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
+        
+        // exon 
+        if (criteria.getExon() == null || criteria.getExon().isBlank()) {
             stmt.setNull(5, Types.VARCHAR);
         }
         else {
-            stmt.setString(5, criteria.getTranscriptChange());
+            stmt.setString(5, criteria.getExon());
+        }
+
+        // tc change
+        if (criteria.getTranscriptChange() == null || criteria.getTranscriptChange().isBlank()) {
+            stmt.setNull(6, Types.VARCHAR);
+        }
+        else {
+            stmt.setString(6, criteria.getTranscriptChange());
         }
 
         // pc change
         if (criteria.getProteinChange() == null || criteria.getProteinChange().isBlank()) {
-            stmt.setNull(6, Types.VARCHAR);
+            stmt.setNull(7, Types.VARCHAR);
         }
         else {
-            stmt.setString(6, criteria.getProteinChange());
+            stmt.setString(7, criteria.getProteinChange());
         }
 
         ResultSet rs = stmt.executeQuery();

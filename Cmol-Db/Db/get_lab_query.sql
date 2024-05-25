@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION get_lab_query (
     p_to_date DATE DEFAULT NULL,
     p_mrns VARCHAR ARRAY DEFAULT NULL, 
     p_genes VARCHAR ARRAY DEFAULT NULL, 
+    p_exon VARCHAR DEFAULT NULL, 
     p_tc_change VARCHAR DEFAULT NULL, 
     p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
@@ -65,6 +66,7 @@ BEGIN
         AND (p_to_date IS NULL OR ls.reported_date <= p_to_date)
         AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
         AND (p_genes IS NULL OR pg.gene IS NOT NULL)
+        AND (p_exon IS NULL OR lv.tc_exon_number LIKE '%' || p_exon || '%')
         AND (p_tc_change IS NULL OR lv.tc_change LIKE '%' || p_tc_change || '%')
         AND (p_pc_change IS NULL OR lv.pc_change LIKE '%' || p_pc_change || '%')
         AND ls.test_code NOT LIKE '%Common%'
