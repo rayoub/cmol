@@ -38,7 +38,7 @@ foreach($zip in $zips) {
 
     if ($existingZips -notcontains [io.path]::GetFileNameWithoutExtension($zip.FileName)) {
 
-        Write-Host "Processing a zip file for" $zip.SampleFolder 
+        Write-Host "Processing a zip file for" $zip.AssayFolder $zip.SampleFolder 
 
         $shell = New-Object -com shell.application
 
