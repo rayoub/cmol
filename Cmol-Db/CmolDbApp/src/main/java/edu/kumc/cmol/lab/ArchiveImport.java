@@ -4,19 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,7 +21,6 @@ public class ArchiveImport {
 
 	private static Map<String, Integer> sampleFieldMap = new HashMap<>();
 	private static Map<String, Integer> variantFieldMap = new HashMap<>();
-	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	
 	static { 
 
@@ -76,18 +71,20 @@ public class ArchiveImport {
 				pkg = OPCPackage.open(fin);
 				wb = new XSSFWorkbook(pkg);
 
-				int rowNumber = 2;
+				//int rowNumber = 2;
 				String lastKey = "";
 				Sheet sheet = wb.getSheetAt(0);
 				for (Row row : sheet) {
 					if (row.getRowNum() != 0) {
 
 						//System.out.println("Processing row = " + rowNumber++);
-						String runId = getCellValue(row.getCell(sampleFieldMap.get("run_id")));
-						String cmolId = getCellValue(row.getCell(sampleFieldMap.get("cmol_id")));
-						if (runId.isEmpty() || cmolId.isEmpty()) {
+						String ngsStr = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")));
+						String cmolId = Import.getCellValue(row.getCell(sampleFieldMap.get("cmol_id")));
+						if (ngsStr.isEmpty() || cmolId.isEmpty()) {
 							continue;
 						}
+						ngsStr = ngsStr.replace(",", "\\,");
+						int runId = Integer.valueOf(ngsStr.split(" ")[1]);
 						String key = runId + cmolId;
 						if (!key.equals(lastKey)) {
 							
@@ -96,14 +93,14 @@ public class ArchiveImport {
 
 							sample.setRunId(runId);
 							sample.setCmolId(cmolId);
-							sample.setMrn(getCellValue(row.getCell(sampleFieldMap.get("mrn"))));
-							sample.setAccession(getCellValue(row.getCell(sampleFieldMap.get("accession"))));
-							sample.setTestCode(getCellValue(row.getCell(sampleFieldMap.get("test_code")))); 
-							sample.setReportedDate(getCellValue(row.getCell(sampleFieldMap.get("reported_date"))));
-							sample.setHospitalName(getCellValue(row.getCell(sampleFieldMap.get("hospital_name")))); 
-							sample.setSampleType(getCellValue(row.getCell(sampleFieldMap.get("sample_type"))));
-							sample.setDiagnosis(getCellValue(row.getCell(sampleFieldMap.get("diagnosis"))));
-							sample.setSurgpathId(getCellValue(row.getCell(sampleFieldMap.get("surgpath_id"))));
+							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn"))));
+							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession"))));
+							sample.setTestCode(Import.getCellValue(row.getCell(sampleFieldMap.get("test_code")))); 
+							sample.setReportedDate(Import.getCellValue(row.getCell(sampleFieldMap.get("reported_date"))));
+							sample.setHospitalName(Import.getCellValue(row.getCell(sampleFieldMap.get("hospital_name")))); 
+							sample.setSampleType(Import.getCellValue(row.getCell(sampleFieldMap.get("sample_type"))));
+							sample.setDiagnosis(Import.getCellValue(row.getCell(sampleFieldMap.get("diagnosis"))));
+							sample.setSurgpathId(Import.getCellValue(row.getCell(sampleFieldMap.get("surgpath_id"))));
 							sample.setArchived("Y");
 
 							samples.add(sample);
@@ -114,20 +111,20 @@ public class ArchiveImport {
 
 						variant.setRunId(runId);
 						variant.setCmolId(cmolId);
-						variant.setChromosome(getCellValue(row.getCell(variantFieldMap.get("chromosome"))));
-						variant.setRegion(getCellValue(row.getCell(variantFieldMap.get("region"))));
-						variant.setVariation(getCellValue(row.getCell(variantFieldMap.get("variation"))));
-						variant.setReference(getCellValue(row.getCell(variantFieldMap.get("reference"))));
-						variant.setAlternate(getCellValue(row.getCell(variantFieldMap.get("alternate"))));
-						variant.setAlleleFraction(getCellValue(row.getCell(variantFieldMap.get("allele_fraction"))));
-						variant.setReadDepth(getCellValue(row.getCell(variantFieldMap.get("read_depth"))));
-						variant.setGene(getCellValue(row.getCell(variantFieldMap.get("gene"))));
-						variant.setTcTranscript(getCellValue(row.getCell(variantFieldMap.get("tc_transcript"))));
-						variant.setTcChange(getCellValue(row.getCell(variantFieldMap.get("tc_change"))));
-						variant.setTcExonNumber(getCellValue(row.getCell(variantFieldMap.get("tc_exon_number"))));
-						variant.setPcChange(getCellValue(row.getCell(variantFieldMap.get("pc_change"))));
-						variant.setAssessment(getCellValue(row.getCell(variantFieldMap.get("assessment"))));
-						variant.setReported(getCellValue(row.getCell(variantFieldMap.get("reported"))));
+						variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome"))));
+						variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region"))));
+						variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation"))));
+						variant.setReference(Import.getCellValue(row.getCell(variantFieldMap.get("reference"))));
+						variant.setAlternate(Import.getCellValue(row.getCell(variantFieldMap.get("alternate"))));
+						variant.setAlleleFraction(Import.getCellValue(row.getCell(variantFieldMap.get("allele_fraction"))));
+						variant.setReadDepth(Import.getCellValue(row.getCell(variantFieldMap.get("read_depth"))));
+						variant.setGene(Import.getCellValue(row.getCell(variantFieldMap.get("gene"))));
+						variant.setTcTranscript(Import.getCellValue(row.getCell(variantFieldMap.get("tc_transcript"))));
+						variant.setTcChange(Import.getCellValue(row.getCell(variantFieldMap.get("tc_change"))));
+						variant.setTcExonNumber(Import.getCellValue(row.getCell(variantFieldMap.get("tc_exon_number"))));
+						variant.setPcChange(Import.getCellValue(row.getCell(variantFieldMap.get("pc_change"))));
+						variant.setAssessment(Import.getCellValue(row.getCell(variantFieldMap.get("assessment"))));
+						variant.setReported(Import.getCellValue(row.getCell(variantFieldMap.get("reported"))));
 
 						variants.add(variant);
 
@@ -159,37 +156,5 @@ public class ArchiveImport {
 		  .filter(file -> file.getName().endsWith("xlsx"))
 		  .map(File::getPath)
 		  .collect(Collectors.toList());
-	}
-
-	private static String getCellValue(Cell cell) {
-
-		String cellValue = "";
-		if (cell != null) {
-			switch (cell.getCellType()) {
-				case STRING:
-					cellValue = cell.getRichStringCellValue().getString();
-					break;
-				case NUMERIC:
-					if (DateUtil.isCellDateFormatted(cell)) {
-						cellValue = formatter.format(cell.getDateCellValue());
-					} 
-					else {
-						double d = cell.getNumericCellValue();
-						if ((d % 1) == 0) {
-							cellValue = String.valueOf(((Double)d).intValue());
-						}
-						else {
-							cellValue = String.valueOf(d);
-						}
-					}
-					break;
-				default:
-					cellValue = "";
-			}
-		}
-		if (cellValue == null) {
-			cellValue = "";
-		}
-		return cellValue;
 	}
 }

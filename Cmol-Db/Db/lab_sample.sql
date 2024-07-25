@@ -1,4 +1,6 @@
-CREATE TABLE lab_sample ( run_id VARCHAR NOT NULL,
+CREATE TABLE lab_sample ( 
+	run_id VARCHAR NOT NULL,
+	run_number INTEGER NOT NULL,
 	cmol_id	VARCHAR NOT NULL,
 	mrn VARCHAR NULL,
 	accession VARCHAR NULL,

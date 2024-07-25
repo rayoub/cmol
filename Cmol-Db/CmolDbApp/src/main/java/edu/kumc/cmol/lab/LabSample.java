@@ -5,6 +5,7 @@ import org.postgresql.util.PGobject;
 public class LabSample extends PGobject {
 
 	private String runId;
+	private int runNumber;
 	private String cmolId;
 	private String mrn;
 	private String accession;
@@ -22,6 +23,13 @@ public class LabSample extends PGobject {
 
 	public void setRunId(String runId) {
 		this.runId = runId;
+	}
+	public int getRunNumber() {
+		return runNumber;
+	}
+
+	public void setRunNumber(int runNumber) {
+		this.runNumber = runNumber;
 	}
 
 	public String getCmolId() {
@@ -108,6 +116,7 @@ public class LabSample extends PGobject {
     public String getValue() {
         String row = "("  +
 			runId.replace(",", "\\,") + "," + 
+			runNumber + "," + 
             cmolId + "," +
             mrn + "," +
             accession.replace("(", "\\(").replace(")","\\)") + "," +

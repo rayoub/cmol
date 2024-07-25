@@ -22,6 +22,7 @@ import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
 import edu.kumc.cmol.lab.ArchiveImport;
+import edu.kumc.cmol.lab.CommonImport;
 import edu.kumc.cmol.qci.QciDb;
 import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
@@ -109,7 +110,7 @@ public class Main {
 
     private static void option_a(CommandLine line) throws Exception {
 
-        ArchiveImport.importArchiveFiles(Constants.LAB_DATA_PATH);
+        ArchiveImport.importArchiveFiles(Constants.LAB_ARCHIVE_PATH);
     }
     
     private static void option_q(CommandLine line) throws Exception {
@@ -181,11 +182,7 @@ public class Main {
     
     private static void option_d(CommandLine line) throws Exception { 
 
-        List<IonSample> samples = IonImport.getSamples(DownloadType.Filtered);
-        for (int i = 0; i < 50; i++) {
-            IonSample sample = samples.get(i);
-            List<IonVariant> variants = IonImport.getVariants(sample);
-        }
+        CommonImport.importFiles();
     }
 
     public static String splitter(String text, int lineLength) {
