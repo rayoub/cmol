@@ -34,9 +34,9 @@ public class FileProps {
 			this.modifier = "";
 		}
 		
-		String fileName = filePath.getParent().getParent().getParent().getFileName().toString();
-		this.runNumber = Import.getRunNumber(fileName);
-		this.panel = Import.getPanel(fileName);
+		String ngsDirName = filePath.getParent().getParent().getParent().getFileName().toString();
+		this.runNumber = Import.getRunNumberFromNgsDirName(ngsDirName);
+		this.panel = Import.getPanelFromNgsDirName(ngsDirName);
 	}
 
 	public Path getFilePath() {

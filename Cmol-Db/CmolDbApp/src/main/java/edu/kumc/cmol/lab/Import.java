@@ -7,8 +7,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +18,6 @@ import edu.kumc.cmol.core.Constants;
 public class Import {
 	
 	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
- 	private static Pattern pattern = Pattern.compile("\\((.*?)\\)");
 
 	public static String getCellValue(Cell cell) {
 
@@ -74,19 +71,28 @@ public class Import {
 		return files;
     }
 	
-	public static int getRunNumber(String fileName) {
+	public static int getRunNumberFromArchiveNgsField(String ngsField) {
 
-		String runNumberStr = fileName.replaceAll("[^\\d]", "");
+		String[] parts = ngsField.split(",");
+		String runNumberStr = parts[parts.length-1].replaceAll("[^\\d]", "");
+		int runNumber = Integer.parseInt(runNumberStr);
+
+		return runNumber;
+	}	
+	
+	public static int getRunNumberFromNgsDirName(String ngsDirName) {
+
+		// we are assuming one block of digits
+		String runNumberStr = ngsDirName.replaceAll("[^\\d]", "");
 		int runNumber = Integer.parseInt(runNumberStr);
 
 		return runNumber;
 	}	
 
-	public static PanelType getPanel(String fileName) {
-
-		Matcher matcher = pattern.matcher(fileName);
-		String panelStr = matcher.group(1);
-
+	public static PanelType getPanelFromNgsDirName(String ngsDirName) {
+		
+		String panelStr = ngsDirName.substring(ngsDirName.indexOf("(") + 1, ngsDirName.indexOf(")"));
+		
 		PanelType panel;
 		if (panelStr.equals("heme")) {
 			panel = PanelType.Heme;

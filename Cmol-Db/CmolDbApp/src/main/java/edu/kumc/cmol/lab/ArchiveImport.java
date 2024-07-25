@@ -78,13 +78,12 @@ public class ArchiveImport {
 					if (row.getRowNum() != 0) {
 
 						//System.out.println("Processing row = " + rowNumber++);
-						String ngsStr = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")));
+						String runId = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")));
 						String cmolId = Import.getCellValue(row.getCell(sampleFieldMap.get("cmol_id")));
-						if (ngsStr.isEmpty() || cmolId.isEmpty()) {
+						if (runId.isEmpty() || cmolId.isEmpty()) {
 							continue;
 						}
-						ngsStr = ngsStr.replace(",", "\\,");
-						int runId = Integer.valueOf(ngsStr.split(" ")[1]);
+						int runNumber = Import.getRunNumberFromArchiveNgsField(runId);
 						String key = runId + cmolId;
 						if (!key.equals(lastKey)) {
 							
@@ -92,6 +91,7 @@ public class ArchiveImport {
 							LabSample sample = new LabSample();
 
 							sample.setRunId(runId);
+							sample.setRunNumber(runNumber);
 							sample.setCmolId(cmolId);
 							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn"))));
 							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession"))));
@@ -130,6 +130,7 @@ public class ArchiveImport {
 
 						lastKey = key;
 					}
+
 				} // for 
 				wb.close();
 
