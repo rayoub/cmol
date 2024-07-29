@@ -15,11 +15,7 @@ public class CommonImport {
 
 		for (FileProps file : files) {
 
-//			OPCPackage pkg = OPCPackage.open(file.getFilePath().toFile());
-	//		XSSFWorkbook wb = new XSSFWorkbook(pkg);
-
-
-		//	pkg.close();
+			System.out.println(file.toString());
 		}
 	}	
 }

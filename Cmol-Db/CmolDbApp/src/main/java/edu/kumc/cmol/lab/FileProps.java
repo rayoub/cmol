@@ -5,10 +5,11 @@ import java.nio.file.Path;
 public class FileProps {
 
 	private Path filePath;	
+	private String runId;
+
 	private String cmolId;
 	private String accessionId;
 	private PanelType panel;
-	private int runNumber;
 	private String modifier;
 
 	public FileProps(Path filePath) {
@@ -35,7 +36,7 @@ public class FileProps {
 		}
 		
 		String ngsDirName = filePath.getParent().getParent().getParent().getFileName().toString();
-		this.runNumber = Import.getRunNumberFromNgsDirName(ngsDirName);
+		this.runId = Import.getRunIdFromNgsDirName(ngsDirName);
 		this.panel = Import.getPanelFromNgsDirName(ngsDirName);
 	}
 
@@ -45,6 +46,14 @@ public class FileProps {
 
 	public void setFilePath(Path filePath) {
 		this.filePath = filePath;
+	}
+	
+	public String getRunId() {
+		return runId;
+	}
+
+	public void setRunId(String runId) {
+		this.runId = runId;
 	}
 
 	public String getCmolId() {
@@ -71,14 +80,6 @@ public class FileProps {
 		this.panel = panel;
 	}
 
-	public int getRunNumber() {
-		return runNumber;
-	}
-
-	public void setRunNumber(int runNumber) {
-		this.runNumber = runNumber;
-	}
-	
 	public String getModifier() {
 		return modifier;
 	}
@@ -90,10 +91,10 @@ public class FileProps {
 	@Override
 	public String toString() {
 		return "filePath=" + filePath + 
+				"\nrunId=" + runId + 
 				"\ncmolId=" + cmolId + 
 				"\naccessionId=" + accessionId + 
 				"\npanel=" + panel + 
-				"\nrunNumber=" + runNumber + 
 				"\nmodifier=" + modifier;
 	}
 }

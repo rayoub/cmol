@@ -60,7 +60,7 @@ public class Import {
                 (p, attrs) -> 
 					attrs.isRegularFile() && 
 					p.getFileName().toString().startsWith("D") &&
-					p.getFileName().toString().endsWith(".xlsm"))
+					p.getFileName().toString().endsWith(".xlsm"));
         ) {
             files = pathStream.map(FileProps::new)
 				.filter(f -> f.getPanel() == panel)
@@ -71,23 +71,11 @@ public class Import {
 		return files;
     }
 	
-	public static int getRunNumberFromArchiveNgsField(String ngsField) {
+	public static String getRunIdFromNgsDirName(String ngsDirName) {
 
-		String[] parts = ngsField.split(",");
-		String runNumberStr = parts[parts.length-1].replaceAll("[^\\d]", "");
-		int runNumber = Integer.parseInt(runNumberStr);
-
-		return runNumber;
-	}	
-	
-	public static int getRunNumberFromNgsDirName(String ngsDirName) {
-
-		// we are assuming one block of digits
-		String runNumberStr = ngsDirName.replaceAll("[^\\d]", "");
-		int runNumber = Integer.parseInt(runNumberStr);
-
-		return runNumber;
-	}	
+		int index = ngsDirName.indexOf(" (");
+		return ngsDirName.substring(0, index);
+	}
 
 	public static PanelType getPanelFromNgsDirName(String ngsDirName) {
 		
@@ -105,5 +93,4 @@ public class Import {
 		}
 		return panel;
 	}
-	
 }

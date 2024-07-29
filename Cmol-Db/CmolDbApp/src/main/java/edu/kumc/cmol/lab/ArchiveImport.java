@@ -83,7 +83,6 @@ public class ArchiveImport {
 						if (runId.isEmpty() || cmolId.isEmpty()) {
 							continue;
 						}
-						int runNumber = Import.getRunNumberFromArchiveNgsField(runId);
 						String key = runId + cmolId;
 						if (!key.equals(lastKey)) {
 							
@@ -91,7 +90,6 @@ public class ArchiveImport {
 							LabSample sample = new LabSample();
 
 							sample.setRunId(runId);
-							sample.setRunNumber(runNumber);
 							sample.setCmolId(cmolId);
 							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn"))));
 							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession"))));
