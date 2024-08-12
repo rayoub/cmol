@@ -22,7 +22,11 @@ import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
 import edu.kumc.cmol.lab.ArchiveImport;
+import edu.kumc.cmol.lab.FileProps;
 import edu.kumc.cmol.lab.HemeImport;
+import edu.kumc.cmol.lab.Import;
+import edu.kumc.cmol.lab.LabDb;
+import edu.kumc.cmol.lab.PanelType;
 import edu.kumc.cmol.qci.QciDb;
 import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
@@ -37,6 +41,9 @@ public class Main {
         
         group.addOption(Option.builder("a")
             .desc("import Lab archive files")
+            .build());
+        group.addOption(Option.builder("b")
+            .desc("import Lab loose files")
             .build());
         
         group.addOption(Option.builder("q")
@@ -86,6 +93,8 @@ public class Main {
         try {
             if (line.hasOption("a")) {
                 option_a(line);
+            } else if (line.hasOption("b")) {
+                option_b(line);
             } else if (line.hasOption("q")) {
                 option_q(line);
             } else if (line.hasOption("r")) {
@@ -111,6 +120,11 @@ public class Main {
     private static void option_a(CommandLine line) throws Exception {
 
         ArchiveImport.importArchiveFiles(Constants.LAB_ARCHIVE_PATH);
+    }
+    
+    private static void option_b(CommandLine line) throws Exception {
+
+        HemeImport.importFiles();
     }
     
     private static void option_q(CommandLine line) throws Exception {
@@ -182,7 +196,23 @@ public class Main {
     
     private static void option_d(CommandLine line) throws Exception { 
 
-        HemeImport.importFiles();
+		Set<String> existing = LabDb.getExisting();
+
+		System.out.println("Getting Files");
+		List<FileProps> fileProps = Import.getFiles(PanelType.Heme).subList(1,10);
+		System.out.println("Finished Getting " + fileProps.size() + " Files");
+
+		for (FileProps fileProp : fileProps) {
+
+			String combinedId = fileProp.getRunId() + "$" + fileProp.getCmolId();
+            System.out.println(combinedId); 
+			if (!existing.contains(combinedId)) {
+                System.out.println("not contains");
+            }
+            else {
+                System.out.println("contains");
+            }
+        }
     }
 
     public static String splitter(String text, int lineLength) {

@@ -60,8 +60,12 @@ public class HemeImport {
 
 		for (FileProps fileProp : fileProps) {
 
-			String combinedId = fileProp.getRunId() + "$" + fileProp.getCmolId();
+			String runId = fileProp.getRunId();
+			String cmolId = fileProp.getCmolId();
+
+			String combinedId = runId + "$" + cmolId;
 			if (!existing.contains(combinedId)) {
+				System.out.println("not contains " + combinedId);
 
 				System.out.println("Processing Excel File: " + fileProp.getFileName());
 
@@ -83,11 +87,7 @@ public class HemeImport {
 					Sheet sheet = wb.getSheet("Result");
 
 					// get header info 
-					Pair<Integer,Integer> p = sampleFieldMap.get("run_id");
-					String runId = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
-					p = sampleFieldMap.get("cmol_id");
-					String cmolId = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
-					p = sampleFieldMap.get("mrn");
+					Pair<Integer,Integer> p = sampleFieldMap.get("mrn");
 					String mrn = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
 					p = sampleFieldMap.get("accession");
 					String accession = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
