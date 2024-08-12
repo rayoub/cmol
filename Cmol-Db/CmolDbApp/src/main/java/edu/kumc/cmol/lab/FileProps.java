@@ -5,8 +5,9 @@ import java.nio.file.Path;
 public class FileProps {
 
 	private Path filePath;	
-	private String runId;
+	private String fileName;
 
+	private String runId;
 	private String cmolId;
 	private String accessionId;
 	private PanelType panel;
@@ -15,9 +16,9 @@ public class FileProps {
 	public FileProps(Path filePath) {
 
 		this.filePath = filePath;
+		this.fileName = filePath.getFileName().toString();
 
 		String idStr = filePath.getParent().getFileName().toString();
-	
 		String[] parts = idStr.split(" ");
 		this.cmolId = parts[0].split("_")[0];
 		this.accessionId = parts[0].split("_")[1];
@@ -46,6 +47,14 @@ public class FileProps {
 
 	public void setFilePath(Path filePath) {
 		this.filePath = filePath;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 	
 	public String getRunId() {
@@ -91,6 +100,7 @@ public class FileProps {
 	@Override
 	public String toString() {
 		return "filePath=" + filePath + 
+				"\nfileName=" + fileName + 
 				"\nrunId=" + runId + 
 				"\ncmolId=" + cmolId + 
 				"\naccessionId=" + accessionId + 

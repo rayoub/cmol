@@ -22,7 +22,7 @@ import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
 import edu.kumc.cmol.lab.ArchiveImport;
-import edu.kumc.cmol.lab.CommonImport;
+import edu.kumc.cmol.lab.HemeImport;
 import edu.kumc.cmol.qci.QciDb;
 import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
@@ -182,7 +182,7 @@ public class Main {
     
     private static void option_d(CommandLine line) throws Exception { 
 
-        CommonImport.importFiles();
+        HemeImport.importFiles();
     }
 
     public static String splitter(String text, int lineLength) {

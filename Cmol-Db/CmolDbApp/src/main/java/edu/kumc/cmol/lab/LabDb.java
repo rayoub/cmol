@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -146,6 +148,33 @@ public class LabDb {
         conn.close();
 
         return rows;
+    }
+    
+    public static Set<String> getExisting() throws SQLException {
+
+        Set<String> existing = new HashSet<>();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+            
+        PreparedStatement stmt = conn.prepareCall("SELECT run_id, cmol_id FROM lab_sample;");
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+
+            String runId = rs.getString("run_id");
+            String cmolId = rs.getString("cmol_id");
+            String combinedId = runId + "$" + cmolId;
+
+            existing.add(combinedId);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return existing;
     }
 
     public static void saveSamples(List<LabSample> samples) throws SQLException {

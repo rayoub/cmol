@@ -165,7 +165,7 @@ public class LabVariant extends PGobject {
             alternate + "," + 
             alleleFraction + "," + 
             readDepth + "," + 
-            gene + "," + 
+            gene.replace(",", "\\,") + "," + 
             tcTranscript + "," + 
             tcChange + "," + 
             tcExonNumber.replace(",", "\\,") + "," + 

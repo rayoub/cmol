@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -66,10 +67,13 @@ public class ArchiveImport {
 			FileInputStream fin = new FileInputStream(path);
 			OPCPackage pkg = null;
 			XSSFWorkbook wb = null;
+			FormulaEvaluator evaluator = null;
+
 			try {
 
 				pkg = OPCPackage.open(fin);
 				wb = new XSSFWorkbook(pkg);
+				evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
 				//int rowNumber = 2;
 				String lastKey = "";
@@ -78,8 +82,8 @@ public class ArchiveImport {
 					if (row.getRowNum() != 0) {
 
 						//System.out.println("Processing row = " + rowNumber++);
-						String runId = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")));
-						String cmolId = Import.getCellValue(row.getCell(sampleFieldMap.get("cmol_id")));
+						String runId = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")), evaluator);
+						String cmolId = Import.getCellValue(row.getCell(sampleFieldMap.get("cmol_id")), evaluator);
 						if (runId.isEmpty() || cmolId.isEmpty()) {
 							continue;
 						}
@@ -91,14 +95,14 @@ public class ArchiveImport {
 
 							sample.setRunId(runId);
 							sample.setCmolId(cmolId);
-							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn"))));
-							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession"))));
-							sample.setTestCode(Import.getCellValue(row.getCell(sampleFieldMap.get("test_code")))); 
-							sample.setReportedDate(Import.getCellValue(row.getCell(sampleFieldMap.get("reported_date"))));
-							sample.setHospitalName(Import.getCellValue(row.getCell(sampleFieldMap.get("hospital_name")))); 
-							sample.setSampleType(Import.getCellValue(row.getCell(sampleFieldMap.get("sample_type"))));
-							sample.setDiagnosis(Import.getCellValue(row.getCell(sampleFieldMap.get("diagnosis"))));
-							sample.setSurgpathId(Import.getCellValue(row.getCell(sampleFieldMap.get("surgpath_id"))));
+							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn")), evaluator));
+							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession")), evaluator));
+							sample.setTestCode(Import.getCellValue(row.getCell(sampleFieldMap.get("test_code")), evaluator)); 
+							sample.setReportedDate(Import.getCellValue(row.getCell(sampleFieldMap.get("reported_date")), evaluator));
+							sample.setHospitalName(Import.getCellValue(row.getCell(sampleFieldMap.get("hospital_name")), evaluator)); 
+							sample.setSampleType(Import.getCellValue(row.getCell(sampleFieldMap.get("sample_type")), evaluator));
+							sample.setDiagnosis(Import.getCellValue(row.getCell(sampleFieldMap.get("diagnosis")), evaluator));
+							sample.setSurgpathId(Import.getCellValue(row.getCell(sampleFieldMap.get("surgpath_id")), evaluator));
 							sample.setArchived("Y");
 
 							samples.add(sample);
@@ -109,20 +113,20 @@ public class ArchiveImport {
 
 						variant.setRunId(runId);
 						variant.setCmolId(cmolId);
-						variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome"))));
-						variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region"))));
-						variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation"))));
-						variant.setReference(Import.getCellValue(row.getCell(variantFieldMap.get("reference"))));
-						variant.setAlternate(Import.getCellValue(row.getCell(variantFieldMap.get("alternate"))));
-						variant.setAlleleFraction(Import.getCellValue(row.getCell(variantFieldMap.get("allele_fraction"))));
-						variant.setReadDepth(Import.getCellValue(row.getCell(variantFieldMap.get("read_depth"))));
-						variant.setGene(Import.getCellValue(row.getCell(variantFieldMap.get("gene"))));
-						variant.setTcTranscript(Import.getCellValue(row.getCell(variantFieldMap.get("tc_transcript"))));
-						variant.setTcChange(Import.getCellValue(row.getCell(variantFieldMap.get("tc_change"))));
-						variant.setTcExonNumber(Import.getCellValue(row.getCell(variantFieldMap.get("tc_exon_number"))));
-						variant.setPcChange(Import.getCellValue(row.getCell(variantFieldMap.get("pc_change"))));
-						variant.setAssessment(Import.getCellValue(row.getCell(variantFieldMap.get("assessment"))));
-						variant.setReported(Import.getCellValue(row.getCell(variantFieldMap.get("reported"))));
+						variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator));
+						variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region")), evaluator));
+						variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation")), evaluator));
+						variant.setReference(Import.getCellValue(row.getCell(variantFieldMap.get("reference")), evaluator));
+						variant.setAlternate(Import.getCellValue(row.getCell(variantFieldMap.get("alternate")), evaluator));
+						variant.setAlleleFraction(Import.getCellValue(row.getCell(variantFieldMap.get("allele_fraction")), evaluator));
+						variant.setReadDepth(Import.getCellValue(row.getCell(variantFieldMap.get("read_depth")), evaluator));
+						variant.setGene(Import.getCellValue(row.getCell(variantFieldMap.get("gene")), evaluator));
+						variant.setTcTranscript(Import.getCellValue(row.getCell(variantFieldMap.get("tc_transcript")), evaluator));
+						variant.setTcChange(Import.getCellValue(row.getCell(variantFieldMap.get("tc_change")), evaluator));
+						variant.setTcExonNumber(Import.getCellValue(row.getCell(variantFieldMap.get("tc_exon_number")), evaluator));
+						variant.setPcChange(Import.getCellValue(row.getCell(variantFieldMap.get("pc_change")), evaluator));
+						variant.setAssessment(Import.getCellValue(row.getCell(variantFieldMap.get("assessment")), evaluator));
+						variant.setReported(Import.getCellValue(row.getCell(variantFieldMap.get("reported")), evaluator));
 
 						variants.add(variant);
 

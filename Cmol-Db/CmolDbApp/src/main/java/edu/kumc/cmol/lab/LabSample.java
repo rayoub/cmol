@@ -113,10 +113,10 @@ public class LabSample extends PGobject {
             accession.replace("(", "\\(").replace(")","\\)") + "," +
             testCode.replace("(", "\\(").replace(")","\\)") + "," +
 			reportedDate + "," + 
-            hospitalName.replace(",","\\,") + "," +
-            sampleType.replace("(", "\\(").replace(")","\\)") + "," +
-            diagnosis.replace(",", "\\,").replace("(", "\\(").replace(")","\\)") + "," +
-            surgpathId.replace(",", "\\,").replace("(", "\\(").replace(")","\\)") + "," + 
+            (hospitalName != null ? hospitalName.replace(",","\\,") : "") + "," +
+            (sampleType != null ? sampleType.replace("(", "\\(").replace(")","\\)") : "") + "," +
+        	(diagnosis != null ? diagnosis.replace(",", "\\,").replace("(", "\\(").replace(")","\\)") : "") + "," +
+            (surgpathId != null ? surgpathId.replace(",", "\\,").replace("(", "\\(").replace(")","\\)") : "") + "," + 
 			archived
         + ")";
         return row;
