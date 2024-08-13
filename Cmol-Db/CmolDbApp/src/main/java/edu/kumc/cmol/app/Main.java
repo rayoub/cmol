@@ -22,6 +22,8 @@ import edu.kumc.cmol.ion.IonMrn;
 import edu.kumc.cmol.ion.IonSample;
 import edu.kumc.cmol.ion.IonVariant;
 import edu.kumc.cmol.lab.ArchiveImport;
+import edu.kumc.cmol.lab.CommonImport;
+import edu.kumc.cmol.lab.ComprehensiveImport;
 import edu.kumc.cmol.lab.FileProps;
 import edu.kumc.cmol.lab.HemeImport;
 import edu.kumc.cmol.lab.Import;
@@ -124,7 +126,11 @@ public class Main {
     
     private static void option_b(CommandLine line) throws Exception {
 
+        System.out.println("Importing Heme");
         HemeImport.importFiles();
+        System.out.println("Importing Common");
+        CommonImport.importFiles();
+        ComprehensiveImport.importFiles();
     }
     
     private static void option_q(CommandLine line) throws Exception {

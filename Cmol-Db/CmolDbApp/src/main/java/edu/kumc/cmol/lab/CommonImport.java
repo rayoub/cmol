@@ -1,23 +1,14 @@
 package edu.kumc.cmol.lab;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class HemeImport {
+public class CommonImport {
 
 	private static Map<String, Pair<Integer,Integer>> sampleFieldMap = new HashMap<>();
 	private static Map<String, Integer> variantFieldMap = new HashMap<>();
@@ -31,7 +22,7 @@ public class HemeImport {
 		sampleFieldMap.put("accession", Pair.of(5,1));
 		sampleFieldMap.put("test_code", Pair.of(2,1)); // Panel
 		sampleFieldMap.put("reported_date", Pair.of(1,3)); // Date
-		sampleFieldMap.put("diagnosis", Pair.of(5,6));
+		sampleFieldMap.put("diagnosis", Pair.of(5,7));
 	
 		// variant fields
 		variantFieldMap.put("chromosome", 0);
@@ -52,6 +43,6 @@ public class HemeImport {
 
 	public static void importFiles() throws InvalidFormatException, IOException, SQLException {
 
-		Import.importFiles(PanelType.Heme, sampleFieldMap, variantFieldMap);
+		Import.importFiles(PanelType.Common, sampleFieldMap, variantFieldMap);
 	}
 }
