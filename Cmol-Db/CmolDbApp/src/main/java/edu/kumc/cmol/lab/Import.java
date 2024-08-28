@@ -7,7 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -131,7 +134,6 @@ public class Import {
 			String combinedId = runId + "$" + cmolId;
 			if (!existing.contains(combinedId)) {
 
-				System.out.println("Processing Excel File: " + fileProp.getFileName());
 
 				FileInputStream fin = new FileInputStream(fileProp.getFilePath().toString());
 				OPCPackage pkg = null;
@@ -161,54 +163,70 @@ public class Import {
 					String reportedDate = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
 					p = sampleFieldMap.get("diagnosis");
 					String diagnosis = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
-					
-					// store sample info
-					LabSample sample = new LabSample();
-					sample.setRunId(runId);
-					sample.setCmolId(cmolId);
-					sample.setMrn(mrn);
-					sample.setAccession(accession);
-					sample.setTestCode(testCode);
-					sample.setReportedDate(reportedDate);
-					sample.setDiagnosis(diagnosis);
-					sample.setArchived("N");
-					samples.add(sample);
 
-					// iterate variant rows
-					for (Row row : sheet) {
-						if (row.getRowNum() >= 9) {
+					// check date
+					LocalDate cutoff = LocalDate.now().minusDays(30);
+					Date d = null;
+					LocalDate ld = null;
+					try {
+						d = DateUtil.parseYYYYMMDDDate(reportedDate);
+						ld = LocalDate.ofInstant(d.toInstant(), ZoneId.systemDefault());
+					}
+					catch (IllegalArgumentException e) {
+						d = null;
+						ld = null;
+					}
+					if(d != null && ld != null && cutoff.isAfter(ld)) {
 
-							String test = Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator);
-							if (!test.isBlank() && !test.equals("0") && test.length() <= 2) {
-								
-								// build variant object
-								LabVariant variant = new LabVariant();
+						// store sample info
+						LabSample sample = new LabSample();
+						sample.setRunId(runId);
+						sample.setCmolId(cmolId);
+						sample.setMrn(mrn);
+						sample.setAccession(accession);
+						sample.setTestCode(testCode);
+						sample.setReportedDate(reportedDate);
+						sample.setDiagnosis(diagnosis);
+						sample.setArchived("N");
+						samples.add(sample);
 
-								variant.setRunId(runId);
-								variant.setCmolId(cmolId);
-								variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator));
-								variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region")), evaluator));
-								variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation")), evaluator));
-								variant.setReference(Import.getCellValue(row.getCell(variantFieldMap.get("reference")), evaluator));
-								variant.setAlternate(Import.getCellValue(row.getCell(variantFieldMap.get("alternate")), evaluator));
-								variant.setAlleleFraction(Import.getCellValue(row.getCell(variantFieldMap.get("allele_fraction")), evaluator));
-								variant.setReadDepth(Import.getCellValue(row.getCell(variantFieldMap.get("read_depth")), evaluator));
-								variant.setGene(Import.getCellValue(row.getCell(variantFieldMap.get("gene")), evaluator));
-								variant.setTcTranscript(Import.removeParenthetical(Import.getCellValue(row.getCell(variantFieldMap.get("tc_transcript")), evaluator)));
-								variant.setTcChange(Import.getCellValue(row.getCell(variantFieldMap.get("tc_change")), evaluator));
-								variant.setTcExonNumber(Import.getCellValue(row.getCell(variantFieldMap.get("tc_exon_number")), evaluator));
-								variant.setPcChange(Import.getCellValue(row.getCell(variantFieldMap.get("pc_change")), evaluator));
-								variant.setAssessment(Import.getCellValue(row.getCell(variantFieldMap.get("assessment")), evaluator));
-								variant.setReported(Import.getCellValue(row.getCell(variantFieldMap.get("reported")), evaluator));
+						// iterate variant rows
+						for (Row row : sheet) {
+							if (row.getRowNum() >= 9) {
 
-								variants.add(variant);
+								String test = Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator);
+								if (!test.isBlank() && !test.equals("0") && test.length() <= 2) {
+									
+									// build variant object
+									LabVariant variant = new LabVariant();
+
+									variant.setRunId(runId);
+									variant.setCmolId(cmolId);
+									variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator));
+									variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region")), evaluator));
+									variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation")), evaluator));
+									variant.setReference(Import.getCellValue(row.getCell(variantFieldMap.get("reference")), evaluator));
+									variant.setAlternate(Import.getCellValue(row.getCell(variantFieldMap.get("alternate")), evaluator));
+									variant.setAlleleFraction(Import.getCellValue(row.getCell(variantFieldMap.get("allele_fraction")), evaluator));
+									variant.setReadDepth(Import.getCellValue(row.getCell(variantFieldMap.get("read_depth")), evaluator));
+									variant.setGene(Import.getCellValue(row.getCell(variantFieldMap.get("gene")), evaluator));
+									variant.setTcTranscript(Import.removeParenthetical(Import.getCellValue(row.getCell(variantFieldMap.get("tc_transcript")), evaluator)));
+									variant.setTcChange(Import.getCellValue(row.getCell(variantFieldMap.get("tc_change")), evaluator));
+									variant.setTcExonNumber(Import.getCellValue(row.getCell(variantFieldMap.get("tc_exon_number")), evaluator));
+									variant.setPcChange(Import.getCellValue(row.getCell(variantFieldMap.get("pc_change")), evaluator));
+									variant.setAssessment(Import.getCellValue(row.getCell(variantFieldMap.get("assessment")), evaluator));
+									variant.setReported(Import.getCellValue(row.getCell(variantFieldMap.get("reported")), evaluator));
+
+									variants.add(variant);
+								}
 							}
-						}
 
-					} // for 
+						} // for 
+					}
 					wb.close();
 
 					if (variants.size() > 0) {
+						System.out.println("Processed Excel File: " + fileProp.getFileName());
 						System.out.println("Saving " + samples.size() + " sample(s)");
 						LabDb.saveSamples(samples);
 						System.out.println("Saving " + variants.size() + " variant(s)");
