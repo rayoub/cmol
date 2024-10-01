@@ -425,70 +425,15 @@ function Get-Age {
         ""
     }
 }
-function Format-Provider {
-
-    $providers = @()
-    
-    $provider = $row.Columns("R").text.trim()
-    if (!$provider -eq "") {
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    ($providers -join "; ")
-}
-
-function Format-Providers {
-
-    $providers = @()
-    
-    $provider = $row.Columns("R").text.trim()
-    if (!$provider -eq "") {
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("S").text.trim(), $row.Columns("R").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-    
-    $provider = $row.Columns("AG").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AH").text.trim(), $row.Columns("AG").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AI").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AJ").text.trim(), $row.Columns("AI").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AK").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AL").text.trim(), $row.Columns("AK").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    $provider = $row.Columns("AM").text.trim()
-    if (!$provider -eq ""){
-        $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-        $providers += (($doctor, $row.Columns("AN").text.trim(), $row.Columns("AM").text.trim()) | 
-            Where-Object {$_ -ne ""}) -join " "
-    }
-
-    ($providers -join "; ")
-}
 
 function Get-FileName
 {
-    param([String] $initialDirectory, [String] $cmolId)
+    param([String] $initialDirectory, [String] $sampleID)
 
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenFileDialog.InitialDirectory = $initialDirectory
     $OpenFileDialog.filter = "Variant Call File (*.vcf) | *.vcf"
-    $OpenFileDialog.Title = "Select Variant Call File for $cmolId"
+    $OpenFileDialog.Title = "Select Variant Call File for $sampleID"
     $OpenFileDialog.ShowDialog() | Out-Null
     $OpenFileDialog.FileName
 }
@@ -526,8 +471,8 @@ function Get-Selected {
     $listBox.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
     $listBox.Width = 375
     $listBox.Height = 200
-    foreach ($cmolId in $idList) {
-        [void] $listBox.Items.Add($cmolId)
+    foreach ($sampleID in $idList) {
+        [void] $listBox.Items.Add($sampleID)
     }
     $listBox.SelectionMode = 'MultiExtended'
     $listBox.SelectedIndex = 0
@@ -583,7 +528,7 @@ function Get-Selected {
 }
 
 function Get-Input {
-    param ([String] $cmolId, [String] $indicated)
+    param ([String] $sampleID, [String] $indicated)
 
     $dims = New-Object System.Drawing.Size(595,242) # width, height
     $padding = New-Object System.Windows.Forms.Padding(6)
@@ -591,7 +536,7 @@ function Get-Input {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "QCIIOne Upload for $cmolId"
+    $form.Text = "QCIIOne Upload for $sampleID"
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims
@@ -744,9 +689,9 @@ else {
     exit
 }
 
-$inputFile = Get-ChildItem -Filter *_Input_v?.xlsx | Select-Object -First 1
+$inputFile = Get-ChildItem -Filter *.csv | Select-Object -First 1
 if ($null -eq $inputFile){
-    Write-Host "`nERROR: An Excel input file was not found in the current directory." -ForegroundColor Red
+    Write-Host "`nERROR: A CSV input file was not found in the current directory." -ForegroundColor Red
     Read-Host "`nPress enter to exit"
     exit
 }
@@ -755,67 +700,60 @@ if ($null -eq $inputFile){
 ### DO THE WORK
 ######################################################################################################
 
-# load input workbook
-$excel = New-Object -ComObject Excel.Application
-$inputBook = $excel.workbooks.open($inputFile.FullName)
-$inputSheet = $inputBook.sheets(1)
+# load input csv 
+$header = 'Ignore','SampleID', 'LastName', 'FirstName', 'MRN', 'Sex', 'DOB', 'SpecimenType', 'OrderingPhysician', 'Diagnosis', 'Notes'
+$inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
-# build hash-table of accession #/cmol id combos and patient rows from input workbook
+# build hash-table of sample ids and patient rows from input csv
 $idList = @()
 $patientRows = @{} 
-for ($i = 2; $i -lt 100; $i++){
+foreach ($row in $inputCsv) {
 
-    $text = $inputSheet.cells($i,1).text().trim()
-    if ([String]::IsNullOrEmpty($text)){
+    $sampleID = ($row.SampleID -split ":")[1]
+    if ([String]::IsNullOrEmpty($SampleID)){
 
         # no more rows
         break
     }
 
     # fill in hash-table
-    $cmolId = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
-    $row = $inputSheet.rows($i)
-    if ($patientRows.ContainsKey($cmolId)) {
+    if ($patientRows.ContainsKey($sampleID)) {
 
-        # some reports may have multiple rows for a single accession #/cmol id combination
-        $patientRows[$cmolId] += $row
+        # some reports may have multiple rows for a single sample id
+        $patientRows[$sampleID] += $row
     }
     else {
-        $patientRows.Add($cmolId, @($row))
+        $patientRows.Add($sampleID, @($row))
     }
-    $idList += $cmolId
+    $idList += $sampleID
 }
 
-$result, $samples = Get-Selected -IdList $idList
+$result, $sampleIDs = Get-Selected -IdList $idList
 if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
     Write-Host "`nAborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
-    $inputBook.close()
-    $excel.quit()
     exit
 }
 
-if ($samples.Count -eq 0) {
+if ($sampleIDs.Count -eq 0) {
     Write-Host "`nNo samples selected for processing. Aborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
-    $inputBook.close()
-    $excel.quit()
     exit
 }
 
 # iterate input rows
-foreach($cmolId in $samples){
+foreach($sampleID in $sampleIDs){
     
-    # get directory corresponding to cmol id
-    $dirName = Get-ChildItem -Path . -Directory -Filter $cmolId* | Select-Object -First 1 | Select-Object -ExpandProperty Name
+    # get directory corresponding to sample id
+    $dirName = Get-ChildItem -Path . -Directory -Filter $sampleID* | Select-Object -First 1 | Select-Object -ExpandProperty Name
 
     # continue if directory does not exist
     if ($null -eq $dirName) {
 
-        Write-Host "`nSkipping QCIIOne upload package for: $cmolId. A corresponding directory does not exist." -ForegroundColor Red
+        Write-Host "`nSkipping QCIIOne upload package for: $sampleID. A corresponding directory does not exist." -ForegroundColor Red
         continue
     }
 
     # the directory does exist
-    foreach($row in $patientRows[$cmolId]){
+    foreach($row in $patientRows[$sampleID]){
 
         $xml = [xml] $templateXml 
 
@@ -827,48 +765,38 @@ foreach($cmolId in $samples){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:TestProduct/ns1:Profile", $nsmgr).InnerText = $tpp	
 
         # Test element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $row.Columns("D").text.trim()
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $sampleID
+        #$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
 
         # Patient element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = $row.Columns("A").text.trim() + ", " + $row.Columns("B").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("F").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age $row.Columns("F").text.trim()
-        $gender = 'male'
-        if ($row.Columns("G").text.trim().toUpper() -ne 'M') {
-            $gender = 'female'
-        }
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = $gender
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = ($row.LastName -split ':')[1] + ", " + $row.FirstName
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText ($row.DOB -split ':')[1]
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText ($row.DOB -split ':')[1]
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = ($row.Sex -split ':')[1].toLower()
 
         # Specimen element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $row.Columns("I").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = $row.Columns("C").text.trim() 
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $sampleID
+		#$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = ($row.MRN -split ':')[1]
 
         # Physician element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = $row.Columns("P").text.trim()
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = $row.Columns("P").text.trim()
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Format-Provider
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = 'MISSING'
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = 'MISSING'
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = 'MISSING'
 
         # Pathologist element
-        $pathologist = $row.Columns("H").text.trim()
-        if ([String]::IsNullOrEmpty($pathologist) -or $pathologist -ieq 'n/a') {
-            $pathologist = $row.Columns("N").text.trim()
-        }
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $pathologist
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = 'MISSING'
 
-        # diagnosis from input excel
-        $indicated = $row.Columns("AF").text.trim()
+        # diagnosis from input csv
+        $indicated = ($row.Diagnosis -split ':')[1]
         if ([String]::IsNullOrEmpty($indicated)){
-            $indicated= "[blank]"
+            $indicated = "[blank]"
         }
 
         # get inputs from input form
-        $result, $selectedDiagnosis, $selectedSource = Get-Input -CmolId $cmolId -Indicated $indicated
+        $result, $selectedDiagnosis, $selectedSource = Get-Input -SampleID $sampleID -Indicated $indicated
         if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
             Write-Host "`nAborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
-            $inputBook.close()
-            $excel.quit()
             exit
         }
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:Diagnosis", $nsmgr).InnerText = $selectedDiagnosis
@@ -876,9 +804,9 @@ foreach($cmolId in $samples){
 
         # get the VCF file
         $dirPath = (Join-Path $PSScriptRoot -ChildPath $dirName)
-        $file = Get-FileName -initialDirectory $dirPath -cmolId $cmolId
+        $file = Get-FileName -InitialDirectory $dirPath -SampleID $sampleID
         if ([String]::IsNullOrEmpty($file)) {
-            Write-Host "`nNo Vcf file selected for: $cmolId. Skipping to the next sample." -ForegroundColor Red
+            Write-Host "`nNo Vcf file selected for: $sampleID. Skipping to the next sample." -ForegroundColor Red
             continue
         }
         $fileName = (Split-Path -Path $file -Leaf)
@@ -886,8 +814,8 @@ foreach($cmolId in $samples){
         
         # file names
         $saveVcf = $file
-        $saveXml = (Join-Path $dirPath -ChildPath ($cmolId + ".xml"))
-        $saveZip = (Join-Path $dirPath -ChildPath ($cmolId + ".zip"))
+        $saveXml = (Join-Path $dirPath -ChildPath ($sampleID + ".xml"))
+        $saveZip = (Join-Path $dirPath -ChildPath ($sampleID + ".zip"))
 
         # create archive
         $xml.Save($saveXml)
@@ -899,15 +827,11 @@ foreach($cmolId in $samples){
         Compress-Archive @compress -Force
 
         # confirmation
-        Write-Host "`nProcessed QCIIOne upload package for: $cmolId" -ForegroundColor Green
+        Write-Host "`nProcessed QCIIOne upload package for: $sampleID" -ForegroundColor Green
 
         # since this does not handle 'common' reports, ignore subsequent rows
         break
     }
 }
-
-# clean up 
-$inputBook.close()
-$excel.quit()
 
 Read-Host "`nPress enter to exit"
