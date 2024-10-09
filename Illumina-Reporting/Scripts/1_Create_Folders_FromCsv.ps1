@@ -32,7 +32,7 @@ $patientRows = @{}
 foreach ($row in $inputCsv) {
 
     $sampleID = ($row.SampleID -split ":")[1]
-    if ([String]::IsNullOrEmpty($SampleID)){
+    if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
         break
