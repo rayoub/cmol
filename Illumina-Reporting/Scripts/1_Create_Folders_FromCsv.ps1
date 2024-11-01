@@ -1,3 +1,31 @@
+
+function Parse-StringField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        ($fieldValue -split ":")[1]
+    }
+    else {
+        $fieldValue
+    }
+}
+
+function Parse-DateField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        if ($fieldValue.endsWith("M")) {
+            $fieldValue = $fieldValue.substring(0, $fieldValue.LastIndexOf("/"))
+        }
+        $fieldValue = ($fieldValue -split ":")[1]
+        Get-Date -Date $fieldValue -Format 'yyyy-MM-dd'
+    }
+    else {
+        $fieldValue
+    }
+}
+
+$reportType = (Read-Host "Enter the report type (Common|Heme)").Trim()
 $batchNumber = (Read-Host "Enter a batch number").Trim()
 $stampInitials = (Read-Host "Enter your initials").Trim()
 $stampDate = (Read-Host "Enter the date").Trim()
@@ -24,14 +52,15 @@ if ($null -eq $inputFile){
 }
 
 # load input csv 
-$header = 'Ignore','SampleID', 'LastName', 'FirstName', 'MRN', 'Sex', 'DOB', 'SpecimenType', 'OrderingPhysician', 'Diagnosis', 'Notes'
+$header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
 # build hash-table of sample ids and patient rows from input csv
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = ($row.SampleID -split ":")[1]
+    $sampleID = Parse-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
@@ -78,18 +107,35 @@ foreach($sampleID in $patientRows.Keys){
     $patientSheet = $book.sheets("Patient Information")
     foreach($row in $patientRows[$sampleID]){
 
-        # test type ie. NGS Heme
-        $patientSheet.cells($i,1).value = ($row.LastName -split ':')[1]
-        $patientSheet.cells($i,2).value = $row.FirstName
-        $patientSheet.cells($i,3).value = ($row.MRN -split ':')[1]
-        $patientSheet.cells($i,6).value = ($row.DOB -split ':')[1]
-        $patientSheet.cells($i,7).value = ($row.Sex -split ':')[1]
-        $patientSheet.cells($i,9).value = ($row.SampleID -split ':')[1]
-        $patientSheet.cells($i,14).value = ($row.SpecimenType -split ':')[1]
+        # ROW DEFINITION
+        #Last Name,First Name,MRN,Accession,Collection Date,
+        #Birth Date,Gender,Case ID,CMOL ID,Color,
+        #Received Date,Received Time,Received By,Sample Type,Sample Amount,
+        #Ordering Location,Test Code,Provider Last Name,Provider First Name,Due Date,
+        #Test Requested,Assay ID,Test Run Date,Reported/Canceled Date,Test Run By,
+        #Invoice Number,Notes
+
+        # input test type ie. NGS Heme
+        $patientSheet.cells($i,1).value = ((Parse-StringField $row.PatientName) -split ',')[0]
+        $patientSheet.cells($i,2).value = ((Parse-StringField $row.PatientName) -split ',')[1]
+        $patientSheet.cells($i,3).value = Parse-StringField $row.MRN
+        $patientSheet.cells($i,5).value = Parse-DateField $row.Collection
+        $patientSheet.cells($i,6).value = Parse-DateField $row.DOB
+        $patientSheet.cells($i,7).value = Parse-StringField $row.SEX
+        $patientSheet.cells($i,9).value = Parse-StringField $row.SampleID
+        $patientSheet.cells($i,11).value = Parse-DateField $row.Received
+        $patientSheet.cells($i,14).value = Parse-StringField $row.Type
+        $patientSheet.cells($i,16).value = Parse-StringField $row.Facility
+        $patientSheet.cells($i,21).value = 'NGS ' + $reportType
         $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 
-        $patientSheet.cells($i,27).value = ($row.Notes -split ':')[1]
+        $patientSheet.cells($i,27).value = Parse-StringField $row.Comments
         if ($i -eq 2) {
-            $patientSheet.cells(26,1).value = ($row.OrderingPhysician -split ':')[1]
+            if ($reportType -eq 'Heme') {
+                $patientSheet.cells(26,1).value = Parse-StringField $row.AuthorizingProvider
+            }
+            else { # -eq 'Common'
+                $patientSheet.cells(22,2).value = Parse-StringField $row.AuthorizingProvider
+            }
         }
 
         $i++
@@ -103,6 +149,10 @@ foreach($sampleID in $patientRows.Keys){
     $book.save()
     $book.close()
 }
+
+Remove-Variable 'book','resultSheet','startSheet','patientSheet'
 $excel.quit()
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+[GC]::Collect()
 
 Read-Host "`nPress enter to exit"

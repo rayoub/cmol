@@ -397,6 +397,32 @@ $templateXml = @"
 ### FUNCTION DEFINITIONS
 ######################################################################################################
 
+function Parse-StringField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        ($fieldValue -split ":")[1]
+    }
+    else {
+        $fieldValue
+    }
+}
+
+function Parse-DateField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        if ($fieldValue.endsWith("M")) {
+            $fieldValue = $fieldValue.substring(0, $fieldValue.LastIndexOf("/"))
+        }
+        $fieldValue = ($fieldValue -split ":")[1]
+        Get-Date -Date $fieldValue -Format 'yyyy-MM-dd'
+    }
+    else {
+        $fieldValue
+    }
+}
+
 function Format-Date {
     param ([String] $dateText)
 
@@ -701,7 +727,8 @@ if ($null -eq $inputFile){
 ######################################################################################################
 
 # load input csv 
-$header = 'Ignore','SampleID', 'LastName', 'FirstName', 'MRN', 'Sex', 'DOB', 'SpecimenType', 'OrderingPhysician', 'Diagnosis', 'Notes'
+$header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
 # build hash-table of sample ids and patient rows from input csv
@@ -709,7 +736,7 @@ $idList = @()
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = ($row.SampleID -split ":")[1]
+    $sampleID = Parse-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($SampleID)){
 
         # no more rows
@@ -766,32 +793,26 @@ foreach($sampleID in $sampleIDs){
 
         # Test element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $sampleID
-        #$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("K").text.trim()
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Parse-DateField $row.Received 
 
         # Patient element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = ($row.LastName -split ':')[1] + ", " + $row.FirstName
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Format-Date -DateText ($row.DOB -split ':')[1]
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText ($row.DOB -split ':')[1]
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = ($row.Sex -split ':')[1].toLower()
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = Parse-StringField $row.PatientName 
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Parse-DateField $row.DOB
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText (Parse-DateField $row.DOB)
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = Parse-StringField $row.SEX 
 
         # Specimen element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $sampleID
-		#$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Format-Date -DateText $row.Columns("E").text.trim()
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = ($row.MRN -split ':')[1]
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Parse-DateField $row.Collection 
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = Parse-StringField $row.MRN
 
         # Physician element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = 'MISSING'
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = 'MISSING'
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = 'MISSING'
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Parse-StringField $row.Facility
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = Parse-StringField $row.Facility
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Parse-StringField $row.AuthorizingProvider
 
         # Pathologist element
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = 'MISSING'
-
-        # diagnosis from input csv
-        $indicated = ($row.Diagnosis -split ':')[1]
-        if ([String]::IsNullOrEmpty($indicated)){
-            $indicated = "[blank]"
-        }
 
         # get inputs from input form
         $result, $selectedDiagnosis, $selectedSource = Get-Input -SampleID $sampleID -Indicated $indicated

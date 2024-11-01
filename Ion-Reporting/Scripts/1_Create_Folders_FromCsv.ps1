@@ -7,7 +7,8 @@ if ($null -eq $inputFile){
 }
 
 # load input csv 
-$header = 'Ignore','SampleID', 'LastName', 'FirstName', 'MRN', 'Sex', 'DOB', 'SpecimenType', 'OrderingPhysician', 'Diagnosis', 'Notes'
+$header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
 # build array of sample ids

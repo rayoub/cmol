@@ -1,4 +1,30 @@
 
+function Parse-StringField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        ($fieldValue -split ":")[1]
+    }
+    else {
+        $fieldValue
+    }
+}
+
+function Parse-DateField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        if ($fieldValue.endsWith("M")) {
+            $fieldValue = $fieldValue.substring(0, $fieldValue.LastIndexOf("/"))
+        }
+        $fieldValue = ($fieldValue -split ":")[1]
+        Get-Date -Date $fieldValue -Format 'yyyy-MM-dd'
+    }
+    else {
+        $fieldValue
+    }
+}
+
 $batchNumber = (Read-Host "Enter a batch number").Trim()
 
 $suffix = "-Comprehensive Plus Assay Summary Result.docx"
@@ -19,14 +45,15 @@ if ($null -eq $inputFile){
 }
 
 # load input csv 
-$header = 'Ignore','SampleID', 'LastName', 'FirstName', 'MRN', 'Sex', 'DOB', 'SpecimenType', 'OrderingPhysician', 'Diagnosis', 'Notes'
+$header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
 # build hash-table of accession #/cmol id combos and patient rows from input workbook
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = ($row.SampleID -split ':')[1]
+    $sampleID = Parse-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
@@ -34,9 +61,7 @@ foreach ($row in $inputCsv) {
     }
 
     # fill in hash-table
-    $lastName = ($row.LastName -split ':')[1] 
-    $firstName = $row.FirstName
-    $dirName = $sampleID  + "-" + $lastName + ", " + $firstName
+    $dirName = $sampleID  + "-" + Parse-StringField $row.PatientName
     if ($patientRows.ContainsKey($dirName)) {
 
         # some reports may have multiple rows for a single accession #/cmol id combination
@@ -63,7 +88,7 @@ foreach($dirName in $patientRows.Keys){
     }
 
     # fill-in templates 
-    foreach($a in $patientRows[$dirName]){
+    foreach($row in $patientRows[$dirName]){
 
         # report date
         $reportDate = Get-Date -Format "M/d/yyyy"
@@ -71,17 +96,22 @@ foreach($dirName in $patientRows.Keys){
         # open template
         $doc = $word.documents.add($templateFile.FullName)
 
+        $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
+
         # parse fields
-        $lastName = ($row.LastName -split ':')[1] 
-        $firstName = $row.FirstName
-        $MRN = ($row.MRN -split ':')[1]
-        $DOB = ($row.DOB -split ':')[1]
-        $sex = ($row.Sex -split ':')[1]
-        $sampleID = ($row.SampleID -split ':')[1]
-        $specimenType = ($row.SpecimenType -split ':')[1]
+        $patientName = Parse-StringField $row.PatientName
+        $MRN = Parse-StringField $row.MRN
+        $DOB = Parse-DateField $row.DOB
+        $sex = Parse-StringField $row.SEX
+        $sampleID = Parse-StringField $row.SampleID
+        $specimenType = Parse-StringField $row.Type 
         $runID = 'NGS ' + $batchNumber 
-        $notes = ($row.Notes -split ':')[1]
-        $provider = ($row.OrderingPhysician -split ':')[1]
+        $notes = Parse-StringField $row.Comments
+        $provider = Parse-StringField $row.AuthorizingProvider
+        $facility = Parse-StringField $row.Facility
+        $collectionDate = Parse-DateField $row.Collection
+        $receivedDate = Parse-DateField $row.Received
 
         # write template
         
@@ -89,14 +119,14 @@ foreach($dirName in $patientRows.Keys){
         $doc.bookmarks("AssayID").range.text = $runID
         $doc.bookmarks("PatientName").range.text = $lastName + ", " + $firstName
         $doc.bookmarks("Providers").range.text = $provider
-        $doc.bookmarks("OrderingFacility").range.text = "MISSING"
+        $doc.bookmarks("OrderingFacility").range.text = $facility
         $doc.bookmarks("MRN").range.text = $MRN
         $doc.bookmarks("DOBandSex").range.text = $DOB + ", " + $sex
         $doc.bookmarks("SurgPathID").range.text = "MISSING"
 
         # column 2
-        $doc.bookmarks("CollectionDate").range.text = "MISSING"
-        $doc.bookmarks("ReceivedDate").range.text = "MISSING"
+        $doc.bookmarks("CollectionDate").range.text = $collectionDate
+        $doc.bookmarks("ReceivedDate").range.text = $receivedDate
         $doc.bookmarks("ReportDate").range.text = $reportDate
         $doc.bookmarks("DNANumber").range.text = $sampleID
         $doc.bookmarks("Accession").range.text = $sampleID
