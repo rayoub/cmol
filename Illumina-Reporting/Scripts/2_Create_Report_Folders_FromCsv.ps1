@@ -1,5 +1,5 @@
 
-function Parse-StringField {
+function Get-StringField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -10,7 +10,7 @@ function Parse-StringField {
     }
 }
 
-function Parse-DateField {
+function Get-DateField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -60,7 +60,7 @@ $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = Parse-StringField $row.SampleID
+    $sampleID = Get-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
@@ -116,25 +116,25 @@ foreach($sampleID in $patientRows.Keys){
         #Invoice Number,Notes
 
         # input test type ie. NGS Heme
-        $patientSheet.cells($i,1).value = ((Parse-StringField $row.PatientName) -split ',')[0]
-        $patientSheet.cells($i,2).value = ((Parse-StringField $row.PatientName) -split ',')[1]
-        $patientSheet.cells($i,3).value = Parse-StringField $row.MRN
-        $patientSheet.cells($i,5).value = Parse-DateField $row.Collection
-        $patientSheet.cells($i,6).value = Parse-DateField $row.DOB
-        $patientSheet.cells($i,7).value = Parse-StringField $row.SEX
-        $patientSheet.cells($i,9).value = Parse-StringField $row.SampleID
-        $patientSheet.cells($i,11).value = Parse-DateField $row.Received
-        $patientSheet.cells($i,14).value = Parse-StringField $row.Type
-        $patientSheet.cells($i,16).value = Parse-StringField $row.Facility
+        $patientSheet.cells($i,1).value = ((Get-StringField $row.PatientName) -split ',')[0]
+        $patientSheet.cells($i,2).value = ((Get-StringField $row.PatientName) -split ',')[1]
+        $patientSheet.cells($i,3).value = Get-StringField $row.MRN
+        $patientSheet.cells($i,5).value = Get-DateField $row.Collection
+        $patientSheet.cells($i,6).value = Get-DateField $row.DOB
+        $patientSheet.cells($i,7).value = Get-StringField $row.SEX
+        $patientSheet.cells($i,9).value = Get-StringField $row.SampleID
+        $patientSheet.cells($i,11).value = Get-DateField $row.Received
+        $patientSheet.cells($i,14).value = Get-StringField $row.Type
+        $patientSheet.cells($i,16).value = Get-StringField $row.Facility
         $patientSheet.cells($i,21).value = 'NGS ' + $reportType
         $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 
-        $patientSheet.cells($i,27).value = Parse-StringField $row.Comments
+        $patientSheet.cells($i,27).value = Get-StringField $row.Comments
         if ($i -eq 2) {
             if ($reportType -eq 'Heme') {
-                $patientSheet.cells(26,1).value = Parse-StringField $row.AuthorizingProvider
+                $patientSheet.cells(26,1).value = Get-StringField $row.AuthorizingProvider
             }
             else { # -eq 'Common'
-                $patientSheet.cells(22,2).value = Parse-StringField $row.AuthorizingProvider
+                $patientSheet.cells(22,2).value = Get-StringField $row.AuthorizingProvider
             }
         }
 

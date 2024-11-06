@@ -7,7 +7,7 @@ Add-Type -AssemblyName System.Windows.Forms
 function Get-ValidateForFolder
 {
     $dialog = New-Object System.Windows.Forms.FolderBrowserDialog 
-    $dialog.RootFolder = "MyComputer"
+    $dialog.SelectedPath = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Personal Data\Ayoub"
 	$dialog.ShowNewFolderButton = $false
     $dialog.Description = "Select the backed up 'pending' folder to validate for."
     if ($dialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -eq "OK")
@@ -40,28 +40,28 @@ function Get-CompareToFolder
 
 #$validateForFolder = Get-ValidateForFolder
 #if ($null -eq $validateForFolder) {
-    #Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
-   	#exit
+#   	Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
+#  	exit
 #}
-
+#
 #$compareToFolder = Get-CompareToFolder
 #if ($null -eq $compareToFolder) {
-    #Write-Host "`nEXITING: No comparison folder selected." -ForegroundColor Red
-   	#exit
+#   	Write-Host "`nEXITING: No comparison folder selected." -ForegroundColor Red
+#  	exit
 #}
 #if (!$compareToFolder.toLower().endsWith("results")){
-    #Write-Host "`nERROR: You must select an NGS run 'results' folder to compare to." -ForegroundColor Red
-   	#exit
+#   	Write-Host "`nERROR: You must select an NGS run 'results' folder to compare to." -ForegroundColor Red
+#  	exit
 #}
-
+#
 #$validateForPercentFiles = Get-ChildItem -Path $validateForFolder -Filter "*%.xlsx" | Sort-Object
 #$validateForHotspotFiles = Get-ChildItem -Path $validateForFolder -Filter "*Hotspot.xlsx" | Sort-Object
 #$compareToPercentFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
 #$compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
 
-# ******************************************************************************************
-# *** VALIDATION ***
-# ******************************************************************************************
+ #******************************************************************************************
+ #*** VALIDATION ***
+ #******************************************************************************************
 
 $excel = New-Object -ComObject Excel.Application
 
@@ -85,28 +85,20 @@ foreach($validateFile in $validateForPercentFiles) {
 			$compareBook = $excel.workbooks.open($compareFile.FullName)
 
 			# sleep for a bit
-			Start-Sleep -Seconds 3
+			Start-Sleep -Seconds 5
 
 			$validateSheet = $validateBook.sheets(1)
 			$compareSheet = $compareBook.sheets(1)
 
-			Write-Host 'got here'
 			# perform the validation
 			$rowNumber = 2
-			Write-Host 'first value'
-			$tempval = ![string]::IsNullOrEmpty($validateSheet.cells($rowNumber, 1))
-			Write-Host $tempval
-			Write-Host 'right before loop'
-			while (![string]::IsNullOrEmpty($validateSheet.cells($rowNumber, 1))) {
+			while (![string]::IsNullOrEmpty($validateSheet.cells($rowNumber, 1).text)) {
 				
-			Write-Host 'got in while'
-				$value = $validateSheet.cells($rowNumber, 1)
+				$value = $validateSheet.cells($rowNumber, 1).text
 				Write-Host 'the value is' $value
 
 				$rowNumber++
 			}
-			$validateSheet.cells(2, 2).value = $stampInitials
-			$validateSheet.cells(2, 4).value = $stampDate
 
 			# clean up
 			$validateBook.close()
