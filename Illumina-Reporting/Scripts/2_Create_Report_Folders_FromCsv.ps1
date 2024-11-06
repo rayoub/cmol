@@ -119,6 +119,7 @@ foreach($sampleID in $patientRows.Keys){
         $patientSheet.cells($i,1).value = ((Get-StringField $row.PatientName) -split ',')[0]
         $patientSheet.cells($i,2).value = ((Get-StringField $row.PatientName) -split ',')[1]
         $patientSheet.cells($i,3).value = Get-StringField $row.MRN
+        $patientSheet.cells($i,4).value = 'n/a'
         $patientSheet.cells($i,5).value = Get-DateField $row.Collection
         $patientSheet.cells($i,6).value = Get-DateField $row.DOB
         $patientSheet.cells($i,7).value = Get-StringField $row.SEX
