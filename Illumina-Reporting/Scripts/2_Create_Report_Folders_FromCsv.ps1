@@ -125,7 +125,11 @@ foreach($sampleID in $patientRows.Keys){
         $patientSheet.cells($i,7).value = Get-StringField $row.SEX
         $patientSheet.cells($i,9).value = Get-StringField $row.SampleID
         $patientSheet.cells($i,11).value = Get-DateField $row.Received
-        $patientSheet.cells($i,14).value = Get-StringField $row.Type
+        $sampleType = Get-StringField $row.Type
+        if ($sampleType -ilike '*paraffin*') {
+            $sampleType = 'FFPE'
+        }
+        $patientSheet.cells($i,14).value = $sampleType
         $patientSheet.cells($i,16).value = Get-StringField $row.Facility
         $patientSheet.cells($i,21).value = 'NGS ' + $reportType
         $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 

@@ -25,7 +25,8 @@ function Get-DateField {
     }
 }
 
-$reportType = (Read-Host "Enter the report type (Common|Heme)").Trim()
+$submitDir = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Patient Reports\"
+$submitDir += "NGS HEME\NGS HEME To Be Submitted"
 
 $currentDir = Get-Location | Split-Path -Leaf
 if ($currentDir -ne "results"){
@@ -40,20 +41,6 @@ if ($null -eq $inputFile){
     Read-Host "`nPress enter to exit"
     exit
 }
-
-$submitDir = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Patient Reports\"
-if ($reportType -ieq "Common") {
-    $submitDir += "NGS Common\NGS COMMON To be Submitted"
-}
-elseif ($reportType -ieq "Heme") {
-    $submitDir += "NGS HEME\NGS HEME To Be Submitted"
-}
-else {
-    Write-Host "`nERROR: An invalid report type was entered." -ForegroundColor Red
-    Read-Host "`nPress enter to exit"
-    exit
-}
-
 
 # load input csv 
 $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
@@ -79,4 +66,5 @@ foreach ($row in $inputCsv) {
     }
 }
 
+Write-Host "`nDone creating document folders at:" $submitDir -ForegroundColor Green
 Read-Host "`nPress enter to exit"

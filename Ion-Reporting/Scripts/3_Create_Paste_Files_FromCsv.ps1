@@ -19,7 +19,7 @@ $names = @(
 ######################################################################################################
 
 function Get-Name {
-    param ([String] $cmolId)
+    param ([String] $sampleID)
 
     $dims = New-Object System.Drawing.Size(595,242) # width, height
     $padding = New-Object System.Windows.Forms.Padding(6)
@@ -27,7 +27,7 @@ function Get-Name {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "Create Paste Files for $cmolId"
+    $form.Text = "Create Paste Files for $sampleID"
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims

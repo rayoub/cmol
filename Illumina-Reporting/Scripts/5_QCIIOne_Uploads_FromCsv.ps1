@@ -397,7 +397,7 @@ $templateXml = @"
 ### FUNCTION DEFINITIONS
 ######################################################################################################
 
-function Parse-StringField {
+function Get-StringField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -408,7 +408,7 @@ function Parse-StringField {
     }
 }
 
-function Parse-DateField {
+function Get-DateField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -736,7 +736,7 @@ $idList = @()
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = Parse-StringField $row.SampleID
+    $sampleID = Get-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($SampleID)){
 
         # no more rows
@@ -793,23 +793,23 @@ foreach($sampleID in $sampleIDs){
 
         # Test element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:AccessionId", $nsmgr).InnerText = $sampleID
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Parse-DateField $row.Received 
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Test/ns1:TestDate", $nsmgr).InnerText = Get-DateField $row.Received 
 
         # Patient element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = Parse-StringField $row.PatientName 
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Parse-DateField $row.DOB
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText (Parse-DateField $row.DOB)
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = Parse-StringField $row.SEX 
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = Get-StringField $row.PatientName 
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Get-DateField $row.DOB
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText (Get-DateField $row.DOB)
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = Get-StringField $row.SEX 
 
         # Specimen element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $sampleID
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Parse-DateField $row.Collection 
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = Parse-StringField $row.MRN
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Get-DateField $row.Collection 
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = Get-StringField $row.MRN
 
         # Physician element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Parse-StringField $row.Facility
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = Parse-StringField $row.Facility
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Parse-StringField $row.AuthorizingProvider
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Get-StringField $row.Facility
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = Get-StringField $row.Facility
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Get-StringField $row.AuthorizingProvider
 
         # Pathologist element
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = 'MISSING'

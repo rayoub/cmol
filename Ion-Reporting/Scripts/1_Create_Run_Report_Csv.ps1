@@ -25,8 +25,6 @@ function Get-DateField {
     }
 }
 
-$batchNumber = (Read-Host "Enter a batch number").Trim()
-
 $currentDir = Get-Location | Split-Path -Leaf
 if ($currentDir -ne "results"){
     Write-Host "`nERROR: You must be in a 'results' folder to run this script." -ForegroundColor Red
@@ -68,7 +66,7 @@ foreach ($row in $inputCsv) {
 	$dnaNumber = $sampleID
 	$receivedDate = Get-DateField $row.Received
 	$sampleType = Get-StringField $row.Type
-	if ($sampleType -ilike '*paraffin*') {
+	if ($sampleType -ilike '*paraffin embedded*') {
 		$sampleType = 'FFPE'
 	}
 	$orderingLocation = Get-StringField $row.Facility
@@ -99,7 +97,7 @@ foreach ($row in $inputCsv) {
 		'ProviderFirstName' = $provideFirstName
 		'DueDate' = ''
 		'TestRequested' = ''
-		'AssayID' = 'NGS ' + $batchNumber
+		'AssayID' = ''
 		'TestRunDate' = ''
 		'ReportedDate' = ''
 		'TestRunBy' = ''
@@ -127,6 +125,4 @@ foreach ($row in $inputCsv) {
 
 $outRows | Export-Csv -Path .\RunReport.csv -NoTypeInformation
 
-Write-Host "`nDone creating run report CSV." -ForegroundColor Green
-Read-Host "`nPress enter to exit"
 
