@@ -66,10 +66,14 @@ foreach ($row in $inputCsv) {
 	$dnaNumber = $sampleID
 	$receivedDate = Get-DateField $row.Received
 	$sampleType = Get-StringField $row.Type
+	if ($sampleType -ilike '*paraffin embedded*') {
+		$sampleType = 'FFPE'
+	}
 	$orderingLocation = Get-StringField $row.Facility
 	$provideLastName = ((Get-StringField $row.AuthorizingProvider) -split ',')[0]
 	$provideFirstName = ((Get-StringField $row.AuthorizingProvider) -split ',')[1]
-	$concentration = Get-StringField $row.DNAConcentration 
+	$concentration = Get-StringField $row.DNAConcentration
+	$A260A280 = Get-StringField $row.DNAPurity
 
 	$outRows += [PSCustomObject]@{
 		'LastName' = $lastName
@@ -115,6 +119,7 @@ foreach ($row in $inputCsv) {
 		'Column13' = ''
 		'Column14' = ''
 		'Concentration' = $concentration
+		'A260A280' = $A260A280
 	}
 }
 
