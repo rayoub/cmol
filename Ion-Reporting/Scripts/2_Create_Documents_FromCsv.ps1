@@ -114,7 +114,7 @@ foreach($dirName in $patientRows.Keys){
         
         # column 1
         $doc.bookmarks("AssayID").range.text = $runID
-        $doc.bookmarks("PatientName").range.text = $lastName + ", " + $firstName
+        $doc.bookmarks("PatientName").range.text = $patientName
         $doc.bookmarks("Providers").range.text = $provider
         $doc.bookmarks("OrderingFacility").range.text = $facility
         $doc.bookmarks("MRN").range.text = $MRN
