@@ -1,5 +1,5 @@
 
-function Parse-StringField {
+function Get-StringField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -10,7 +10,7 @@ function Parse-StringField {
     }
 }
 
-function Parse-DateField {
+function Get-DateField {
     param ([String] $fieldValue)
 
     if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
@@ -53,7 +53,7 @@ $inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 $patientRows = @{} 
 foreach ($row in $inputCsv) {
 
-    $sampleID = Parse-StringField $row.SampleID
+    $sampleID = Get-StringField $row.SampleID
     if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
@@ -61,7 +61,7 @@ foreach ($row in $inputCsv) {
     }
 
     # fill in hash-table
-    $dirName = $sampleID  + "-" + Parse-StringField $row.PatientName
+    $dirName = $sampleID  + "-" + (Get-StringField $row.PatientName)
     if ($patientRows.ContainsKey($dirName)) {
 
         # some reports may have multiple rows for a single accession #/cmol id combination
@@ -96,22 +96,19 @@ foreach($dirName in $patientRows.Keys){
         # open template
         $doc = $word.documents.add($templateFile.FullName)
 
-        $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
-    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
-
         # parse fields
-        $patientName = Parse-StringField $row.PatientName
-        $MRN = Parse-StringField $row.MRN
-        $DOB = Parse-DateField $row.DOB
-        $sex = Parse-StringField $row.SEX
-        $sampleID = Parse-StringField $row.SampleID
-        $specimenType = Parse-StringField $row.Type 
+        $patientName = Get-StringField $row.PatientName
+        $MRN = Get-StringField $row.MRN
+        $DOB = Get-DateField $row.DOB
+        $sex = Get-StringField $row.SEX
+        $sampleID = Get-StringField $row.SampleID
+        $specimenType = Get-StringField $row.Type 
         $runID = 'NGS ' + $batchNumber 
-        $notes = Parse-StringField $row.Comments
-        $provider = Parse-StringField $row.AuthorizingProvider
-        $facility = Parse-StringField $row.Facility
-        $collectionDate = Parse-DateField $row.Collection
-        $receivedDate = Parse-DateField $row.Received
+        $notes = Get-StringField $row.Comments
+        $provider = Get-StringField $row.AuthorizingProvider
+        $facility = Get-StringField $row.Facility
+        $collectionDate = Get-DateField $row.Collection
+        $receivedDate = Get-DateField $row.Received
 
         # write template
         
