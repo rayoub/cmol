@@ -25,14 +25,9 @@ function Get-DateField {
     }
 }
 
-$currentDir = Get-Location | Split-Path -Leaf
-if ($currentDir -ne "results"){
-    Write-Host "`nERROR: You must be in a 'results' folder to run this script." -ForegroundColor Red
-    Read-Host "`nPress enter to exit"
-   exit
-}
+$batchNumber = (Read-Host "Enter a batch number").Trim()
 
-$inputFile = Get-ChildItem -Filter *.csv | Select-Object -First 1
+$inputFile = Get-ChildItem -Filter *-*.csv | Select-Object -First 1
 if ($null -eq $inputFile){
     Write-Host "`nERROR: A CSV input file was not found in the current directory." -ForegroundColor Red
     Read-Host "`nPress enter to exit"
@@ -54,26 +49,26 @@ foreach ($row in $inputCsv) {
         # no more rows
         break
     }
-
-    $lastName = ((Get-StringField $row.PatientName) -split ',')[0]
+    
+	$lastName = ((Get-StringField $row.PatientName) -split ',')[0]
 	$firstName = ((Get-StringField $row.PatientName) -split ',')[1]
 	$mrn = Get-StringField $row.MRN
 	$accession = $sampleID
 	$collectionDate = Get-DateField $row.Collection
 	$birthDate = Get-DateField $row.DOB
 	$gender = Get-StringField $row.SEX
-	$caseId = "n/a"
+	$caseId = "N/A"
 	$dnaNumber = $sampleID
 	$receivedDate = Get-DateField $row.Received
 	$sampleType = Get-StringField $row.Type
-	if ($sampleType -ilike '*paraffin embedded*') {
+	if ($sampleType -ilike '*paraffin*') {
 		$sampleType = 'FFPE'
 	}
 	$orderingLocation = Get-StringField $row.Facility
 	$provideLastName = ((Get-StringField $row.AuthorizingProvider) -split ',')[0]
 	$provideFirstName = ((Get-StringField $row.AuthorizingProvider) -split ',')[1]
+	$notes = Get-StringField $row.Comments
 	$concentration = Get-StringField $row.DNAConcentration
-	$A260A280 = Get-StringField $row.DNAPurity
 
 	$outRows += [PSCustomObject]@{
 		'LastName' = $lastName
@@ -84,9 +79,9 @@ foreach ($row in $inputCsv) {
 		'BirthDate' = $birthDate
 		'Gender' = $gender
 		'CaseId' = $caseId
-		'DNANumber' = $dnaNumber
-		'Color' = ''
-		'ReceivedDate' =$receivedDate
+		'DNANumber' = $dnaNumber + ".2"
+		'Color' = 'Blue'
+		'ReceivedDate' = $receivedDate
 		'ReceivedTime' = ''
 		'ReceivedBy' = ''
 		'SampleType' = $sampleType
@@ -96,13 +91,13 @@ foreach ($row in $inputCsv) {
 		'ProviderLastName' = $provideLastName
 		'ProviderFirstName' = $provideFirstName
 		'DueDate' = ''
-		'TestRequested' = ''
-		'AssayID' = ''
+		'TestRequested' = 'Comprehensive Cancer Plus NGS Panel'
+		'AssayID' = 'GS NGS ' + $batchNumber
+		'TestRunBy' = ''
 		'TestRunDate' = ''
 		'ReportedDate' = ''
-		'TestRunBy' = ''
 		'InvoiceNumber' = ''
-		'Notes' = ''
+		'Notes' = $notes
 		'Column1' = ''
 		'Column2' = ''
 		'Column3' = ''
@@ -116,13 +111,60 @@ foreach ($row in $inputCsv) {
 		'Column10' = ''
 		'Column11' = ''
 		'Column12' = ''
-		'Column13' = ''
-		'Column14' = ''
+		'DNAExtractedDate' = ''
+		'DNAExtractedBy' = ''
 		'Concentration' = $concentration
-		'A260A280' = $A260A280
+	}
+
+	$outRows += [PSCustomObject]@{
+		'LastName' = $lastName
+		'FirstName' = $firstName
+		'MRN' = $mrn
+		'Accession' = $accession
+		'CollectionDate' = $collectionDate
+		'BirthDate' = $birthDate
+		'Gender' = $gender
+		'CaseId' = $caseId
+		'DNANumber' = $dnaNumber + ".3"
+		'Color' = 'Purple'
+		'ReceivedDate' = $receivedDate
+		'ReceivedTime' = ''
+		'ReceivedBy' = ''
+		'SampleType' = $sampleType
+		'SampleAmount' = ''
+		'OrderingLocation' = $orderingLocation
+		'LocationCode' = ''
+		'ProviderLastName' = $provideLastName
+		'ProviderFirstName' = $provideFirstName
+		'DueDate' = ''
+		'TestRequested' = 'Comprehensive Cancer Plus NGS Panel'
+		'AssayID' = 'GS NGS ' + $batchNumber
+		'TestRunBy' = ''
+		'TestRunDate' = ''
+		'ReportedDate' = ''
+		'InvoiceNumber' = ''
+		'Notes' = $notes
+		'Column1' = ''
+		'Column2' = ''
+		'Column3' = ''
+		'TestRequested4' = ''
+		'Holidays' = ''
+		'OrderingLocation5' = ''
+		'Column6' = ''
+		'Column7' = ''
+		'Column8' = ''
+		'Column9' = ''
+		'Column10' = ''
+		'Column11' = ''
+		'Column12' = ''
+		'DNAExtractedDate' = ''
+		'DNAExtractedBy' = ''
+		'Concentration' = $concentration
 	}
 }
 
 $outRows | Export-Csv -Path .\RunReport.csv -NoTypeInformation
 
+Write-Host "`nDone creating run report CSV." -ForegroundColor Green
+Read-Host "`nPress enter to exit"
 

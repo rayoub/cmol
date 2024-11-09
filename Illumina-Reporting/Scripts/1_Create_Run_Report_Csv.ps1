@@ -34,7 +34,7 @@ if ($currentDir -ne "results"){
    exit
 }
 
-$inputFile = Get-ChildItem -Filter *.csv | Select-Object -First 1
+$inputFile = Get-ChildItem -Filter *-*.csv | Select-Object -First 1
 if ($null -eq $inputFile){
     Write-Host "`nERROR: A CSV input file was not found in the current directory." -ForegroundColor Red
     Read-Host "`nPress enter to exit"
@@ -88,7 +88,7 @@ foreach ($row in $inputCsv) {
 		'CaseId' = $caseId
 		'DNANumber' = $dnaNumber
 		'Color' = ''
-		'ReceivedDate' =$receivedDate
+		'ReceivedDate' = $receivedDate
 		'ReceivedTime' = ''
 		'ReceivedBy' = ''
 		'SampleType' = $sampleType
