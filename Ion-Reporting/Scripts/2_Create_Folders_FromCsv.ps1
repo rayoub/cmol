@@ -35,4 +35,5 @@ foreach($sampleID in $sampleIDs){
     mkdir $sampleID
 }
 
+Write-Host "`nDone creating folders." -ForegroundColor Green
 Read-Host "`nPress enter to exit"

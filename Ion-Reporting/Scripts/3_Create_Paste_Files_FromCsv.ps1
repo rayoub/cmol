@@ -3,7 +3,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 ######################################################################################################
-### GLOBAL DEFINITION
+### DEFINITION
 ######################################################################################################
 
 $names = @(
@@ -15,7 +15,7 @@ $names = @(
 )
 
 ######################################################################################################
-### INPUT FORMS
+### FUNCTIONS
 ######################################################################################################
 
 function Get-Name {
@@ -27,7 +27,7 @@ function Get-Name {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "Create Paste Files for $sampleID"
+    $form.Text = "Create Paste File for $sampleID"
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims
@@ -107,107 +107,142 @@ function Get-Name {
 
     $names[$comboBox.SelectedIndex]
 }
+function Get-StringField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        ($fieldValue -split ":")[1]
+    }
+    else {
+        $fieldValue
+    }
+}
+
+function Get-DateField {
+    param ([String] $fieldValue)
+
+    if (-not [String]::isNullOrEmpty($fieldValue) -and $fieldValue.contains(":")) {
+        if ($fieldValue.endsWith("M")) {
+            $fieldValue = $fieldValue.substring(0, $fieldValue.LastIndexOf("/"))
+        }
+        $fieldValue = ($fieldValue -split ":")[1]
+        Get-Date -Date $fieldValue -Format 'yyyy-MM-dd'
+    }
+    else {
+        $fieldValue
+    }
+}
 
 ######################################################################################################
-### GATHER INPUT
+### DO THE WORK
 ######################################################################################################
 
-$inputFile = Get-ChildItem -Filter *_Input_v?.xlsx | Select-Object -First 1
+$suffix = "-Comprehensive Plus Assay Summary Result.docx"
+$submitDir = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Patient Reports\NGS Comprehensive Plus\Comprehensive Plus To Be Submitted"
+
+$inputFile = Get-ChildItem -Filter *-*.csv | Select-Object -First 1
 if ($null -eq $inputFile){
-    Write-Host "`nERROR: An Excel input file was not found in the current directory." -ForegroundColor Red
+    Write-Host "`nERROR: A CSV input file was not found in the current directory." -ForegroundColor Red
     Read-Host "`nPress enter to exit"
     exit
 }
 
-# load input workbook
-$excel = New-Object -ComObject Excel.Application
-$inputBook = $excel.workbooks.open($inputFile.FullName)
-$inputSheet = $inputBook.sheets(1)
+# load input csv 
+$header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
+$inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
 
-# build hash-table of accession #/cmol id combos and patient rows from input workbook
+# build hash-table of accession #/cmol id combos and patient rows from input csv
 $patientRows = @{} 
-for ($i = 2; $i -lt 100; $i++){
+foreach ($row in $inputCsv) {
 
-    $text = $inputSheet.cells($i,1).text().trim()
-    if ([String]::IsNullOrEmpty($text)){
+    $sampleID = Get-StringField $row.SampleID
+    if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
         break
     }
 
     # fill in hash-table
-    $id = $inputSheet.cells($i, 9).text().trim() + "_" + $inputsheet.cells($i, 4).text().trim()
-    $row = $inputSheet.rows($i)
-    if ($patientRows.ContainsKey($id)) {
+    $dirName = $sampleID  + "-" + (Get-StringField $row.PatientName)
+    if ($patientRows.ContainsKey($dirName)) {
 
         # some reports may have multiple rows for a single accession #/cmol id combination
-        $patientRows[$id] += $row
+        $patientRows[$dirName] += $row
     }
     else {
-        $patientRows.Add($id, @($row))
+        $patientRows.Add($dirName, @($row))
     }
 }
 
-# copy and populate templates
-foreach($id in $patientRows.Keys){
+# load word app
+$word = New-Object -ComObject Word.Application
+$word.Visible = $false
 
-    # create file 
-    $fileName = ($id + ".txt")
-    New-Item -Path . -Name $fileName -ItemType "file" -Force
+# create word docs
+foreach($dirName in $patientRows.Keys){
 
-    foreach($a in $patientRows[$id]) {
+    Write-Host "Processing $dirName"
 
-        # patient name
-        $a.Columns("A").text.trim() + ", " + $a.Columns("B").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+    # path name for report
+    $pathName = $submitDir + "\" + $dirName 
 
-        # provider name
-        $provider = $a.Columns("R").text.trim()
-        if (!$provider -eq "") {
-            $doctor = if ($provider.contains(",")) { "" } else { "Dr." }
-            $provider = (($doctor, $a.Columns("S").text.trim(), $a.Columns("R").text.trim()) | 
-                Where-Object {$_ -ne ""}) -join " "
-        }
-        $provider + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # cmol id        
-        $cmolId = $a.Columns("I").text.trim()
-        $cmolId + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # MRN
-        $a.Columns("C").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # facility 
-        $a.Columns("P").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # collection date
-        $a.Columns("E").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # dob , sex 
-        $a.Columns("F").text.trim() + ", " + $a.Columns("G").text.trim().toupper().substring(0,1) + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # pathoology id        
-        $a.Columns("H").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
-
-        # received date
-        $a.Columns("K").text.trim() + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+    # create path if it doesn't already exist
+    if (!(Test-Path -Path $pathName)){
+        mkdir $pathName
+    }
     
-        # name 
-        $result, $selectedName = Get-Name 
-        if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
-            Write-Host "`nAborting the creation of paste files`n" -ForegroundColor Red
-            $inputBook.close()
-            $excel.quit()
-            exit
-        }
-        $selectedName + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+    $doc = $word.documents.add()
 
-        # report date
-        (Get-Date -Format "M/d/yyyy") + "`n" | Out-File -Force -FilePath (Join-Path $PSScriptRoot $fileName) -Append
+    $row = $patientRows[$dirName][0]
+
+    # parse fields
+    $patientName = Get-StringField $row.PatientName
+    $MRN = Get-StringField $row.MRN
+    $DOB = Get-DateField $row.DOB
+    $sex = Get-StringField $row.SEX
+    $sampleID = Get-StringField $row.SampleID
+    $provider = Get-StringField $row.AuthorizingProvider
+    $facility = Get-StringField $row.Facility
+    $collectionDate = Get-DateField $row.Collection
+    $receivedDate = Get-DateField $row.Received
+    
+    # name 
+    $result, $selectedName = Get-Name 
+    if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
+        Write-Host "`nAborting the creation of paste files`n" -ForegroundColor Red
+        $word.quit()
+        exit
     }
+
+    # build text
+    $text = "" + 
+        $patientName + "`v" + "`v" +
+        $provider + "`v" + "`v" +
+        $sampleID + "`v" + "`v" +
+        $MRN + "`v" +"`v" +
+        $facility + "`v" + "`v" +
+        $collectionDate + "`v" + "`v" +
+        $DOB + ", " + $sex.toupper().substring(0,1) + "`v" + "`v" +
+        "[surgepath_id]" + "`v" + "`v" +
+        $receivedDate + "`v" + "`v" +
+        $selectedName + "`v" + "`v" +
+        (Get-Date -Format "M/d/yyyy") + "`v"
+
+    # output text
+    $selection = $word.Selection
+    $selection.TypeText($text)
+    $selection.TypeParagraph()
+        
+    # save template
+    $doc.saveas($pathName + "\" + $dirName + $suffix) 
+
+    # clean up
+    $doc.close()
 }
 
-# clean up 
-$inputBook.close()
-$excel.quit()
+# clean up
+$word.quit()
 
+#Write-Host "`nDone writing documents to:" $submitDir -ForegroundColor Green
 Read-Host "`nPress enter to exit"
