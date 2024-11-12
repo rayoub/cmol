@@ -27,7 +27,7 @@ function Get-Name {
 
     # create form
     $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "Create Paste File for $sampleID"
+    $form.Text = "Create Paste File for " + $sampleID
     $form.Font = $font
     $form.ControlBox = $false
     $form.Size = $dims
@@ -107,6 +107,7 @@ function Get-Name {
 
     $names[$comboBox.SelectedIndex]
 }
+
 function Get-StringField {
     param ([String] $fieldValue)
 
@@ -208,7 +209,7 @@ foreach($dirName in $patientRows.Keys){
     $receivedDate = Get-DateField $row.Received
     
     # name 
-    $result, $selectedName = Get-Name 
+    $result, $selectedName = Get-Name $sampleID
     if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
         Write-Host "`nAborting the creation of paste files`n" -ForegroundColor Red
         $word.quit()
