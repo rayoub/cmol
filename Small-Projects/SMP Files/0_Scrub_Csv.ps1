@@ -16,7 +16,7 @@ $file = Get-FileName
 $done = Select-String -Path $file -Pattern ',"Patient Name:' -Quiet
 if ($done) {
     Write-Host "`nFile has already been scrubbed." 
-    Read-Host "`nPress enter to exit"
+    Read-Host "Press enter to exit"
     exit
 }
 
@@ -30,4 +30,3 @@ if ($done) {
     
 Write-Host "`nDone scrubbing file." -ForegroundColor Green
 Read-Host "Press enter to exit"
-exit

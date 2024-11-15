@@ -30,4 +30,3 @@ if ($done) {
     
 Write-Host "`nDone scrubbing file." -ForegroundColor Green
 Read-Host "Press enter to exit"
-exit
