@@ -13,6 +13,12 @@ function Get-FileName
 }
 
 $file = Get-FileName
+$done = Select-String -Path $file -Pattern ',"Patient Name:' -Quiet
+if ($done) {
+    Write-Host "`nFile has already been scrubbed." 
+    Read-Host "Press enter to exit"
+    exit
+}
 
 (Get-Content $file) `
 	-replace ',(Patient Name:)', ',"$1' `
@@ -21,3 +27,7 @@ $file = Get-FileName
 	-replace ',(Ordering Provider:)','","$1' `
 	-replace ', (Facility:)','",$1' | 
 	Set-Content $file
+    
+Write-Host "`nDone scrubbing file." -ForegroundColor Green
+Read-Host "Press enter to exit"
+exit
