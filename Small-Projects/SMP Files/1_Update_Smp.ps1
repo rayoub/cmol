@@ -16,18 +16,21 @@ function Get-SmpFileName
 {
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenFileDialog.InitialDirectory = $PSScriptRoot
-    $OpenFileDialog.filter = "Comma delimited (*.smp) | *.smp"
+    $OpenFileDialog.filter = "Sample map (*.smp) | *.smp"
     $OpenFileDialog.Title = "Select SMP file to update."
     $OpenFileDialog.ShowDialog() | Out-Null
     $OpenFileDialog.FileName
 }
 
 $csvFile = Get-CsvFileName
+if ([String]::IsNullOrEmpty($csvFile)) {
+    Write-Host "`nNo CSV file selected. Aborting." -ForegroundColor Red
+    Read-Host "Press enter to exit"
+    exit
+}
 $smpFile = Get-SmpFileName
-
-$done = Select-String -Path $csvFile -Pattern ',"Patient Name:' -Quiet
-if (!$done) {
-    Write-Host "`nThe CSV file is invalid." 
+if ([String]::IsNullOrEmpty($smpFile)) {
+    Write-Host "`nNo SMP file selected. Aborting." -ForegroundColor Red
     Read-Host "Press enter to exit"
     exit
 }
@@ -53,7 +56,8 @@ foreach ($row in $inputCsv) {
     $smpFileContents = $smpFileContents -replace "<NAME>SAMPLE$i", "<NAME>$sampleID"
 }
 
-$smpFileContents | Set-Content $smpFile
+$fileName = (((Split-Path $csvFile -Leaf) -split '\.')[0]) + " Sample Map.smp"
+$smpFileContents | Set-Content .\$fileName
     
 Write-Host "`nDone updating SMP file." -ForegroundColor Green
 Read-Host "Press enter to exit"
