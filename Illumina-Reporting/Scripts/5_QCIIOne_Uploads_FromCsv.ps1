@@ -94,6 +94,7 @@ $available = @(
     'Acute myeloid leukemia',
 	'Myelodysplastic neoplasm',
 	'Myeloproliferative neoplasm',
+	'Germ cell neoplasm',
     'Acute idiopathic thrombocytopenic purpura',
     'Acute leukemia',
     'Acute lymphoblastic leukemia',
@@ -552,9 +553,8 @@ function Get-Selected {
 
     $listbox.SelectedItems
 }
-
 function Get-Input {
-    param ([String] $sampleID, [String] $indicated)
+    param ([String] $sampleID)
 
     $dims = New-Object System.Drawing.Size(595,242) # width, height
     $padding = New-Object System.Windows.Forms.Padding(6)
@@ -577,7 +577,6 @@ function Get-Input {
     $indicatedText.AutoSize = $true
     $indicatedText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
     $indicatedValue = New-Object System.Windows.Forms.Label 
-    $indicatedValue.Text = $indicated
     $indicatedValue.AutoSize = $false
     $indicatedValue.Width = 375
     $indicatedValue.Anchor = [System.Windows.Forms.AnchorStyles]::Left
@@ -598,12 +597,7 @@ function Get-Input {
     foreach ($diagnosis in $available) {
         [void] $comboBox.Items.Add($diagnosis)
     }
-    if ($available -contains $indicated) {
-        $comboBox.SelectedItem = $indicated
-    }
-    else {
-        $comboBox.SelectedIndex = 0
-    }
+    $comboBox.SelectedIndex = 0
 
     # sources combobox
     $sourceCombo = New-Object System.Windows.Forms.ComboBox
@@ -799,7 +793,7 @@ foreach($sampleID in $sampleIDs){
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Name", $nsmgr).InnerText = Get-StringField $row.PatientName 
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:BirthDate", $nsmgr).InnerText = Get-DateField $row.DOB
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Age", $nsmgr).InnerText = Get-Age -BirthDateText (Get-DateField $row.DOB)
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = Get-StringField $row.SEX 
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Patient/ns1:Gender", $nsmgr).InnerText = Get-StringField $row.SEX.toLower() 
 
         # Specimen element
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $sampleID
@@ -811,11 +805,15 @@ foreach($sampleID in $sampleIDs){
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = Get-StringField $row.Facility
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Get-StringField $row.AuthorizingProvider
 
-        # Pathologist element
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = 'MISSING'
+        # Pathologist element    
+        $sampleType = Get-StringField $row.Type
+        if ($sampleType -ilike '*paraffin*') {
+            $sampleType = 'FFPE'
+        }
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Pathologist/ns1:Name", $nsmgr).InnerText = $sampleType
 
         # get inputs from input form
-        $result, $selectedDiagnosis, $selectedSource = Get-Input -SampleID $sampleID -Indicated $indicated
+        $result, $selectedDiagnosis, $selectedSource = Get-Input -SampleID $sampleID
         if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
             Write-Host "`nAborting the creation of QCIIOne upload packages`n" -ForegroundColor Red
             exit
