@@ -68,7 +68,8 @@ foreach ($row in $inputCsv) {
 	$provideLastName = ((Get-StringField $row.AuthorizingProvider) -split ',')[0]
 	$provideFirstName = ((Get-StringField $row.AuthorizingProvider) -split ',')[1]
 	$notes = Get-StringField $row.Comments
-	$concentration = Get-StringField $row.DNAConcentration
+	$dnaConcentration = Get-StringField $row.DNAConcentration
+	$rnaConcentration = Get-StringField $row.RNA
 
 	$outRows += [PSCustomObject]@{
 		'LastName' = $lastName
@@ -113,7 +114,7 @@ foreach ($row in $inputCsv) {
 		'Column12' = ''
 		'DNAExtractedDate' = ''
 		'DNAExtractedBy' = ''
-		'Concentration' = $concentration
+		'Concentration' = $dnaConcentration
 	}
 
 	$outRows += [PSCustomObject]@{
@@ -159,7 +160,7 @@ foreach ($row in $inputCsv) {
 		'Column12' = ''
 		'DNAExtractedDate' = ''
 		'DNAExtractedBy' = ''
-		'Concentration' = $concentration
+		'Concentration' = $rnaConcentration
 	}
 }
 
