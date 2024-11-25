@@ -20,8 +20,12 @@ public class FileProps {
 
 		String idStr = filePath.getParent().getFileName().toString();
 		String[] parts = idStr.split(" ");
-		this.cmolId = parts[0].split("_")[0];
-		this.accessionId = parts[0].split("_")[1];
+		String[] parts2 = parts[0].split("_");
+		this.cmolId = parts2[0];
+		this.accessionId = "";
+		if (parts2.length > 1) {
+			this.accessionId = parts2[1];
+		}
 		if (parts.length > 1) {
 			this.modifier = "";
 			for (int i = 1; i < parts.length; i++) {

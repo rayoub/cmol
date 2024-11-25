@@ -22,7 +22,7 @@ public class LabLookup {
         Connection conn = ds.getConnection();
            
         // maybe later switch based on lookupType
-        PreparedStatement stmt = conn.prepareCall("SELECT DISTINCT diagnosis FROM lab_sample WHERE diagnosis IS NOT NULL ORDER BY diagnosis;");
+        PreparedStatement stmt = conn.prepareCall("SELECT DISTINCT LOWER(TRIM(diagnosis)) AS diagnosis FROM lab_sample WHERE diagnosis IS NOT NULL ORDER BY LOWER(TRIM(diagnosis));");
         
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {

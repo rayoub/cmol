@@ -2,9 +2,8 @@ package edu.kumc.cmol.core;
 
 public enum LookupType {
    
-    DIAGNOSES(1),
-    ASSAYIDS(2),
-    CMOLIDS(3);    
+    QCI_DIAGNOSES(1),
+    LAB_DIAGNOSES(2);
 
     private int id;
 

@@ -2,6 +2,7 @@ package edu.kumc.cmol.lab;
 
 public class QueryCriteria {
 
+    private String[] diagnoses;
     private String fromDate;
     private String toDate;
     private String mrns;
@@ -9,6 +10,14 @@ public class QueryCriteria {
     private String exon;
     private String transcriptChange;
     private String proteinChange;
+
+    public String[] getDiagnoses() {
+        return diagnoses;
+    }
+
+    public void setDiagnoses(String[] diagnoses) {
+        this.diagnoses = diagnoses;
+    }
 
     public String getFromDate() {
         return fromDate;

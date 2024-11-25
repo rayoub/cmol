@@ -1,6 +1,7 @@
 package edu.kumc.cmol.lab;
 
-import java.io.FileInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -135,7 +136,7 @@ public class Import {
 			if (!existing.contains(combinedId)) {
 
 
-				FileInputStream fin = new FileInputStream(fileProp.getFilePath().toString());
+				File f = new File(fileProp.getFilePath().toString());
 				OPCPackage pkg = null;
 				XSSFWorkbook wb = null;
 				FormulaEvaluator evaluator = null;
@@ -145,7 +146,7 @@ public class Import {
 					List<LabSample> samples = new ArrayList<>();
 					List<LabVariant> variants = new ArrayList<>();
 
-					pkg = OPCPackage.open(fin);
+					pkg = OPCPackage.open(f);
 					wb = new XSSFWorkbook(pkg);
 					evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
@@ -233,6 +234,9 @@ public class Import {
 						LabDb.saveVariants(variants);
 					}
 				} 
+				catch(FileNotFoundException e) {
+					e.printStackTrace();
+				}
 				catch (InvalidFormatException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {
