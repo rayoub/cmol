@@ -799,11 +799,12 @@ foreach($sampleID in $sampleIDs){
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Id", $nsmgr).InnerText = $sampleID
 		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:CollectionDate", $nsmgr).InnerText = Get-DateField $row.Collection 
         $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Specimen/ns1:Dissection", $nsmgr).InnerText = Get-StringField $row.MRN
-
+        
         # Physician element
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = Get-StringField $row.Facility
-        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = Get-StringField $row.Facility
-		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = Get-StringField $row.AuthorizingProvider
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:Name", $nsmgr).InnerText = "The University of Kansas Health System"
+        $xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:ClientId", $nsmgr).InnerText = "The University of Kansas Health System"
+        $textInfo = (Get-Culture).TextInfo
+		$xml.SelectSingleNode("//ns1:QCISomaticTest/ns1:Physician/ns1:FacilityName", $nsmgr).InnerText = $textInfo.toTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
 
         # Pathologist element    
         $sampleType = Get-StringField $row.Type

@@ -134,12 +134,13 @@ foreach($sampleID in $patientRows.Keys){
         $patientSheet.cells($i,21).value = 'NGS ' + $reportType
         $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 
         $patientSheet.cells($i,27).value = Get-StringField $row.Comments
+        $textInfo = (Get-Culture).TextInfo
         if ($i -eq 2) {
             if ($reportType -eq 'Heme') {
-                $patientSheet.cells(26,1).value = Get-StringField $row.AuthorizingProvider
+                $patientSheet.cells(26,1).value = $textInfo.totTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
             }
-            else { # -eq 'Common'
-                $patientSheet.cells(22,2).value = Get-StringField $row.AuthorizingProvider
+            else { # -eq 'Common
+                $patientSheet.cells(22,2).value = $textInfo.toTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
             }
         }
 
