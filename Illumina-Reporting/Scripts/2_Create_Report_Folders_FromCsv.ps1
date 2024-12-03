@@ -137,7 +137,7 @@ foreach($sampleID in $patientRows.Keys){
         $textInfo = (Get-Culture).TextInfo
         if ($i -eq 2) {
             if ($reportType -eq 'Heme') {
-                $patientSheet.cells(26,1).value = $textInfo.totTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
+                $patientSheet.cells(26,1).value = $textInfo.toTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
             }
             else { # -eq 'Common
                 $patientSheet.cells(22,2).value = $textInfo.toTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
