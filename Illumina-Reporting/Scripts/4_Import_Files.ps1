@@ -1,9 +1,9 @@
 
 # copy the result files to directories
-$dirNames = Get-ChildItem . -Directory -Filter BH*_* | Select-Object -ExpandProperty BaseName
+$dirNames = Get-ChildItem . -Directory -Filter BH*-* | Select-Object -ExpandProperty BaseName
 foreach($dirName in $dirNames){
 
-    $matchedFiles = Get-ChildItem . -File -Filter ($dirName.SubString(0,6) + "*")
+    $matchedFiles = Get-ChildItem . -File -Filter ($dirName + "*")
     foreach($matchedFile in $matchedFiles){
         Write-Host ("Copying " + $matchedFile.Name + "`n`tto $dirName directory")
         Move-Item -Path $matchedFile.FullName -Destination ("$dirName\") -Force

@@ -135,7 +135,7 @@ foreach($sampleID in $patientRows.Keys){
         $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 
         $patientSheet.cells($i,27).value = Get-StringField $row.Comments
         $textInfo = (Get-Culture).TextInfo
-        if ($i -eq 2) {
+        if ($i -ieq 2) {
             if ($reportType -eq 'Heme') {
                 $patientSheet.cells(26,1).value = $textInfo.toTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
             }
