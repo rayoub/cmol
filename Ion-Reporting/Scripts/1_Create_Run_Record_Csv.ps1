@@ -164,8 +164,8 @@ foreach ($row in $inputCsv) {
 	}
 }
 
-$outRows | Export-Csv -Path .\RunReport.csv -NoTypeInformation
+$outRows | Export-Csv -Path .\RunRecord.csv -NoTypeInformation
 
-Write-Host "`nDone creating run report CSV." -ForegroundColor Green
+Write-Host "`nDone creating run record CSV." -ForegroundColor Green
 Read-Host "`nPress enter to exit"
 
