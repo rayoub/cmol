@@ -1,4 +1,7 @@
 
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
 function Get-CsvFileName
 {
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
