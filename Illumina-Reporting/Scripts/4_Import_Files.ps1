@@ -1,6 +1,6 @@
 
 # copy the result files to directories
-$dirNames = Get-ChildItem . -Directory -Filter BH*-* | Select-Object -ExpandProperty BaseName
+$dirNames = Get-ChildItem . -Directory -Filter *BH*-* | Select-Object -ExpandProperty BaseName
 foreach($dirName in $dirNames){
 
     $matchedFiles = Get-ChildItem . -File -Filter ($dirName + "*")
