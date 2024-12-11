@@ -13,6 +13,12 @@ function Get-FileName
 }
 
 $file = Get-FileName
+if ([String]::IsNullOrEmpty($file)) {
+    Write-Host "`nERROR: No CSV file was selected" -ForegroundColor Red
+    Read-Host "`nPress enter to exit"
+    exit
+}
+
 $done = Select-String -Path $file -Pattern ',"Patient Name:' -Quiet
 if ($done) {
     Write-Host "`nFile has already been scrubbed." 

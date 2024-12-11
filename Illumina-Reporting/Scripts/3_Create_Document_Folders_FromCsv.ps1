@@ -25,6 +25,16 @@ function Get-DateField {
     }
 }
 
+function Get-CsvFileName
+{
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.InitialDirectory = $PSScriptRoot
+    $OpenFileDialog.filter = "Comma delimited (*.csv) | *.csv"
+    $OpenFileDialog.Title = "Select CSV file"
+    $OpenFileDialog.ShowDialog() | Out-Null
+    $OpenFileDialog.FileName
+}
+
 $submitDir = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Patient Reports\"
 $submitDir += "NGS HEME\NGS HEME To Be Submitted"
 
@@ -35,9 +45,9 @@ if ($currentDir -ne "results"){
    exit
 }
 
-$inputFile = Get-ChildItem -Filter *-*.csv | Select-Object -First 1
-if ($null -eq $inputFile){
-    Write-Host "`nERROR: A CSV input file was not found in the current directory." -ForegroundColor Red
+$inputFile = Get-CsvFileName
+if ([String]::IsNullOrEmpty($inputFile)) {
+    Write-Host "`nERROR: No CSV file was selected" -ForegroundColor Red
     Read-Host "`nPress enter to exit"
     exit
 }
@@ -45,7 +55,7 @@ if ($null -eq $inputFile){
 # load input csv 
 $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
     'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
-$inputCsv = Import-Csv -Path $inputFile.FullName -Header $header
+$inputCsv = Import-Csv -Path $inputFile -Header $header
 
 # create folders from input csv
 foreach ($row in $inputCsv) {
