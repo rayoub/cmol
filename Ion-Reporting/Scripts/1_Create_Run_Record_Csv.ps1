@@ -77,7 +77,7 @@ foreach ($row in $inputCsv) {
 	if ($sampleType -ilike '*paraffin*') {
 		$sampleType = 'FFPE'
 	}
-	$orderingLocation = Get-StringField $row.Facility
+	$orderingLocation = 'The University of Kansas Hospital'
 	$provideLastName = ((Get-StringField $row.AuthorizingProvider) -split ',')[0]
 	$provideFirstName = ((Get-StringField $row.AuthorizingProvider) -split ',')[1]
 	$notes = Get-StringField $row.Comments

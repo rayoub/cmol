@@ -127,7 +127,7 @@ function Get-DateField {
             $fieldValue = $fieldValue.substring(0, $fieldValue.LastIndexOf("/"))
         }
         $fieldValue = ($fieldValue -split ":")[1]
-        Get-Date -Date $fieldValue -Format 'yyyy-MM-dd'
+        Get-Date -Date $fieldValue -Format 'MM/dd/yyyy'
     }
     else {
         $fieldValue
@@ -213,8 +213,9 @@ foreach($dirName in $patientRows.Keys){
     $DOB = Get-DateField $row.DOB
     $sex = Get-StringField $row.SEX
     $sampleID = Get-StringField $row.SampleID
-    $provider = Get-StringField $row.AuthorizingProvider
-    $facility = Get-StringField $row.Facility
+    $textInfo = (Get-Culture).TextInfo
+    $provider = $textInfo.ToTitleCase((Get-StringField $row.AuthorizingProvider).toLower())
+    $facility = 'The University of Kansas Hospital'
     $collectionDate = Get-DateField $row.Collection
     $receivedDate = Get-DateField $row.Received
     

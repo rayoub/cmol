@@ -507,6 +507,7 @@ function Get-Selected {
     $listBox.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
     $listBox.Width = 375
     $listBox.Height = 200
+    $idList = $idList | Sort-Object
     foreach ($sampleID in $idList) {
         [void] $listBox.Items.Add($sampleID)
     }
@@ -732,7 +733,7 @@ if ([String]::IsNullOrEmpty($inputFile)) {
 # load input csv 
 $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
     'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
-$inputCsv = Import-Csv -Path $inputFile -Header $header | Sort-Object SampleID
+$inputCsv = Import-Csv -Path $inputFile -Header $header 
 
 # build hash-table of sample ids and patient rows from input csv
 $idList = @()
