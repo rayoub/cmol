@@ -31,7 +31,7 @@ public class WS {
         WebTarget target = client.target(BASE_URI).path("oauth").path("access_token")
             .queryParam("grant_type", "client_credentials")
             .queryParam("client_id", "70e6a8c3594b6f953cf3bbfd2646cfd4")
-            .queryParam("client_secret", "1d596fd5c8d0e8de0d40c2787b787922");
+            .queryParam("client_secret", "e51d4abff9cc9a3d33c275f0175172cc");
             
         Invocation.Builder invoke = target.request(MediaType.APPLICATION_JSON);
 
