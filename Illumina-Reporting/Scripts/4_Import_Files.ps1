@@ -14,7 +14,7 @@ foreach($dirName in $dirNames){
 # create excel application
 $excel = New-Object -ComObject Excel.Application
 
-$excelFiles = Get-ChildItem -Path . -Directory -Filter *BH*_* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *.xlsm 
+$excelFiles = Get-ChildItem -Path . -Directory -Filter *BH*-* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *.xlsm 
 foreach($excelFile in $excelFiles){
 
     Write-Host ("Importing data for " + $excelFile.Name + "`n")
