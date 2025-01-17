@@ -7,7 +7,7 @@ Add-Type -AssemblyName System.Windows.Forms
 function Get-ValidateForFolder
 {
     $dialog = New-Object System.Windows.Forms.FolderBrowserDialog 
-    $dialog.SelectedPath = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Personal Data\Ayoub"
+    $dialog.SelectedPath = "C:\CompareResults\ValidateFor"
 	$dialog.ShowNewFolderButton = $false
     $dialog.Description = "Select the backed up 'pending' folder to validate for."
     if ($dialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -eq "OK")
@@ -22,7 +22,7 @@ function Get-ValidateForFolder
 function Get-CompareToFolder
 {
     $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $dialog.SelectedPath = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Assay Results\Clinical Data\NGS"
+    $dialog.SelectedPath = "C:\CompareResults\CompareTo"
 	$dialog.ShowNewFolderButton = $false
     $dialog.Description = "Select the NGS run 'results' folder to compare to."
     if ($dialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -eq "OK")
@@ -58,31 +58,29 @@ function Compare-Files {
 	$compareToSheet = $compareToBook.sheets(1)
 
 	$i = 2
-	while (![string]::IsNullOrEmpty($validateForSheet.cells($i, 1).text)) {
+	while (![string]::IsNullOrEmpty($validateForSheet.Cells($i, 1).Text)) {
 
-		$v = @(
-			$sampleName,
-			$validateForSheet.cells($i, 1).text,
-			$validateForSheet.cells($i, 2).text,
-			$validateForSheet.cells($i, 3).text,
-			$validateForSheet.cells($i, 4).text,
-			$validateForSheet.cells($i, 5).text
-		)
+		$row = $validateForSheet.Rows($i)
+
+		$v_chromosome = $row.Cells(1).Text
+		$v_region = $row.Cells(2).Text
+		$v_type = $row.Cells(3).Text
+		$v_reference = $row.Cells(4).Text
+		$v_allele = $row.Cells(5).Text
 
 		$j = 2
 		$matched = $false
-		while (![string]::IsNullOrEmpty($compareToSheet.cells($j, 1).text)) {
+		while (![string]::IsNullOrEmpty($compareToSheet.Cells($j, 1).Text)) {
 
-			$c = @(
-				$sampleName,
-				$compareToSheet.cells($j, 1).text,
-				$compareToSheet.cells($j, 2).text,
-				$compareToSheet.cells($j, 3).text,
-				$compareToSheet.cells($j, 4).text,
-				$compareToSheet.cells($j, 5).text
-			)
+			$row = $compareToSheet.Rows($j)
 
-			$matched = (Compare-Object $v $c).Length -eq 0
+			$c_chromosome = $row.Cells(1).Text
+			$c_region = $row.Cells(2).Text
+			$c_type = $row.Cells(3).Text
+			$c_reference = $row.Cells(4).Text
+			$c_allele = $row.Cells(5).Text
+
+			$matched = $v_chromosome -eq $c_chromosome -and $v_region -eq $c_region -and $v_type -eq $c_type -and $v_reference -eq $c_reference -and $v_allele -eq $c_allele
 			if ($matched) {
 				break
 			}
@@ -91,38 +89,43 @@ function Compare-Files {
 		}
 
 		if (!$matched) {
-			$unmatchedValidateForRows += $v
+			$unmatchedValidateForRows += @{
+					sampleName = $sampleName
+					chromosome = $v_chromosome 
+					region = $v_region 
+					type = $v_type 
+					reference = $v_reference
+					allele = $v_allele
+				}
 		}
 
 		$i++
 	}
 
 	$i = 2
-	while (![string]::IsNullOrEmpty($compareToSheet.cells($i, 1).text)) {
+	while (![string]::IsNullOrEmpty($compareToSheet.Cells($i, 1).Text)) {
 
-		$c = @(
-			$sampleName,
-			$compareToSheet.cells($i, 1).text,
-			$compareToSheet.cells($i, 2).text,
-			$compareToSheet.cells($i, 3).text,
-			$compareToSheet.cells($i, 4).text,
-			$compareToSheet.cells($i, 5).text
-		)
+		$row = $compareToSheet.Rows($i)
+
+		$c_chromosome = $row.Cells(1).Text
+		$c_region = $row.Cells(2).Text
+		$c_type = $row.Cells(3).Text
+		$c_reference = $row.Cells(4).Text
+		$c_allele = $row.Cells(5).Text
 
 		$j = 2
 		$matched = $false
-		while (![string]::IsNullOrEmpty($validateForSheet.cells($j, 1).text)) {
+		while (![string]::IsNullOrEmpty($validateForSheet.Cells($j, 1).Text)) {
 
-			$v = @(
-				$sampleName,
-				$validateForSheet.cells($j, 1).text,
-				$validateForSheet.cells($j, 2).text,
-				$validateForSheet.cells($j, 3).text,
-				$validateForSheet.cells($j, 4).text,
-				$validateForSheet.cells($j, 5).text
-			)
+			$row = $validateForSheet.Rows($j)
 
-			$matched = (Compare-Object $c $v).Length -eq 0
+			$v_chromosome = $row.Cells(1).Text
+			$v_region = $row.Cells(2).Text
+			$v_type = $row.Cells(3).Text
+			$v_reference = $row.Cells(4).Text
+			$v_allele = $row.Cells(5).Text
+
+			$matched = $v_chromosome -eq $c_chromosome -and $v_region -eq $c_region -and $v_type -eq $c_type -and $v_reference -eq $c_reference -and $v_allele -eq $c_allele
 			if ($matched) {
 				break
 			}
@@ -131,7 +134,14 @@ function Compare-Files {
 		}
 
 		if (!$matched) {
-			$unmatchedCompareToRows += $c		
+			$unmatchedCompareToRows += @{
+					sampleName = $sampleName
+					chromosome = $c_chromosome 
+					region = $c_region 
+					type = $c_type 
+					reference = $c_reference
+					allele = $c_allele
+				}
 		}
 
 		$i++
@@ -149,26 +159,26 @@ function Compare-Files {
 # *** GATHER INPUTS ***
 # ******************************************************************************************
 
-#$validateForFolder = Get-ValidateForFolder
-#if ($null -eq $validateForFolder) {
-#   	Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
-#  	exit
-#}
-#
-#$compareToFolder = Get-CompareToFolder
-#if ($null -eq $compareToFolder) {
-#   	Write-Host "`nEXITING: No comparison folder selected." -ForegroundColor Red
-#  	exit
-#}
-#if (!$compareToFolder.toLower().endsWith("results")){
-#   	Write-Host "`nERROR: You must select an NGS run 'results' folder to compare to." -ForegroundColor Red
-#  	exit
-#}
-#
-#$validateForPercentFiles = Get-ChildItem -Path $validateForFolder -Filter "*%.xlsx" | Sort-Object
-#$validateForHotspotFiles = Get-ChildItem -Path $validateForFolder -Filter "*Hotspot.xlsx" | Sort-Object
-#$compareToPercentFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
-#$compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
+$validateForFolder = Get-ValidateForFolder
+if ($null -eq $validateForFolder) {
+   	Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
+  	exit
+}
+
+$compareToFolder = Get-CompareToFolder
+if ($null -eq $compareToFolder) {
+   	Write-Host "`nEXITING: No comparison folder selected." -ForegroundColor Red
+  	exit
+}
+if (!$compareToFolder.toLower().endsWith("results")){
+   	Write-Host "`nERROR: You must select an NGS run 'results' folder to compare to." -ForegroundColor Red
+  	exit
+}
+
+$validateForPercentFiles = Get-ChildItem -Path $validateForFolder -Filter "*%.xlsx" | Sort-Object
+$validateForHotspotFiles = Get-ChildItem -Path $validateForFolder -Filter "*Hotspot.xlsx" | Sort-Object
+$compareToPercentFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
+$compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
 
 #******************************************************************************************
 #*** VALIDATION ***
