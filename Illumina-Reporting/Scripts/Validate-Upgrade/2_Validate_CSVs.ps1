@@ -143,7 +143,7 @@ function Compare-AllFiles {
 # *** GATHER INPUTS ***
 # ******************************************************************************************
 
-$batchNumber = 1161 #(Read-Host "Enter a batch number").Trim()
+$batchNumber = (Read-Host "Enter a batch number").Trim()
 
 $validateForFolder = Get-ValidateForFolder
 if ($null -eq $validateForFolder) {
