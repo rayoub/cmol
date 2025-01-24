@@ -109,6 +109,7 @@ public class IonDb {
             row.setAnalysisDate(rs.getString("analysis_date"));
             row.setAssayFolder(rs.getString("assay_folder"));
             row.setCmolId(rs.getString("cmol_id"));
+            if (rs.wasNull()) row.setCmolId("");
             row.setMrn(rs.getString("mrn"));
             row.setAccessionId(rs.getString("accession_id"));
             row.setLocus(rs.getString("locus"));
