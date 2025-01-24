@@ -38,14 +38,13 @@ function Compare-Files {
 
 	param(
 		$validateForFile,
-		$compareToFile
+		$compareToFile,
+		$batchNumber,
+		$sampleName
 	)
 
-	$sampleName = $compareToFile.Directory.Name
-
 	# return values
-	$unmatchedValidateForRows = @()
-	$unmatchedCompareToRows = @()
+	$unmatchedRows = @()
 
 	# csv files
 	$validateForRows= Import-Csv $validateForFile.FullName
@@ -67,7 +66,10 @@ function Compare-Files {
 		}
 
 		if (!$matched) {
-			$unmatchedValidateForRows += $iRow
+			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ("NGS " + $batchNumber)
+			$iRow | Add-Member -NotePropertyName "Sample" -NotePropertyValue $sampleName
+			$iRow | Add-Member -NotePropertyName "File" -NotePropertyValue $validateForFile.FullName
+			$unmatchedRows += $iRow
 		}
 	}
 
@@ -86,16 +88,62 @@ function Compare-Files {
 			}
 		}
 		if (!$matched) {
-			$unmatchedCompareToRows += $iRow
+			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ("NGS " + $batchNumber)
+			$iRow | Add-Member -NotePropertyName "Sample" -NotePropertyValue $sampleName
+			$iRow | Add-Member -NotePropertyName "File" -NotePropertyValue $compareToFile.FullName
+			$unmatchedRows += $iRow
 		}
 	}
 
-	$unmatchedValidateForRows, $unmatchedCompareToRows
+	$unmatchedRows
 } 
+
+function Compare-AllFiles {
+
+	param(
+		$validateForFiles,
+		$compareToFiles,
+		$batchNumber
+	)
+	
+	$unmatchedRows = @()
+	foreach($validateForFile in $validateForFiles) {
+
+		$matched = $false
+		$validateForFileName = $validateForFile.BaseName.SubString(0,$validateForFile.BaseName.IndexOf(")") + 1)
+		foreach($compareToFile in $compareToFiles) {
+
+			$compareToFileName = $compareToFile.BaseName.SubString(0,$compareToFile.BaseName.IndexOf(")") + 1)
+			if ($compareToFileName -ieq $validateForFileName) {
+
+				$matched = $true
+				
+				Write-Host "`nValidating for the following match:" 
+
+				Write-Host $validateForFile.FullName
+				Write-Host $compareToFile.FullName
+
+				$sampleName = $compareToFile.Directory.Name
+
+				$unmatchedRows += Compare-Files $validateForFile $compareToFile $batchNumber $sampleName
+
+				# look for the next files
+				break
+			}
+		}
+		if ($matched -eq $false) {
+			Write-Host "`nWARNING:" $validateForFileName "file was not matched"  -ForegroundColor Red
+		}
+	}
+
+	$unmatchedRows
+}
 
 # ******************************************************************************************
 # *** GATHER INPUTS ***
 # ******************************************************************************************
+
+$batchNumber = 1161 #(Read-Host "Enter a batch number").Trim()
 
 $validateForFolder = Get-ValidateForFolder
 if ($null -eq $validateForFolder) {
@@ -123,43 +171,12 @@ $compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $
 #******************************************************************************************
 
 # initialize unmatched rows
-$unmatchedValidateForRows = $()
-$unmatchedCompareToRows = $()
+$unmatchedRows = $()
 
-# validate percent files
-foreach($validateForFile in $validateForPercentFiles) {
+$unmatchedRows += Compare-AllFiles $validateForPercentFiles $compareToPercentFiles $batchNumber
+$unmatchedRows += Compare-AllFiles $validateForHotspotFiles $compareToHotspotFiles $batchNumber
 
-	$matched = $false
-	$validateForFileName = $validateForFile.BaseName.SubString(0,$validateForFile.BaseName.IndexOf(")") + 1)
-	foreach($compareToFile in $compareToPercentFiles) {
+Write-Host "Finished writing out unmatched rows" -ForegroundColor Green
+$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./NGS " + $batchNumber + " Unmatched Rows.csv") -NoTypeInformation
 
-		$compareToFileName = $compareToFile.BaseName.SubString(0,$compareToFile.BaseName.IndexOf(")") + 1)
-		if ($compareToFileName -ieq $validateForFileName) {
-
-			$matched = $true
-			
-			Write-Host "`nValidating for the following match:" 
-
-			$validateForFile.FullName
-			$compareToFile.FullName
-
-			$a, $b = Compare-Files $validateForFile $compareToFile
-			$unmatchedValidateForRows += $a
-			$unmatchedCompareToRows += $b
-
-			# look for the next files
-			break
-		}
-	}
-	if ($matched -eq $false) {
-    	Write-Host "`nWARNING:" $validateForFileName "file was not matched"  -ForegroundColor Red
-	}
-
-	# just do one file compare for now
-	break
-}
-
-Write-Host "unmatchedValidateForRows"
-$unmatchedValidateForRows
-Write-Host "unmatchedCompareToRows"
-$unmatchedCompareToRows
+Read-Host "`nPress enter to exit"
