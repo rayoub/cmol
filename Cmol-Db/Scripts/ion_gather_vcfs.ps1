@@ -1,7 +1,7 @@
 
 # set locations 
 $root = "R:\CMOL\Assay Results\Clinical Data\NGS Comprehensive Plus\"
-$paths = @(($root + "2022 (Run 001-015)"), ($root + "2023 (Run 016-090)"), ($root + "2024 (Run 091-)")), ($root + "2025 (Run 228-)")
+$paths = @(($root + "2022 (Run 001-015)"), ($root + "2023 (Run 016-090)"), ($root + "2024 (Run 091-226)")), ($root + "2025 (Run 227-)")
 $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 
 # get zip files
