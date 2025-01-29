@@ -69,10 +69,10 @@ BEGIN
         v.fold_diff
     FROM
         ion_sample s
-        INNER JOIN ion_mrn m
-            ON m.accn = s.accession_id
         INNER JOIN ion_variant v
             ON s.zip_name = v.zip_name
+        LEFT JOIN ion_mrn m
+            ON m.accn = s.accession_id
         LEFT JOIN UNNEST(p_mrns) pm(mrn)
                 ON pm.mrn = m.mrn
         LEFT JOIN UNNEST(p_genes) pg(gene)
