@@ -15,6 +15,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
+import edu.kumc.cmol.core.SampleInfo;
 
 public class IonDb {
     
@@ -219,26 +220,25 @@ public class IonDb {
         return stats;
     }
     
-    public static int getSampleCount(DownloadType downloadType) throws SQLException {
+    public static SampleInfo getSampleInfo(DownloadType downloadType) throws SQLException {
 
-        int sampleCount = -1;
+        SampleInfo info = new SampleInfo();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
-            
-        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT zip_name) AS sn FROM ion_sample WHERE download_type = '" + downloadType.getPattern() + "';"); 
-
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT cmol_id) AS sn, MAX(analysis_date)::VARCHAR AS ls FROM get_ion_query('" + downloadType.getPattern() + "');");
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            sampleCount = rs.getInt("sn");
+            info.setCount(rs.getInt("sn"));
+            info.setLatest(rs.getString("ls"));
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return sampleCount;
+        return info;
     }
 
     public static void saveSamples(List<IonSample> samples) throws SQLException {

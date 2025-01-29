@@ -16,6 +16,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
+import edu.kumc.cmol.core.SampleInfo;
 
 public class QciDb {
 
@@ -295,6 +296,27 @@ public class QciDb {
         conn.close();
 
         return variants;
+    }
+    
+    public static SampleInfo getSampleInfo() throws SQLException {
+
+        SampleInfo info = new SampleInfo();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT sample_id) AS sn, MAX(test_date)::VARCHAR AS ls FROM get_qci_query();");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            info.setCount(rs.getInt("sn"));
+            info.setLatest(rs.getString("ls"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return info;
     }
 
     public static String getLatestTestDate() throws SQLException {

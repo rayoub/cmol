@@ -15,6 +15,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.kumc.cmol.core.Ds;
+import edu.kumc.cmol.core.SampleInfo;
 
 public class LabDb {
 
@@ -183,6 +184,27 @@ public class LabDb {
         conn.close();
 
         return existing;
+    }
+
+    public static SampleInfo getSampleInfo() throws SQLException {
+
+        SampleInfo info = new SampleInfo();
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT cmol_id) AS sn, MAX(reported_date)::VARCHAR AS ls FROM get_lab_query();");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            info.setCount(rs.getInt("sn"));
+            info.setLatest(rs.getString("ls"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return info;
     }
 
     public static void saveSamples(List<LabSample> samples) throws SQLException {
