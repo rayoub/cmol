@@ -15,7 +15,6 @@
 
 \i get_qci_query.sql
 
-\i clean_qci_accession.sql
 \i clean_qci_all.sql
 \i clean_qci_diagnosis.sql
 \i clean_qci_opc.sql

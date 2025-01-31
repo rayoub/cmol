@@ -11,7 +11,6 @@ CREATE OR REPLACE FUNCTION get_qci_query (
 RETURNS TABLE (
     sample_id VARCHAR,
     mrn VARCHAR,
-    accession VARCHAR,
     test_date DATE,
     test_code VARCHAR,
     diagnosis VARCHAR,
@@ -36,7 +35,6 @@ BEGIN
         SELECT
             qr.sample_id,
             qr.mrn,
-            qr.accession,
             qr.test_date,
             qr.test_code,
             qr.diagnosis,
@@ -78,7 +76,6 @@ BEGIN
         SELECT
             qr.sample_id,
             qr.mrn,
-            qr.accession,
             qr.test_date,
             qr.test_code,
             qr.diagnosis,

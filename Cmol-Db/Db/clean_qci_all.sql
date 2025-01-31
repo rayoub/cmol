@@ -5,7 +5,6 @@ BEGIN
 
     -- these first few must be in order
     PERFORM clean_qci_test_code();
-    PERFORM clean_qci_accession();
     PERFORM clean_qci_specimen_id();
 
     -- must come after the first few

@@ -3,7 +3,6 @@ CREATE TABLE qci_sample
 (
     sample_id VARCHAR NOT NULL,
     mrn VARCHAR NULL, 
-    accession VARCHAR NULL,
     received_date DATE NOT NULL,
     test_date DATE NOT NULL,
     test_code VARCHAR NULL,

@@ -116,8 +116,6 @@ public class QciDb {
             row.setSampleId(rs.getString("sample_id"));
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
-            row.setAccession(rs.getString("accession"));
-            if (rs.wasNull()) row.setAccession("");
             row.setTestDate(rs.getString("test_date"));
             if (rs.wasNull()) row.setTestDate("");
             row.setTestCode(rs.getString("test_code"));
@@ -176,8 +174,6 @@ public class QciDb {
             if (rs.wasNull()) sample.setSampleId("");
             sample.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) sample.setMrn("");
-            sample.setAccession(rs.getString("accession"));
-            if (rs.wasNull()) sample.setAccession("");
             sample.setTestDate(rs.getString("test_date"));
             if (rs.wasNull()) sample.setTestDate("");
             sample.setTestCode(rs.getString("test_code"));

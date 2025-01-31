@@ -55,7 +55,6 @@ public class Parser {
         sample.setSampleId(sampleId);
 
         sample.setReceivedDate(xpath.evaluate("/report/review_state_date", element));
-        sample.setAccession(xpath.evaluate("/report/accession", element));
         sample.setTestDate(xpath.evaluate("/report/testDate", element));
         sample.setTestCode(xpath.evaluate("/report/testCode", element));
         sample.setClinicalFinding(xpath.evaluate("/report/clinicalFinding", element));

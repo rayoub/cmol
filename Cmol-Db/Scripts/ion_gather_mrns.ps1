@@ -1,4 +1,6 @@
 
+# DEPRECATED BY THE RECENT BEAKER UPGRADE
+
 # set locations 
 $data = "E:\git\cmol\Cmol-Db\Data\Ion\"
 $srlSrc = "\\kumc.edu\data\Research\CANCTR RSCH\CMOL\Sample Receipt Logs\Clinical Sample Receipt Log.xlsx"
