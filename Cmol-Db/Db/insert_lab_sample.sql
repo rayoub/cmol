@@ -6,7 +6,7 @@ BEGIN
 
 	INSERT INTO lab_sample (
                 run_id,
-                cmol_id,
+                specimen_id,
                 mrn,
                 accession,
                 test_code ,
@@ -19,7 +19,7 @@ BEGIN
         )
 	SELECT
                 run_id,
-                cmol_id,
+                specimen_id,
                 mrn,
                 accession,
                 test_code ,

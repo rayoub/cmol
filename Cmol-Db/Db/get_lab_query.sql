@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION get_lab_query (
     p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
 	run_id VARCHAR,
-	cmol_id	VARCHAR,
+	specimen_id	VARCHAR,
 	mrn VARCHAR,
 	accession VARCHAR,
 	reported_date DATE,
@@ -37,7 +37,7 @@ BEGIN
         RETURN QUERY
         SELECT
             ls.run_id,
-            ls.cmol_id,
+            ls.specimen_id,
             ls.mrn,
             ls.accession,
             ls.reported_date,
@@ -58,7 +58,7 @@ BEGIN
         FROM
             lab_sample ls 
             INNER JOIN lab_variant lv 
-                ON lv.run_id = ls.run_id AND lv.cmol_id = ls.cmol_id
+                ON lv.run_id = ls.run_id AND lv.specimen_id = ls.specimen_id
             LEFT JOIN UNNEST(p_mrns) pm(mrn)
                 ON pm.mrn = ls.mrn
             LEFT JOIN UNNEST(p_genes) pg(gene)
@@ -80,7 +80,7 @@ BEGIN
         RETURN QUERY
         SELECT
             ls.run_id,
-            ls.cmol_id,
+            ls.specimen_id,
             ls.mrn,
             ls.accession,
             ls.reported_date,
@@ -101,7 +101,7 @@ BEGIN
         FROM
             lab_sample ls 
             INNER JOIN lab_variant lv 
-                ON lv.run_id = ls.run_id AND lv.cmol_id = ls.cmol_id
+                ON lv.run_id = ls.run_id AND lv.specimen_id = ls.specimen_id
             INNER JOIN UNNEST(p_diagnoses) pd(diagnosis)
                 ON LOWER(TRIM(pd.diagnosis)) = LOWER(TRIM(ls.diagnosis))
             LEFT JOIN UNNEST(p_mrns) pm(mrn)

@@ -16,7 +16,7 @@ public class ComprehensiveImport {
 	static { 
 
 		// sample fields
-		sampleFieldMap.put("cmol_id", Pair.of(0,3)); // Sample ID
+		sampleFieldMap.put("specimen_id", Pair.of(0,3)); // Specimen ID
 		sampleFieldMap.put("run_id", Pair.of(0,1)); // Assay ID
 		sampleFieldMap.put("mrn", Pair.of(4,3));
 		sampleFieldMap.put("accession", Pair.of(5,1));

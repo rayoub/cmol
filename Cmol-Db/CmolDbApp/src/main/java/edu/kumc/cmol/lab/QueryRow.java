@@ -3,7 +3,7 @@ package edu.kumc.cmol.lab;
 public class QueryRow {
 
     private String runId;
-    private String cmolId;
+    private String specimenId;
     private String mrn;
     private String accession;
     private String reportedDate;
@@ -30,12 +30,12 @@ public class QueryRow {
         this.runId = runId;
     }
 
-    public String getCmolId() {
-        return cmolId;
+    public String getSpecimenId() {
+        return specimenId;
     }
 
-    public void setCmolId(String cmolId) {
-        this.cmolId = cmolId;
+    public void setSpecimenId(String specimenId) {
+        this.specimenId = specimenId;
     }
 
     public String getMrn() {

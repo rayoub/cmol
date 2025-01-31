@@ -5,7 +5,7 @@ import org.postgresql.util.PGobject;
 public class LabVariant extends PGobject {
 
 	private String runId;
-	private String cmolId;
+	private String specimenId;
 
 	private String chromosome;
 	private String region;
@@ -33,12 +33,12 @@ public class LabVariant extends PGobject {
 		this.runId = runId;
 	}
 
-	public String getCmolId() {
-		return cmolId;
+	public String getSpecimenId() {
+		return specimenId;
 	}
 
-	public void setCmolId(String cmolId) {
-		this.cmolId = cmolId;
+	public void setSpecimenId(String specimenId) {
+		this.specimenId = specimenId;
 	}
 
 	public String getChromosome() {
@@ -157,7 +157,7 @@ public class LabVariant extends PGobject {
     public String getValue() {
         String row = "("  +
 			runId.replace(",", "\\,") + "," + 
-            cmolId + "," +
+            specimenId + "," +
             chromosome.replace(",", "\\,") + "," + 
             region + "," + 
             variation + "," + 

@@ -130,9 +130,9 @@ public class Import {
 		for (FileProps fileProp : fileProps) {
 
 			String runId = fileProp.getRunId();
-			String cmolId = fileProp.getCmolId();
+			String specimenId = fileProp.getSpecimenId();
 
-			String combinedId = runId + "$" + cmolId;
+			String combinedId = runId + "$" + specimenId;
 			if (!existing.contains(combinedId)) {
 
 
@@ -182,7 +182,7 @@ public class Import {
 						// store sample info
 						LabSample sample = new LabSample();
 						sample.setRunId(runId);
-						sample.setCmolId(cmolId);
+						sample.setSpecimenId(specimenId);
 						sample.setMrn(mrn);
 						sample.setAccession(accession);
 						sample.setTestCode(testCode);
@@ -202,7 +202,7 @@ public class Import {
 									LabVariant variant = new LabVariant();
 
 									variant.setRunId(runId);
-									variant.setCmolId(cmolId);
+									variant.setSpecimenId(specimenId);
 									variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator));
 									variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region")), evaluator));
 									variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation")), evaluator));

@@ -8,7 +8,7 @@ public class FileProps {
 	private String fileName;
 
 	private String runId;
-	private String cmolId;
+	private String specimenId;
 	private String accessionId;
 	private PanelType panel;
 	private String modifier;
@@ -21,7 +21,7 @@ public class FileProps {
 		String idStr = filePath.getParent().getFileName().toString();
 		String[] parts = idStr.split(" ");
 		String[] parts2 = parts[0].split("_");
-		this.cmolId = parts2[0];
+		this.specimenId = parts2[0];
 		this.accessionId = "";
 		if (parts2.length > 1) {
 			this.accessionId = parts2[1];
@@ -69,12 +69,12 @@ public class FileProps {
 		this.runId = runId;
 	}
 
-	public String getCmolId() {
-		return cmolId;
+	public String getSpecimenId() {
+		return specimenId;
 	}
 
-	public void setCmolId(String cmolId) {
-		this.cmolId = cmolId;
+	public void setSpecimenId(String specimenId) {
+		this.specimenId = specimenId;
 	}
 
 	public String getAccessionId() {
@@ -106,7 +106,7 @@ public class FileProps {
 		return "filePath=" + filePath + 
 				"\nfileName=" + fileName + 
 				"\nrunId=" + runId + 
-				"\ncmolId=" + cmolId + 
+				"\nspecimenId=" + specimenId + 
 				"\naccessionId=" + accessionId + 
 				"\npanel=" + panel + 
 				"\nmodifier=" + modifier;

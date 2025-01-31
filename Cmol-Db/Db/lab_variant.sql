@@ -2,7 +2,7 @@
 CREATE TABLE lab_variant
 (
 	run_id VARCHAR NOT NULL,
-	cmol_id VARCHAR NOT NULL,
+	specimen_id VARCHAR NOT NULL,
 	chromosome VARCHAR NULL,
 	region VARCHAR NULL,
 	variation VARCHAR NULL,

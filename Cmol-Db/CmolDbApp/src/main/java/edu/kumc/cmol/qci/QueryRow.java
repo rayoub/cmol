@@ -3,6 +3,7 @@ package edu.kumc.cmol.qci;
 public class QueryRow {
 
     private String sampleId;
+    private String specimenId;
     private String mrn;
     private String testDate;
     private String testCode;
@@ -25,6 +26,14 @@ public class QueryRow {
 
     public void setSampleId(String sampleId) {
         this.sampleId = sampleId;
+    }
+    
+    public String getSpecimenId() {
+        return specimenId;
+    }
+
+    public void setSpecimenId(String specimenId) {
+        this.specimenId = specimenId;
     }
 
     public String getMrn() {

@@ -26,7 +26,7 @@ public class ArchiveImport {
 	static { 
 
 		// sample fields
-		sampleFieldMap.put("cmol_id", 2);
+		sampleFieldMap.put("specimen_id", 2);
 		sampleFieldMap.put("run_id", 0);
 		sampleFieldMap.put("mrn", 3);
 		sampleFieldMap.put("accession", 4);
@@ -83,18 +83,18 @@ public class ArchiveImport {
 
 						//System.out.println("Processing row = " + rowNumber++);
 						String runId = Import.getCellValue(row.getCell(sampleFieldMap.get("run_id")), evaluator);
-						String cmolId = Import.getCellValue(row.getCell(sampleFieldMap.get("cmol_id")), evaluator);
-						if (runId.isEmpty() || cmolId.isEmpty()) {
+						String specimenId = Import.getCellValue(row.getCell(sampleFieldMap.get("specimen_id")), evaluator);
+						if (runId.isEmpty() || specimenId.isEmpty()) {
 							continue;
 						}
-						String key = runId + cmolId;
+						String key = runId + specimenId;
 						if (!key.equals(lastKey)) {
 							
 							// build sample object
 							LabSample sample = new LabSample();
 
 							sample.setRunId(runId);
-							sample.setCmolId(cmolId);
+							sample.setSpecimenId(specimenId);
 							sample.setMrn(Import.getCellValue(row.getCell(sampleFieldMap.get("mrn")), evaluator));
 							sample.setAccession(Import.getCellValue(row.getCell(sampleFieldMap.get("accession")), evaluator));
 							sample.setTestCode(Import.getCellValue(row.getCell(sampleFieldMap.get("test_code")), evaluator)); 
@@ -112,7 +112,7 @@ public class ArchiveImport {
 						LabVariant variant = new LabVariant();
 
 						variant.setRunId(runId);
-						variant.setCmolId(cmolId);
+						variant.setSpecimenId(specimenId);
 						variant.setChromosome(Import.getCellValue(row.getCell(variantFieldMap.get("chromosome")), evaluator));
 						variant.setRegion(Import.getCellValue(row.getCell(variantFieldMap.get("region")), evaluator));
 						variant.setVariation(Import.getCellValue(row.getCell(variantFieldMap.get("variation")), evaluator));

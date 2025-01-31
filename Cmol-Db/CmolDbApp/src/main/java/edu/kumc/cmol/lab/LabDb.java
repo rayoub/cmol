@@ -113,7 +113,7 @@ public class LabDb {
             QueryRow row = new QueryRow();
 
             row.setRunId(rs.getString("run_id"));
-            row.setCmolId(rs.getString("cmol_id"));
+            row.setSpecimenId(rs.getString("specimen_id"));
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
             row.setAccession(rs.getString("accession"));
@@ -167,14 +167,14 @@ public class LabDb {
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT run_id, cmol_id FROM lab_sample;");
+        PreparedStatement stmt = conn.prepareCall("SELECT run_id, specimen_id FROM lab_sample;");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
 
             String runId = rs.getString("run_id");
-            String cmolId = rs.getString("cmol_id");
-            String combinedId = runId + "$" + cmolId;
+            String specimenId = rs.getString("specimen_id");
+            String combinedId = runId + "$" + specimenId;
 
             existing.add(combinedId);
         }
@@ -193,7 +193,7 @@ public class LabDb {
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
-        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT cmol_id) AS sn, MAX(reported_date)::VARCHAR AS ls FROM get_lab_query();");
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT specimen_id) AS sn, MAX(reported_date)::VARCHAR AS ls FROM get_lab_query();");
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             info.setCount(rs.getInt("sn"));

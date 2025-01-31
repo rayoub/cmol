@@ -1,6 +1,6 @@
 CREATE TABLE lab_sample ( 
 	run_id VARCHAR NOT NULL,
-	cmol_id	VARCHAR NOT NULL,
+	specimen_id	VARCHAR NOT NULL,
 	mrn VARCHAR NULL,
 	accession VARCHAR NULL,
 	test_code VARCHAR NOT NULL,
@@ -12,4 +12,4 @@ CREATE TABLE lab_sample (
 	archived VARCHAR NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_lab_sample_unique ON lab_sample (run_id, cmol_id);
+CREATE UNIQUE INDEX idx_lab_sample_unique ON lab_sample (run_id, specimen_id);

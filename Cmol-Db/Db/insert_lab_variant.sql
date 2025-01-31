@@ -6,7 +6,7 @@ BEGIN
 	
     INSERT INTO lab_variant (
         run_id,
-        cmol_id,
+        specimen_id,
         chromosome,
         region,
         variation,
@@ -24,7 +24,7 @@ BEGIN
     )
 	SELECT
         run_id,
-        cmol_id,
+        specimen_id,
         chromosome,
         region,
         variation,

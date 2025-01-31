@@ -10,6 +10,7 @@ CREATE OR REPLACE FUNCTION get_qci_query (
     p_pc_change VARCHAR DEFAULT NULL)
 RETURNS TABLE (
     sample_id VARCHAR,
+    specimen_id VARCHAR,
     mrn VARCHAR,
     test_date DATE,
     test_code VARCHAR,
@@ -34,6 +35,7 @@ BEGIN
         RETURN QUERY
         SELECT
             qr.sample_id,
+            qr.specimen_id,
             qr.mrn,
             qr.test_date,
             qr.test_code,
@@ -75,6 +77,7 @@ BEGIN
         RETURN QUERY
         SELECT
             qr.sample_id,
+            qr.specimen_id,
             qr.mrn,
             qr.test_date,
             qr.test_code,
