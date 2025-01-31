@@ -113,7 +113,6 @@ public class IonDb {
             if (rs.wasNull()) row.setCmolId("");
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
-            row.setAccessionId(rs.getString("accession_id"));
             row.setLocus(rs.getString("locus"));
             row.setType(rs.getString("type"));
             row.setSubtype(rs.getString("subtype"));
