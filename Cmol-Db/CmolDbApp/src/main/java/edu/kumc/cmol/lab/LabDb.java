@@ -29,12 +29,18 @@ public class LabDb {
             
         PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_lab_query(?,?,?,?,?,?,?,?);");
         
-        // diagnoses
-        if (criteria.getDiagnoses() == null || criteria.getDiagnoses().length == 0) {
-            stmt.setNull(1, Types.ARRAY);
+        // diagnosis terms
+        boolean dTermsIsNull = true;
+        String dTerms = criteria.getDTerms().trim();
+        if (dTerms != null) {
+            if (!dTerms.isEmpty()) {
+                String[] a = dTerms.split(";");
+                stmt.setArray(1, conn.createArrayOf("VARCHAR", a));
+                dTermsIsNull = false;
+            }
         }
-        else {
-            stmt.setArray(1, conn.createArrayOf("VARCHAR", criteria.getDiagnoses()));
+        if (dTermsIsNull) {
+            stmt.setNull(1, Types.ARRAY);
         }
 
         // from date
