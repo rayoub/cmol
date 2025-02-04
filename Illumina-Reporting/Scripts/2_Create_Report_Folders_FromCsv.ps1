@@ -39,7 +39,7 @@ function Get-CsvFileName
 }
 
 $reportType = (Read-Host "Enter the report type (Common|Heme)").Trim()
-$batchNumber = (Read-Host "Enter a batch number").Trim()
+$runId = (Read-Host "Enter a run id").Trim()
 $stampInitials = (Read-Host "Enter your initials").Trim()
 $stampDate = (Read-Host "Enter the date").Trim()
 
@@ -99,7 +99,7 @@ foreach($sampleID in $patientRows.Keys){
     mkdir $sampleID
 
     # file name for copied template
-    $fileName = ((Get-Location).Path + "\" + $sampleID + "\" + $sampleID + " N" + $batchNumber + " summary.xlsm")
+    $fileName = ((Get-Location).Path + "\" + $sampleID + "\" + $sampleID + " " + $runId + " summary.xlsm")
 
     # copy template to patient directory and rename
     Copy-Item $templateFile -Destination $fileName
@@ -145,7 +145,7 @@ foreach($sampleID in $patientRows.Keys){
         $patientSheet.cells($i,14).value = $sampleType
         $patientSheet.cells($i,16).value = Get-StringField $row.Facility
         $patientSheet.cells($i,21).value = 'NGS ' + $reportType
-        $patientSheet.cells($i,22).value = 'NGS ' + $batchNumber 
+        $patientSheet.cells($i,22).value = $runId 
         $patientSheet.cells($i,27).value = Get-StringField $row.Comments
         $textInfo = (Get-Culture).TextInfo
         if ($i -ieq 2) {

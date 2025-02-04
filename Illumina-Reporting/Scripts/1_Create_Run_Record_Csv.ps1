@@ -37,7 +37,7 @@ function Get-CsvFileName
     $OpenFileDialog.FileName
 }
 
-$batchNumber = (Read-Host "Enter a batch number").Trim()
+$runId = (Read-Host "Enter a run id").Trim()
 
 $currentDir = Get-Location | Split-Path -Leaf
 if ($currentDir -ne "results"){
@@ -111,7 +111,7 @@ foreach ($row in $inputCsv) {
 		'ProviderFirstName' = $provideFirstName
 		'DueDate' = ''
 		'TestRequested' = ''
-		'AssayID' = 'NGS ' + $batchNumber
+		'AssayID' = $runId
 		'TestRunDate' = ''
 		'ReportedDate' = ''
 		'TestRunBy' = ''
