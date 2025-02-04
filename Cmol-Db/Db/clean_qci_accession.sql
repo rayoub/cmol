@@ -14,12 +14,14 @@ BEGIN
                     qci_sample
                 WHERE   
                     LOWER(accession) LIKE 'val_%'
+                    OR LOWER(accession) LIKE '%common%'
             );
 
     DELETE FROM
         qci_sample 
     WHERE 
-        LOWER(accession) LIKE 'val_%';
+        LOWER(accession) LIKE 'val_%'
+        OR LOWER(accession) LIKE '%common%';
 
 END;
 $$ LANGUAGE plpgsql;
