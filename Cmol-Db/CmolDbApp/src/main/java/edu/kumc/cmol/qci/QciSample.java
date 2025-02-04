@@ -7,6 +7,7 @@ public class QciSample extends PGobject {
     private String sampleId;
 
     private String mrn;
+    private String accession;
     private String receivedDate;
     private String testDate;
     private String testCode;
@@ -42,6 +43,14 @@ public class QciSample extends PGobject {
 
     public void setMrn(String mrn) {
         this.mrn = mrn;
+    }
+
+    public String getAccession() {
+        return accession;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
     }
 
     public String getReceivedDate() {
@@ -179,6 +188,7 @@ public class QciSample extends PGobject {
             sampleId + "," +
 
             mrn + "," +
+            accession.replace("(", "\\(").replace(")","\\)") + "," +
             receivedDate + "," +
             testDate + "," +
             testCode.replace("(", "\\(").replace(")","\\)") + "," +

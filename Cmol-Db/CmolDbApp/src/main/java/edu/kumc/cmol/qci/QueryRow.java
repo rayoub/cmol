@@ -5,6 +5,7 @@ public class QueryRow {
     private String sampleId;
     private String specimenId;
     private String mrn;
+    private String accession;
     private String testDate;
     private String testCode;
     private String diagnosis;
@@ -42,6 +43,14 @@ public class QueryRow {
 
     public void setMrn(String mrn) {
         this.mrn = mrn;
+    }
+
+    public String getAccession() {
+        return accession;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
     }
 
     public String getTestDate() {

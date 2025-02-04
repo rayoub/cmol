@@ -6,7 +6,7 @@ Write-Host "Importing QCI XML files"
 java -jar E:\git\cmol\Cmol-Db\CmolDbApp\target\CmolDbApp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -r
 Write-Host "Cleaning QCI tables"
 java -jar E:\git\cmol\Cmol-Db\CmolDbApp\target\CmolDbApp-0.0.1-SNAPSHOT-jar-with-dependencies.jar -s
-# DEPRECATED E:\git\cmol\Cmol-Db\Scripts\ion_gather_mrns.ps1
+E:\git\cmol\Cmol-Db\Scripts\ion_gather_mrns.ps1
 E:\git\cmol\Cmol-Db\Scripts\ion_gather_tsvs.ps1
 E:\git\cmol\Cmol-Db\Scripts\ion_gather_vcfs.ps1
 Write-Host "Importing Ion selected variants"

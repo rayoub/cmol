@@ -7,6 +7,7 @@ BEGIN
 	INSERT INTO qci_sample (
                 sample_id,
                 mrn,
+                accession,
                 received_date,
                 test_date,
                 test_code,
@@ -27,6 +28,7 @@ BEGIN
 	SELECT
                 sample_id,
                 mrn,
+                accession,
                 received_date,
                 test_date,
                 test_code,
