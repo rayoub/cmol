@@ -19,7 +19,7 @@ public class HemeImport {
 		sampleFieldMap.put("specimen_id", Pair.of(0,3)); // Specimen ID
 		sampleFieldMap.put("run_id", Pair.of(0,1)); // Assay ID
 		sampleFieldMap.put("mrn", Pair.of(4,3));
-		sampleFieldMap.put("accession", Pair.of(5,1));
+		sampleFieldMap.put("accession", Pair.of(5,1)); // will be sample type after beaker upgrade
 		sampleFieldMap.put("test_code", Pair.of(2,1)); // Panel
 		sampleFieldMap.put("reported_date", Pair.of(1,3)); // Date
 		sampleFieldMap.put("diagnosis", Pair.of(5,6));
