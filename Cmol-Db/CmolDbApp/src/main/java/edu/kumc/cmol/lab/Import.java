@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -104,10 +105,10 @@ public class Import {
 			try (Stream<Path> pathStream = Files.find(path, 4,
 					(p, attrs) -> 
 						attrs.isRegularFile() && 
-						p.getFileName().toString().startsWith("D") &&
+						(p.getFileName().toString().startsWith("D") || p.getFileName().toString().contains("BH-")) &&
 						p.getFileName().toString().endsWith(".xlsm"));
 			) {
-				files = pathStream.map(FileProps::new)
+				files = pathStream.parallel().map(FileProps::new)
 					.filter(f -> f.getPanel() == panel)
 					.filter(f -> !(f.getModifier().contains("repeat") || f.getModifier().contains("cancel")))
 					.collect(Collectors.toList());
@@ -240,6 +241,8 @@ public class Import {
 				catch (InvalidFormatException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (NotOfficeXmlFileException e) {
 					e.printStackTrace();
 				}
 				finally {

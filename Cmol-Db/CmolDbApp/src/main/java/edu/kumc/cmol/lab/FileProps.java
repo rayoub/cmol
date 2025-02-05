@@ -20,11 +20,19 @@ public class FileProps {
 
 		String idStr = filePath.getParent().getFileName().toString();
 		String[] parts = idStr.split(" ");
-		String[] parts2 = parts[0].split("_");
-		this.specimenId = parts2[0];
-		this.accessionId = "";
-		if (parts2.length > 1) {
-			this.accessionId = parts2[1];
+		// before beaker
+		if (idStr.startsWith("D")) {
+			String[] idParts = parts[0].split("_");
+			this.specimenId = idParts[0];
+			this.accessionId = "";
+			if (idParts.length > 1) {
+				this.accessionId = idParts[1];
+			}
+		}
+		// after beaker - contains BH-
+		else {
+			this.specimenId = parts[0];
+			this.accessionId = "";
 		}
 		if (parts.length > 1) {
 			this.modifier = "";

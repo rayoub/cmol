@@ -25,6 +25,7 @@ import edu.kumc.cmol.lab.ArchiveImport;
 import edu.kumc.cmol.lab.CommonImport;
 import edu.kumc.cmol.lab.ComprehensiveImport;
 import edu.kumc.cmol.lab.HemeImport;
+import edu.kumc.cmol.lab.LabDb;
 import edu.kumc.cmol.qci.QciDb;
 import edu.kumc.cmol.qci.QciImport;
 import edu.kumc.cmol.qci.WS;
@@ -42,6 +43,9 @@ public class Main {
             .build());
         group.addOption(Option.builder("b")
             .desc("import Lab loose files")
+            .build());
+        group.addOption(Option.builder("c")
+            .desc("clean Lab tables")
             .build());
         
         group.addOption(Option.builder("q")
@@ -93,6 +97,8 @@ public class Main {
                 option_a(line);
             } else if (line.hasOption("b")) {
                 option_b(line);
+            } else if (line.hasOption("c")) {
+                option_c(line);
             } else if (line.hasOption("q")) {
                 option_q(line);
             } else if (line.hasOption("r")) {
@@ -128,6 +134,11 @@ public class Main {
         CommonImport.importFiles();
         System.out.println("Importing Comprehensive");
         ComprehensiveImport.importFiles();
+    }
+    
+    private static void option_c(CommandLine line) throws Exception {
+
+        LabDb.cleanLabTables();
     }
     
     private static void option_q(CommandLine line) throws Exception {

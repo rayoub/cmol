@@ -19,6 +19,20 @@ import edu.kumc.cmol.core.SampleInfo;
 
 public class LabDb {
 
+    public static void cleanLabTables() throws SQLException {
+
+        PGSimpleDataSource ds = Ds.getDataSource();
+
+        Connection conn = ds.getConnection();
+
+        PreparedStatement updt = conn.prepareStatement("SELECT clean_lab_all();");
+    
+        updt.execute();
+        updt.close();
+
+        conn.close();
+    }
+
     public static List<QueryRow> getQueryRows(QueryCriteria criteria) throws SQLException {
 
         List<QueryRow> rows = new ArrayList<>();
