@@ -39,6 +39,12 @@ function Get-CsvFileName
 }
 
 $reportType = (Read-Host "Enter the report type (Common|Heme)").Trim()
+if ($reportType -ne "Common" -and $reportType -ne "Heme") {
+    Write-Host "`nERROR: Report type must be either 'Common' or 'Heme'." -ForegroundColor Red
+    Read-Host "`nPress enter to exit"
+    exit
+}
+
 $runId = (Read-Host "Enter a run id").Trim()
 $stampInitials = (Read-Host "Enter your initials").Trim()
 $stampDate = (Read-Host "Enter the date").Trim()
