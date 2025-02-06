@@ -11,7 +11,7 @@ public class IonSample extends PGobject {
     private String zipName;
     private String assayFolder;
     private String sampleFolder;
-    private String cmolId;
+    private String specimenId;
     private String accessionId;
     private String analysisDate;
     
@@ -63,12 +63,12 @@ public class IonSample extends PGobject {
         this.sampleFolder = sampleFolder;
     }
 
-    public String getCmolId() {
-        return cmolId;
+    public String getSpecimenId() {
+        return specimenId;
     }
 
-    public void setCmolId(String cmolId) {
-        this.cmolId = cmolId;
+    public void setSpecimenId(String specimenId) {
+        this.specimenId = specimenId;
     }
 
     public String getAccessionId() {
@@ -95,7 +95,7 @@ public class IonSample extends PGobject {
             zipName + "," + 
             assayFolder + "," + 
             sampleFolder + "," +
-            cmolId + "," +
+            specimenId + "," +
             accessionId  + "," +
             analysisDate
         + ")";

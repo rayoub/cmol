@@ -48,12 +48,12 @@ public class IonDb {
             stmt.setDate(3, Date.valueOf(criteria.getToDate()));
         }
 
-        // cmol id
-        if (criteria.getCmolId() == null || criteria.getCmolId().isBlank()) {
+        // specimen id
+        if (criteria.getSpecimenId() == null || criteria.getSpecimenId().isBlank()) {
             stmt.setNull(4, Types.VARCHAR);
         }
         else {
-            stmt.setString(4, criteria.getCmolId());
+            stmt.setString(4, criteria.getSpecimenId());
         }
         
         // mrns
@@ -109,8 +109,8 @@ public class IonDb {
 
             row.setAnalysisDate(rs.getString("analysis_date"));
             row.setAssayFolder(rs.getString("assay_folder"));
-            row.setCmolId(rs.getString("cmol_id"));
-            if (rs.wasNull()) row.setCmolId("");
+            row.setSpecimenId(rs.getString("specimen_id"));
+            if (rs.wasNull()) row.setSpecimenId("");
             row.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) row.setMrn("");
             row.setLocus(rs.getString("locus"));
@@ -226,7 +226,7 @@ public class IonDb {
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
-        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT cmol_id) AS sn, MAX(analysis_date)::VARCHAR AS ls FROM get_ion_query('" + downloadType.getPattern() + "');");
+        PreparedStatement stmt = conn.prepareCall("SELECT COUNT(DISTINCT specimen_id) AS sn, MAX(analysis_date)::VARCHAR AS ls FROM get_ion_query('" + downloadType.getPattern() + "');");
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             info.setCount(rs.getInt("sn"));

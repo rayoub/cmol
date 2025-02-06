@@ -77,11 +77,11 @@ public class IonImport {
             sample.setSampleFolder(parts[1]);
 
             if (parts[1].contains("_")) {
-                sample.setCmolId(parts[1].split("_")[0]);
+                sample.setSpecimenId(parts[1].split("_")[0]);
                 sample.setAccessionId(parts[1].split("_")[1]);
             }
             else {
-                sample.setCmolId(parts[1]);
+                sample.setSpecimenId(parts[1]);
                 sample.setAccessionId(parts[1]);
             }
             

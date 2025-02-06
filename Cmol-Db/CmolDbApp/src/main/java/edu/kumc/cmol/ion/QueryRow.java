@@ -4,7 +4,7 @@ public class QueryRow {
 
     private String analysisDate;
     private String assayFolder;
-    private String cmolId;
+    private String specimenId;
     private String mrn;
     private String accessionId;
     private String locus;
@@ -45,12 +45,12 @@ public class QueryRow {
         this.assayFolder = assayFolder;
     }
 
-    public String getCmolId() {
-        return cmolId;
+    public String getSpecimenId() {
+        return specimenId;
     }
 
-    public void setCmolId(String cmolId) {
-        this.cmolId = cmolId;
+    public void setSpecimenId(String specimenId) {
+        this.specimenId = specimenId;
     }
 
     public String getMrn() {

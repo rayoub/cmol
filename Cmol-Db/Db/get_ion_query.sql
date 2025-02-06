@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION get_ion_query (
     p_download_type VARCHAR,
     p_from_date DATE DEFAULT NULL,
     p_to_date DATE DEFAULT NULL,
-    p_cmol_id VARCHAR DEFAULT NULL,
+    p_specimen_id VARCHAR DEFAULT NULL,
     p_mrns VARCHAR ARRAY DEFAULT NULL, 
     p_genes VARCHAR ARRAY DEFAULT NULL,
     p_tc_change VARCHAR DEFAULT NULL, 
@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION get_ion_query (
 RETURNS TABLE (
     analysis_date DATE,
     assay_folder VARCHAR,
-    cmol_id VARCHAR,
+    specimen_id VARCHAR,
     mrn VARCHAR,
     locus VARCHAR,
     type VARCHAR,
@@ -42,7 +42,7 @@ BEGIN
     SELECT
         s.analysis_date,
         s.assay_folder,
-        s.cmol_id,
+        s.specimen_id,
         m.mrn,
         v.locus,
         v.type, 
@@ -79,7 +79,7 @@ BEGIN
         s.download_type = p_download_type
         AND (p_from_date IS NULL OR s.analysis_date >= p_from_date)
         AND (p_to_date IS NULL OR s.analysis_date <= p_to_date)
-        AND (p_cmol_id IS NULL OR s.cmol_id = p_cmol_id)
+        AND (p_specimen_id IS NULL OR s.specimen_id = p_specimen_id)
         AND (p_mrns IS NULL OR pm.mrn IS NOT NULL)
         AND (p_genes IS NULL OR pg.gene IS NOT NULL)
         AND (p_tc_change IS NULL OR v.coding LIKE '%' || p_tc_change || '%')
@@ -87,7 +87,7 @@ BEGIN
     ORDER BY
         s.analysis_date DESC,
         s.assay_folder,
-        s.cmol_id,    
+        s.specimen_id,    
         v.locus;
 
 END;

@@ -5,7 +5,7 @@ public class QueryCriteria {
     private String downloadType;
     private String fromDate;
     private String toDate;
-    private String cmolId;
+    private String specimenId;
     private String mrns;
     private String genes;
     private String transcriptChange;
@@ -35,12 +35,12 @@ public class QueryCriteria {
         this.toDate = toDate;
     }
 
-    public String getCmolId() {
-        return cmolId;
+    public String getSpecimenId() {
+        return specimenId;
     }
 
-    public void setCmolId(String cmolId) {
-        this.cmolId = cmolId;
+    public void setSpecimenId(String specimenId) {
+        this.specimenId = specimenId;
     }
     
     public String getMrns() {

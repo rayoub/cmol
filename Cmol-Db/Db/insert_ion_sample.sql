@@ -9,7 +9,7 @@ BEGIN
         zip_name,
         assay_folder,
         sample_folder,
-        cmol_id,
+        specimen_id,
         accession_id,
         analysis_date
     )
@@ -18,7 +18,7 @@ BEGIN
         zip_name, 
         assay_folder,
         sample_folder,
-        cmol_id,
+        specimen_id,
         accession_id,
         analysis_date
 	FROM
