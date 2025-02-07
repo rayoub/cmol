@@ -68,16 +68,26 @@ public class IonImport {
                 vcfFileName = vcfFileNames.get(0);
             }
 
+            String assayFolder = parts[0];
+            String sampleFolder = parts[1];
+            String zipName = parts[2];
+
             IonSample sample = new IonSample();
             sample.setVcfFileName(vcfFileName);
             sample.setTsvFileName(tsvFileName);
             sample.setDownloadType(downloadType.getPattern());
-            sample.setZipName(parts[2]);
-            sample.setAssayFolder(parts[0]);
-            sample.setSampleFolder(parts[1]);
+            sample.setZipName(zipName);
+            sample.setAssayFolder(assayFolder);
+            sample.setSampleFolder(sampleFolder);
 
-            if (parts[1].contains("_")) {
-                sample.setSpecimenId(parts[1].split("_")[0]);
+            String[] idParts = parts[1].split("_");
+            if (idParts.length > 1) {
+                if (idParts[0].contains(".2")) {
+                    sample.setSpecimenId(idParts[1]);
+                }
+                else {
+                    sample.setSpecimenId(idParts[0]);
+                }
                 sample.setAccessionId(parts[1].split("_")[1]);
             }
             else {

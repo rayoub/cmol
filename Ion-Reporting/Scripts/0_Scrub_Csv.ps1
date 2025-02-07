@@ -30,8 +30,7 @@ if ($done) {
 	-replace ',(Patient Name:)', ',"$1' `
 	-replace ',(MRN:)','",$1' `
 	-replace ',(Authorizing Provider:)', ',"$1' `
-	-replace ',(Ordering Provider:)','","$1' `
-	-replace ', (Facility:)','",$1' | 
+	-replace ',(Ordering Provider:)','",$1' |
 	Set-Content $file
     
 Write-Host "`nDone scrubbing file." -ForegroundColor Green

@@ -167,7 +167,7 @@ public class Import {
 					String diagnosis = Import.getCellValue(sheet.getRow(p.getLeft()).getCell(p.getRight()), evaluator);
 
 					// check date
-					LocalDate cutoff = LocalDate.now().minusDays(30);
+					LocalDate cutoff = LocalDate.now().minusDays(14);
 					Date d = null;
 					LocalDate ld = null;
 					try {
