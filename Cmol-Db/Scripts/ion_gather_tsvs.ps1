@@ -27,7 +27,7 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
 
 # zips we already did
-$existingTsvs = Get-ChildItem -Path $data -Filter *.tsv 
+$existingTsvs = Get-ChildItem -Path $data -Include ('*Selected*.tsv', '*Filtered*.tsv') -Recurse
 $existingZips = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingTsv in $existingTsvs) {
     $existingZips.Add(($existingTsv.Name -split ' ')[2]) | Out-Null
@@ -48,13 +48,14 @@ foreach($zip in $zips) {
         if ($null -ne $tsvFile) {
 
             $tsvFileName = $tsvFile.Name.replace(":","_")
-            Write-Host "Extracting" $tsvFileName
-            $shell.namespace($data).copyhere($tsvFile, 16) | Out-Null
-        
             $tsvFullName = $data + "\" + $tsvFileName
             $tsvNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $tsvFileName
 
-            Rename-Item -Path $tsvFullName -NewName $tsvNewFullName
+            if (-not (Test-Path $tsvNewFullName -PathType Leaf)) {
+                Write-Host "Extracting" $tsvFileName
+                $shell.namespace($data).copyhere($tsvFile, 16) | Out-Null
+                Rename-Item -Path $tsvFullName -NewName $tsvNewFullName
+            }
         }
     }
 }

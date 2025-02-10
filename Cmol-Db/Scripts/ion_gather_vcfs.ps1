@@ -27,7 +27,7 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
 
 # zips we already did
-$existingVcfs = Get-ChildItem -Path $data -Filter *.vcf
+$existingVcfs = Get-ChildItem -Path $data -Include ('*Selected*.vcf', '*Filtered*.vcf') -Recurse
 $existingZips = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingVcf in $existingVcfs) {
     $existingZips.Add(($existingVcf.Name -split ' ')[2]) | Out-Null
@@ -49,13 +49,14 @@ foreach($zip in $zips) {
 		if ($null -ne $vcfFile) {
             
 			$vcfFileName = $vcfFile.Name.replace(":","_")
-            Write-Host "Extracting" $vcfFileName
-            $shell.namespace($data).copyhere($vcfFile, 16) | Out-Null
-        
             $vcfFullName = $data + "\" + $vcfFileName
             $vcfNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $vcfFileName
 
-            Rename-Item -Path $vcfFullName -NewName $vcfNewFullName
+            if (-not (Test-Path $vcfNewFullName -PathType Leaf)) {
+                Write-Host "Extracting" $vcfFileName
+                $shell.namespace($data).copyhere($vcfFile, 16) | Out-Null
+                Rename-Item -Path $vcfFullName -NewName $vcfNewFullName
+            }
 		}
     }
 }

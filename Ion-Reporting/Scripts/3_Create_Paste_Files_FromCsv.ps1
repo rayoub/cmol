@@ -160,7 +160,7 @@ if ([String]::IsNullOrEmpty($inputFile)) {
 
 # load input csv 
 $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
-    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider','Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile -Header $header
 
 # build hash-table of accession #/cmol id combos and patient rows from input csv

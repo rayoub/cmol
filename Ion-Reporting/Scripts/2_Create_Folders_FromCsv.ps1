@@ -21,7 +21,7 @@ if ([String]::IsNullOrEmpty($inputFile)) {
 
 # load input csv 
 $header = 'Ignore','SampleID','PatientName','MRN','SEX','DOB','Type','Collection','Received','DNAConcentration','DNAPurity',
-    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider', 'Facility','Comments','Ignore2','Ignore3','DNAPurity2'
+    'RNA','RNAPurity','AuthorizingProvider','OrderingProvider','Facility','Comments','Ignore2','Ignore3','DNAPurity2'
 $inputCsv = Import-Csv -Path $inputFile -Header $header
 
 # build array of sample ids
@@ -29,7 +29,7 @@ $sampleIDs = @()
 foreach ($row in $inputCsv) {
 
     $sampleID = ($row.SampleID -split ":")[1]
-    if ([String]::IsNullOrEmpty($SampleID)){
+    if ([String]::IsNullOrEmpty($sampleID)){
 
         # no more rows
         break
