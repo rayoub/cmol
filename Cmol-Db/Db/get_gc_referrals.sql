@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION get_gc_referrals (
     p_from_date DATE DEFAULT NULL,
     p_to_date DATE DEFAULT NULL)
 RETURNS TABLE (
-    report_id VARCHAR,
+    sample_id VARCHAR,
     mrn VARCHAR,
     accession VARCHAR,
     age INTEGER,
@@ -23,8 +23,8 @@ BEGIN
     WITH reports AS 
     (
         SELECT
-            qr.report_id,
-            qr.ordering_physician_client AS mrn,
+            qr.sample_id,
+            qr.mrn,
             qr.accession,
             DATE_PART('year', AGE(qr.date_of_birth))::INTEGER AS age,
             qr.test_date,
@@ -32,13 +32,13 @@ BEGIN
             qr.primary_tumor_site AS tumor_site,
             qr.diagnosis,
             qr.interpretation,
-            REPLACE(qr.ordering_physician_name, ',', '')::VARCHAR AS physician,
+            REPLACE(qr.physician_name, ',', '')::VARCHAR AS physician,
             qr.primary_tumor_site
         FROM
-            qci_report qr 
+            qci_sample qr 
         WHERE 
             qr.accession ~* '^[a-z][0-9]+$'
-            AND qr.ordering_physician_client IS NOT NULL
+            AND qr.mrn IS NOT NULL
             AND (p_from_date IS NULL OR qr.test_date >= p_from_date)
             AND (p_to_date IS NULL OR qr.test_date <= p_to_date)
     ),
@@ -66,7 +66,7 @@ BEGIN
     grouped AS 
     (
         SELECT
-            r.report_id,
+            r.sample_id,
             r.mrn,
             r.accession,
             r.age,
@@ -80,7 +80,7 @@ BEGIN
         FROM
             reports r
             INNER JOIN qci_variant qv 
-                ON qv.report_id = r.report_id
+                ON qv.sample_id = r.sample_id
             INNER JOIN genes g 
                 ON g.gene = qv.gene
         WHERE 
@@ -88,7 +88,7 @@ BEGIN
             AND (g.exclude_brain = 0 OR r.tumor_site <> 'Brain')
             AND (g.exclude_renal = 0 OR r.tumor_site <> 'Kidney')
         GROUP BY
-            r.report_id,
+            r.sample_id,
             r.mrn,
             r.accession,
             r.age,
@@ -100,7 +100,7 @@ BEGIN
             r.physician
     )
     SELECT
-        g.report_id,
+        g.sample_id,
         g.mrn,
         g.accession,
         g.age,

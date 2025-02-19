@@ -47,7 +47,7 @@ public class Db {
 
             GCReferral ref = new GCReferral();
 
-            ref.setReportId(rs.getString("report_id"));
+            ref.setReportId(rs.getString("sample_id"));
             ref.setMrn(rs.getString("mrn"));
             if (rs.wasNull()) ref.setMrn("");
             ref.setAccession(rs.getString("accession"));

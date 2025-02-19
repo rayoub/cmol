@@ -11,9 +11,9 @@ BEGIN
     SELECT DISTINCT 
         qr.accession
     FROM
-        qci_report qr 
+        qci_sample qr 
         INNER JOIN qci_variant qv 
-            ON qv.report_id = qr.report_id
+            ON qv.sample_id = qr.sample_id
         INNER JOIN gc_gene g 
             ON g.gene = qv.gene
         LEFT JOIN gc_notified n 
