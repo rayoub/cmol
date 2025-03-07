@@ -187,7 +187,7 @@ public class QciSample extends PGobject {
             
             sampleId + "," +
 
-            mrn + "," +
+            mrn.replace(",","\\,") + "," +
             accession.replace("(", "\\(").replace(")","\\)") + "," +
             receivedDate + "," +
             testDate + "," +

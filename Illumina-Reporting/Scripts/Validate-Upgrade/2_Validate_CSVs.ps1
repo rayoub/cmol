@@ -39,7 +39,7 @@ function Compare-Files {
 	param(
 		$validateForFile,
 		$compareToFile,
-		$batchNumber,
+		$runId,
 		$sampleName
 	)
 
@@ -66,7 +66,7 @@ function Compare-Files {
 		}
 
 		if (!$matched) {
-			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ("NGS " + $batchNumber)
+			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ($runId)
 			$iRow | Add-Member -NotePropertyName "Sample" -NotePropertyValue $sampleName
 			$iRow | Add-Member -NotePropertyName "File" -NotePropertyValue $validateForFile.FullName
 			$unmatchedRows += $iRow
@@ -88,7 +88,7 @@ function Compare-Files {
 			}
 		}
 		if (!$matched) {
-			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ("NGS " + $batchNumber)
+			$iRow | Add-Member -NotePropertyName "Run" -NotePropertyValue ($runId)
 			$iRow | Add-Member -NotePropertyName "Sample" -NotePropertyValue $sampleName
 			$iRow | Add-Member -NotePropertyName "File" -NotePropertyValue $compareToFile.FullName
 			$unmatchedRows += $iRow
@@ -103,7 +103,7 @@ function Compare-AllFiles {
 	param(
 		$validateForFiles,
 		$compareToFiles,
-		$batchNumber
+		$runId
 	)
 	
 	$unmatchedRows = @()
@@ -125,7 +125,7 @@ function Compare-AllFiles {
 
 				$sampleName = $compareToFile.Directory.Name
 
-				$unmatchedRows += Compare-Files $validateForFile $compareToFile $batchNumber $sampleName
+				$unmatchedRows += Compare-Files $validateForFile $compareToFile $runId $sampleName
 
 				# look for the next files
 				break
@@ -143,7 +143,7 @@ function Compare-AllFiles {
 # *** GATHER INPUTS ***
 # ******************************************************************************************
 
-$batchNumber = (Read-Host "Enter a batch number").Trim()
+$runId = (Read-Host "Enter a Run ID").Trim()
 
 $validateForFolder = Get-ValidateForFolder
 if ($null -eq $validateForFolder) {
@@ -173,10 +173,10 @@ $compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $
 # initialize unmatched rows
 $unmatchedRows = $()
 
-$unmatchedRows += Compare-AllFiles $validateForPercentFiles $compareToPercentFiles $batchNumber
-$unmatchedRows += Compare-AllFiles $validateForHotspotFiles $compareToHotspotFiles $batchNumber
+$unmatchedRows += Compare-AllFiles $validateForPercentFiles $compareToPercentFiles $runId
+$unmatchedRows += Compare-AllFiles $validateForHotspotFiles $compareToHotspotFiles $runId
 
 Write-Host "Finished writing out unmatched rows" -ForegroundColor Green
-$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./NGS " + $batchNumber + " Unmatched Rows.csv") -NoTypeInformation
+$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./" + $runId + " Unmatched Rows.csv") -NoTypeInformation
 
 Read-Host "`nPress enter to exit"
