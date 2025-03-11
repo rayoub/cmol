@@ -145,6 +145,13 @@ function Compare-AllFiles {
 
 $runId = (Read-Host "Enter a Run ID").Trim()
 
+$reportType = (Read-Host "Enter the report type (Common|Heme)").Trim()
+if ($reportType -ne "Common" -and $reportType -ne "Heme") {
+    Write-Host "`nERROR: Report type must be either 'Common' or 'Heme'." -ForegroundColor Red
+    Read-Host "`nPress enter to exit"
+    exit
+}
+
 $validateForFolder = Get-ValidateForFolder
 if ($null -eq $validateForFolder) {
    	Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
@@ -177,6 +184,6 @@ $unmatchedRows += Compare-AllFiles $validateForPercentFiles $compareToPercentFil
 $unmatchedRows += Compare-AllFiles $validateForHotspotFiles $compareToHotspotFiles $runId
 
 Write-Host "Finished writing out unmatched rows" -ForegroundColor Green
-$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./" + $runId + " Unmatched Rows.csv") -NoTypeInformation
+$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./" + $runId + " (" + $reportType + ") Unmatched Rows.csv") -NoTypeInformation
 
 Read-Host "`nPress enter to exit"

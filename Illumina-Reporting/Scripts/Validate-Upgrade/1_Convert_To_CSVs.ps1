@@ -4,27 +4,12 @@ Add-Type -AssemblyName System.Windows.Forms
 # *** FUNCTIONS ***
 # ******************************************************************************************
 
-function Get-ValidateForFolder
-{
-    $dialog = New-Object System.Windows.Forms.FolderBrowserDialog 
-    $dialog.SelectedPath = "C:\CompareResults\ValidateFor"
-	$dialog.ShowNewFolderButton = $false
-    $dialog.Description = "Select the backed up 'pending' folder to validate for."
-    if ($dialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -eq "OK")
-    {
-		$dialog.SelectedPath
-	}
-	else {
-		$null
-	}
-}
-
-function Get-CompareToFolder
+function Get-FolderForConversion
 {
     $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $dialog.SelectedPath = "C:\CompareResults\CompareTo"
+    $dialog.SelectedPath = "C:\CompareResults"
 	$dialog.ShowNewFolderButton = $false
-    $dialog.Description = "Select the NGS run 'results' folder to compare to."
+    $dialog.Description = "Select Folder for Conversion of Excel Files to CSV"
     if ($dialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -eq "OK")
     {
 		$dialog.SelectedPath
@@ -56,29 +41,19 @@ function Convert-ExcelToCsv ($file) {
 # *** SCRIPT ***
 # ******************************************************************************************
 
-$validateForFolder = Get-ValidateForFolder
-if ($null -eq $validateForFolder) {
-   	Write-Host "`nEXITING: No validation folder selected." -ForegroundColor Red
+$folderForConversion = Get-FolderForConversion
+if ($null -eq $folderForConversion) {
+   	Write-Host "`nEXITING: No folder for conversion selected." -ForegroundColor Red
   	exit
 }
 
-$compareToFolder = Get-CompareToFolder
-if ($null -eq $compareToFolder) {
-   	Write-Host "`nEXITING: No comparison folder selected." -ForegroundColor Red
-  	exit
-}
-if (!$compareToFolder.toLower().endsWith("results")){
-   	Write-Host "`nERROR: You must select an NGS run 'results' folder to compare to." -ForegroundColor Red
-  	exit
-}
+#$convertPercentFiles = @('C*', 'D*', '??BH-*') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
+#$convertHotspotFiles = @('C*', 'D*', '??BH-*') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
 
-$validateForPercentFiles = Get-ChildItem -Path $validateForFolder -Filter "*%.xlsx" | Sort-Object
-$validateForHotspotFiles = Get-ChildItem -Path $validateForFolder -Filter "*Hotspot.xlsx" | Sort-Object
-$compareToPercentFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
-$compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
+$convertPercentFiles = @('C*%.xlsx', 'D*%.xlsx', '??BH-*%.xlsx') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Recurse -File -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
+$convertHotspotFiles = @('C*Hotspot.xlsx', 'D*Hotspot.xlsx', '??BH-*Hotspot.xlsx') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Recurse -File -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
 
-$allFiles = $validateForPercentFiles + $validateForHotspotFiles + $compareToPercentFiles + $compareToHotspotFiles
-
+$allFiles = $convertPercentFiles + $convertHotspotFiles 
 
 $excel = New-Object -ComObject Excel.Application
 
