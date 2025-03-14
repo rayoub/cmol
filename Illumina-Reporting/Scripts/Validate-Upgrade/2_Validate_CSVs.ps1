@@ -184,6 +184,6 @@ $unmatchedRows += Compare-AllFiles $validateForPercentFiles $compareToPercentFil
 $unmatchedRows += Compare-AllFiles $validateForHotspotFiles $compareToHotspotFiles $runId
 
 Write-Host "Finished writing out unmatched rows" -ForegroundColor Green
-$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele | Export-Csv -Path ("./" + $runId + " (" + $reportType + ") Unmatched Rows.csv") -NoTypeInformation
+$unmatchedRows | Select-Object -Property Run,Sample,File,Chromosome,Region,Type,Reference,Allele,Count,Coverage,Frequency,"Average quality","Gene Cards" | Export-Csv -Path ("./" + $runId + " (" + $reportType + ") Unmatched Rows.csv") -NoTypeInformation
 
 Read-Host "`nPress enter to exit"

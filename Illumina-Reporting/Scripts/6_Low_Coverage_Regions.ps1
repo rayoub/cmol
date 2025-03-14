@@ -73,6 +73,11 @@ foreach ($inputFile in $inputFiles) {
 	$filteredGenes = @()
 	foreach ($row in $inputCsv) {
 
+		# no TERT
+		if ($row.Name -ieq 'TERT') {
+			continue
+		}
+
 		if ($reportType -ieq 'Heme50') {
 			if ($genes -contains $row.Name) {
 				$filteredGenes += $row.Name
