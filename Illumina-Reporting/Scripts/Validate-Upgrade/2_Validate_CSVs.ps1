@@ -170,8 +170,8 @@ if (!$compareToFolder.toLower().endsWith("results")){
 
 $validateForPercentFiles = Get-ChildItem -Path $validateForFolder -Filter "*%.csv" | Sort-Object
 $validateForHotspotFiles = Get-ChildItem -Path $validateForFolder -Filter "*Hotspot.csv" | Sort-Object
-$compareToPercentFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.csv" | Sort-Object
-$compareToHotspotFiles = @("C*", "D*_*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.csv" | Sort-Object
+$compareToPercentFiles = @("C*", "D*_*","??BH-*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*%.csv" | Sort-Object
+$compareToHotspotFiles = @("C*", "D*_*","??BH-*") | ForEach-Object{ Get-ChildItem -Path $compareToFolder -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.csv" | Sort-Object
 
 #******************************************************************************************
 #*** VALIDATION ***
