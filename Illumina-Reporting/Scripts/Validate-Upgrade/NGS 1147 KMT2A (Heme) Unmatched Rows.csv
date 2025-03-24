@@ -1,7 +1,0 @@
-"Run","Sample","File","Chromosome","Region","Type","Reference","Allele","Count","Coverage","Frequency","Average quality","Gene Cards"
-"1147 KMT2A","D22781_M7880","C:\CompareResults\ValidateFor\NGS 1147 KMT2A\D22781-N1147_S1 (paired) 4%.csv","X","34148806..34148844","Deletion","GAGACTGGACGTCCGACGAGTCTTGGGAGGCTCCGAGCG","-","301","788","38.19796954","33.72404936","FAM47A"
-"1147 KMT2A","D22788_T72551","C:\CompareResults\ValidateFor\NGS 1147 KMT2A\D22788-N1147_S4 (paired) 4%.csv","X","34148806..34148844","Deletion","GAGACTGGACGTCCGACGAGTCTTGGGAGGCTCCGAGCG","-","305","401","76.05985037","36.48836168","FAM47A"
-"1147 KMT2A","D22788_T72551","C:\CompareResults\CompareTo\NGS 1147 KMT2A\Results\D22788_T72551\D22788-N1147_S4 (paired) 5%.csv","9","133759481","SNV","G","A","188","392","47.95918367","34.07446809","ABL1"
-"1147 KMT2A","D22781_M7880","C:\CompareResults\ValidateFor\NGS 1147 KMT2A\D22781-N1147_S1 (paired) Hotspot.csv","20","31022441^31022442","Insertion","-","G","11","635","1.732283465","28.09090909","ASXL1"
-"1147 KMT2A","D22788_T72551","C:\CompareResults\ValidateFor\NGS 1147 KMT2A\D22788-N1147_S4 (paired) Hotspot.csv","9","5073770","SNV","G","T","121","386","31.34715026","37.89256198","JAK2"
-"1147 KMT2A","D22788_T72551","C:\CompareResults\ValidateFor\NGS 1147 KMT2A\D22788-N1147_S4 (paired) Hotspot.csv","20","31022441^31022442","Insertion","-","G","8","645","1.240310078","30.625","ASXL1"
