@@ -6,7 +6,12 @@ $paths = @(($root + "2024 (Run 091-226)"), ($root + "2025 (Run 227-)"))
 # get zip files
 $files = @()
 foreach($path in $paths) {
-    $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    if ($path.StartsWith("2024")) {
+        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    }
+    else {
+        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 3 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    }
 }
 
 # collect directories to fix
@@ -27,5 +32,5 @@ for($i = 0; $i -lt $files.Length; $i++){
 foreach ($dir in $dirsToFix) {
     Write-Host ("renaming " + $dir.FullName)
     Write-Host ("to " + (Join-Path $dir.Parent.FullName ($dir.Name -split '_')[1]))
-    Rename-Item $dir.FullName (Join-Path $dir.Parent.FullName ($dir.Name -split '_')[1])
+    Rename-Item $dir.FullName (Join-Path $dir.Parent.FullName ($dir.Name -split '_')[1]) 
 }

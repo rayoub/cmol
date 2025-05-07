@@ -7,7 +7,12 @@ $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 # get zip files
 $files = @()
 foreach($path in $paths) {
-    $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    if ($path.StartsWith("2022") -or $path.StartsWith("2023") -or $path.StartsWith("2024")) {
+        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    }
+    else {
+        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 3 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+    }
 }
 
 # create zip objects

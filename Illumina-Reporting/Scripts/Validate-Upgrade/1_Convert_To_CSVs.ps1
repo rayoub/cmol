@@ -47,9 +47,6 @@ if ($null -eq $folderForConversion) {
   	exit
 }
 
-#$convertPercentFiles = @('C*', 'D*', '??BH-*') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Directory -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
-#$convertHotspotFiles = @('C*', 'D*', '??BH-*') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Directory -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
-
 $convertPercentFiles = @('C*%.xlsx', 'D*%.xlsx', '??BH-*%.xlsx') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Recurse -File -Filter $_} | Get-ChildItem -Filter "*%.xlsx" | Sort-Object
 $convertHotspotFiles = @('C*Hotspot.xlsx', 'D*Hotspot.xlsx', '??BH-*Hotspot.xlsx') | ForEach-Object{ Get-ChildItem -Path $folderForConversion -Recurse -File -Filter $_} | Get-ChildItem -Filter "*Hotspot.xlsx" | Sort-Object
 
