@@ -8,10 +8,10 @@ $data = "E:\git\cmol\Cmol-Db\Data\Ion"
 $files = @()
 foreach($path in $paths) {
     if ($path.StartsWith("2022") -or $path.StartsWith("2023") -or $path.StartsWith("2024")) {
-        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+        $files += Get-ChildItem -Path $path -Filter "C*.zip" -Depth 2 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
     }
     else {
-        $files += Get-ChildItem -Path $path -Filter "CP*.zip" -Depth 3 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
+        $files += Get-ChildItem -Path $path -Filter "C*.zip" -Depth 3 | Where-Object { $_.Name -like "*SelectedVariants*" -or $_.Name -like "*Filtered*" }
     }
 }
 
@@ -19,9 +19,16 @@ foreach($path in $paths) {
 $zips = @($null) * $files.Length
 for($i = 0; $i -lt $files.Length; $i++){
     if ($files[$i].Directory.Name.Split(" ").Length -eq 1) {
+
+        # hash the file name
+        $fileName = $files[$i].Name
+        $fileStream = [IO.MemoryStream]::new([byte[]][char[]][io.path]::GetFileNameWithoutExtension($fileName))
+        $fileNameHash = Get-FileHash -InputStream $fileStream -Algorithm SHA256
+
         $zips[$i] = [PSCustomObject]@{ 
             DirectoryName = $files[$i].DirectoryName;
-            FileName = $files[$i].Name;
+            FileName = $fileName
+            FileNameHash = $fileNameHash.Hash;
             SampleFolder = $files[$i].Directory.Name;
             AssayFolder = $files[$i].Directory.Parent.Name
         }
@@ -29,18 +36,18 @@ for($i = 0; $i -lt $files.Length; $i++){
 }
 
 # sort zip objects
-$zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName
+$zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash
 
-# zips we already did
+# file name hashes we already did
 $existingTsvs = Get-ChildItem -Path $data -Include ('*Selected*.tsv', '*Filtered*.tsv') -Recurse
-$existingZips = New-Object System.Collections.Generic.HashSet[String]
+$existingHashes = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingTsv in $existingTsvs) {
-    $existingZips.Add(($existingTsv.Name -split ' ')[2]) | Out-Null
+    $existingHashes.Add(($existingTsv.Name -split ' ')[2]) | Out-Null
 }
 
 # iterate zip objects
 foreach($zip in $zips) {
-    if ($existingZips -notcontains [io.path]::GetFileNameWithoutExtension($zip.FileName)) {
+    if ($existingHashes -notcontains $zip.FileNameHash) {
 
         Write-Host "Processing a zip file for" $zip.AssayFolder $zip.SampleFolder 
 
@@ -52,9 +59,17 @@ foreach($zip in $zips) {
       
         if ($null -ne $tsvFile) {
 
+            $analysisDate = "1900-01-01"
+            $zipParts = $fileName -split "_"
+            foreach ($zipPart in $zipParts) {
+                if ($zipPart.startsWith("20") -and $zipPart.length -eq 10) {
+                    $analysisDate = $zipPart
+                }
+            }
+
             $tsvFileName = $tsvFile.Name.replace(":","_")
             $tsvFullName = $data + "\" + $tsvFileName
-            $tsvNewFullName = $data + "\" + $zip.AssayFolder + " " + $zip.SampleFolder + " " + [io.path]::GetFileNameWithoutExtension($zip.FileName) + " " + $tsvFileName
+            $tsvNewFullName = $zip.AssayFolder + " " + $zip.SampleFolder + " " + $zip.FileNameHash + " " + $analysisDate + " " + $tsvFileName
 
             if (-not (Test-Path $tsvNewFullName -PathType Leaf)) {
                 Write-Host "Extracting" $tsvFileName
