@@ -1,7 +1,7 @@
 
 CREATE TABLE ion_variant
 (
-    zip_name VARCHAR NOT NULL,
+    zip_hash VARCHAR NOT NULL,
     locus VARCHAR NOT NULL,
     type VARCHAR NOT NULL,
     subtype VARCHAR NULL,

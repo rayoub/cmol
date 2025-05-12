@@ -43,7 +43,7 @@ BEGIN
         s.analysis_date,
         s.assay_folder,
         s.specimen_id,
-        m.mrn,
+        COALESCE(s.mrn, m.mrn) AS mrn,
         v.locus,
         v.type, 
         v.subtype,
@@ -68,7 +68,7 @@ BEGIN
     FROM
         ion_sample s
         INNER JOIN ion_variant v
-            ON s.zip_name = v.zip_name
+            ON s.zip_hash = v.zip_hash
         LEFT JOIN ion_mrn m
             ON m.accn = s.accession_id
         LEFT JOIN UNNEST(p_mrns) pm(mrn)

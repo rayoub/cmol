@@ -5,7 +5,7 @@ AS $$
 BEGIN
 	
     INSERT INTO ion_variant (
-        zip_name,
+        zip_hash,
         locus,
         type,
         subtype,
@@ -29,7 +29,7 @@ BEGIN
         fold_diff
     )
 	SELECT
-        zip_name,
+        zip_hash,
         locus,
         type,
         subtype,

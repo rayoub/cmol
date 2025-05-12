@@ -163,9 +163,9 @@ public class Main {
         List<IonSample> samples = IonImport.getSamples(DownloadType.SelectedVariants);
 
         // remove samples we have already seen
-        Set<String> zipNames = IonDb.getZipNames(DownloadType.SelectedVariants);
+        Set<String> zipHashes = IonDb.getZipHashes(DownloadType.SelectedVariants);
         for (int i = samples.size() - 1; i >= 0; i--) {
-            if (zipNames.contains(samples.get(i).getZipName())) {
+            if (zipHashes.contains(samples.get(i).getZipHash())) {
                 samples.remove(i);
             }
         }
@@ -174,7 +174,7 @@ public class Main {
         IonDb.saveSamples(samples);
         for(IonSample sample : samples) {
             
-            System.out.println("saving " + sample.getZipName());
+            System.out.println("saving " + sample.getZipHash());
             List<IonVariant> variants = IonImport.getVariants(sample);
             IonDb.saveVariants(variants);            
         }
@@ -185,9 +185,9 @@ public class Main {
         List<IonSample> samples = IonImport.getSamples(DownloadType.Filtered);
 
         // remove samples we have already seen
-        Set<String> zipNames = IonDb.getZipNames(DownloadType.Filtered);
+        Set<String> zipHashes = IonDb.getZipHashes(DownloadType.Filtered);
         for (int i = samples.size() - 1; i >= 0; i--) {
-            if (zipNames.contains(samples.get(i).getZipName())) {
+            if (zipHashes.contains(samples.get(i).getZipHash())) {
                 samples.remove(i);
             }
         }
@@ -196,7 +196,7 @@ public class Main {
         IonDb.saveSamples(samples);
         for(IonSample sample : samples) {
             
-            System.out.println("saving " + sample.getZipName());
+            System.out.println("saving " + sample.getZipHash());
             List<IonVariant> variants = IonImport.getVariants(sample);
             IonDb.saveVariants(variants);            
         }

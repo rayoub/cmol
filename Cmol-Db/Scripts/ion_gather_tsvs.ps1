@@ -60,7 +60,7 @@ foreach($zip in $zips) {
         if ($null -ne $tsvFile) {
 
             $analysisDate = "1900-01-01"
-            $zipParts = $fileName -split "_"
+            $zipParts = $zip.FileName -split "_"
             foreach ($zipPart in $zipParts) {
                 if ($zipPart.startsWith("20") -and $zipPart.length -eq 10) {
                     $analysisDate = $zipPart

@@ -164,26 +164,26 @@ public class IonDb {
         return rows;
     }
 
-    public static Set<String> getZipNames(DownloadType downloadType) throws SQLException {
+    public static Set<String> getZipHashes(DownloadType downloadType) throws SQLException {
 
-        Set<String> zipNames = new HashSet<>();
+        Set<String> zipHashes = new HashSet<>();
 
         PGSimpleDataSource ds = Ds.getDataSource();
 
         Connection conn = ds.getConnection();
             
-        PreparedStatement stmt = conn.prepareCall("SELECT zip_name FROM ion_sample WHERE download_type = '" + downloadType.getPattern() + "';");
+        PreparedStatement stmt = conn.prepareCall("SELECT zip_hash FROM ion_sample WHERE download_type = '" + downloadType.getPattern() + "';");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            zipNames.add(rs.getString("zip_name"));
+            zipHashes.add(rs.getString("zip_hash"));
         }
 
         rs.close();
         stmt.close();
         conn.close();
 
-        return zipNames;
+        return zipHashes;
     }
     
     public static List<IonCnvStat> getCnvStats(CnvType cnvType) throws SQLException {

@@ -7,7 +7,7 @@ public class IonVariant extends PGobject {
     public static int INT_NULL = -99999;
     public static double DOUBLE_NULL = -99999.0;
 
-    private String zipName;
+    private String zipHash;
     private String locus;
     private String type;
     private String subtype;
@@ -30,12 +30,12 @@ public class IonVariant extends PGobject {
     private String copyNumberType;
     private String foldDiff;
     
-    public String getZipName() {
-        return zipName;
+    public String getZipHash() {
+        return zipHash;
     }
 
-    public void setZipName(String zipName) {
-        this.zipName = zipName;
+    public void setZipHash(String zipHash) {
+        this.zipHash = zipHash;
     }
 
     public String getLocus() {
@@ -211,7 +211,7 @@ public class IonVariant extends PGobject {
     public String getValue() {
         String row = "("  +
 
-            zipName + "," + 
+            zipHash + "," + 
             locus + "," + 
             type + "," +
             subtype + "," + 

@@ -8,12 +8,13 @@ public class IonSample extends PGobject {
     private String tsvFileName;
 
     private String downloadType;
-    private String zipName;
+    private String zipHash;
     private String assayFolder;
     private String sampleFolder;
     private String specimenId;
     private String accessionId;
     private String analysisDate;
+    private String mrn;
     
     public String getVcfFileName() {
         return vcfFileName;
@@ -39,12 +40,12 @@ public class IonSample extends PGobject {
         this.downloadType = downloadType;
     }
 
-    public String getZipName() {
-        return zipName;
+    public String getZipHash() {
+        return zipHash;
     }
 
-    public void setZipName(String zipName) {
-        this.zipName = zipName;
+    public void setZipHash(String zipName) {
+        this.zipHash = zipName;
     }
 
     public String getAssayFolder() {
@@ -86,18 +87,27 @@ public class IonSample extends PGobject {
     public void setAnalysisDate(String analysisDate) {
         this.analysisDate = analysisDate;
     }
+    
+    public String getMrn() {
+        return mrn;
+    }
+
+    public void setMrn(String mrn) {
+        this.mrn = mrn;
+    }
 
     @Override
     public String getValue() {
         String row = "("  +
 
             downloadType + "," + 
-            zipName + "," + 
+            zipHash + "," + 
             assayFolder + "," + 
             sampleFolder + "," +
             specimenId + "," +
             accessionId  + "," +
-            analysisDate
+            analysisDate + "," + 
+            mrn
         + ")";
         return row;
     }

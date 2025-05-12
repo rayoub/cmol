@@ -47,59 +47,61 @@ public class IonImport {
 
         List<IonSample> samples = new ArrayList<>();
 
-        List<String> tsvFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
+        List<String> vcfFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
             .map(path -> path.getFileName().toString())
-            .filter(fileName -> fileName.endsWith(".tsv") && fileName.contains(downloadType.getPattern()))
+            .filter(fileName -> fileName.endsWith(".vcf") && fileName.contains(downloadType.getPattern()))
             .collect(Collectors.toList());
 
         // parse samples
-        for (String tsvFileName : tsvFileNames) {
+        for (String vcfFileName : vcfFileNames) {
 
-            String[] parts = tsvFileName.split(" ");
+            String[] parts = vcfFileName.split(" ");
 
-            // get corresponding vcf file name
-            List<String> vcfFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
+            // get corresponding tsv file name
+            List<String> tsvFileNames = Files.list(Paths.get(Constants.ION_DATA_PATH))
                 .map(path -> path.getFileName().toString())
-                .filter(fileName -> fileName.startsWith(parts[0] + " " + parts[1] + " " + parts[2]) && fileName.endsWith(".vcf"))
+                .filter(fileName -> fileName.startsWith(parts[0] + " " + parts[1] + " " + parts[2]) && fileName.endsWith(".tsv"))
                 .collect(Collectors.toList());
 
-            String vcfFileName = "";
-            if (vcfFileNames.size() > 0) {
-                vcfFileName = vcfFileNames.get(0);
+            String tsvFileName = "";
+            if (tsvFileNames.size() > 0) {
+                tsvFileName = tsvFileNames.get(0);
+            }
+            else {
+                continue;
             }
 
             String assayFolder = parts[0];
             String sampleFolder = parts[1];
-            String zipName = parts[2];
+            String zipHash = parts[2];
+            String analysisDate = parts[3];
 
             IonSample sample = new IonSample();
             sample.setVcfFileName(vcfFileName);
             sample.setTsvFileName(tsvFileName);
             sample.setDownloadType(downloadType.getPattern());
-            sample.setZipName(zipName);
+            sample.setZipHash(zipHash);
             sample.setAssayFolder(assayFolder);
             sample.setSampleFolder(sampleFolder);
+            sample.setAnalysisDate(analysisDate);
 
-            String[] idParts = parts[1].split("_");
+            String[] idParts = sampleFolder.split("_");
             if (idParts.length > 1) {
-                if (idParts[0].contains(".2")) {
-                    sample.setSpecimenId(idParts[1]);
+                if (idParts[0].isEmpty() || idParts[0].startsWith("D")) {
+                    sample.setSpecimenId(idParts[0]); 
+                    sample.setAccessionId(idParts[1]);
+                    sample.setMrn("");
                 }
                 else {
-                    sample.setSpecimenId(idParts[0]);
+                    sample.setSpecimenId(idParts[1]); 
+                    sample.setAccessionId(idParts[1]);
+                    sample.setMrn(idParts[0]);
                 }
-                sample.setAccessionId(parts[1].split("_")[1]);
             }
             else {
-                sample.setSpecimenId(parts[1]);
-                sample.setAccessionId(parts[1]);
-            }
-            
-            String[] zipParts = sample.getZipName().split("_");
-            for (String part : zipParts) {
-                if (part.startsWith("20") && part.length() == 10) {
-                    sample.setAnalysisDate(part);
-                }
+                sample.setSpecimenId(sampleFolder);
+                sample.setAccessionId(sampleFolder);
+                sample.setMrn("");
             }
 
             samples.add(sample);
@@ -128,7 +130,7 @@ public class IonImport {
 
             IonVariant variant = new IonVariant();
 
-            variant.setZipName(sample.getZipName());
+            variant.setZipHash(sample.getZipHash());
             variant.setLocus(TsvParser.getValue(headers, values, "locus"));
             variant.setVariantType(TsvParser.getValue(headers, values, "type"));
             variant.setVariantSubtype(TsvParser.getValue(headers, values, "subtype"));

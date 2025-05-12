@@ -6,21 +6,23 @@ BEGIN
 	
     INSERT INTO ion_sample (
         download_type,
-        zip_name,
+        zip_hash,
         assay_folder,
         sample_folder,
         specimen_id,
         accession_id,
-        analysis_date
+        analysis_date,
+        mrn
     )
 	SELECT
         download_type,
-        zip_name, 
+        zip_hash, 
         assay_folder,
         sample_folder,
         specimen_id,
         accession_id,
-        analysis_date
+        analysis_date,
+        mrn
 	FROM
 		UNNEST(p_tab);
 
