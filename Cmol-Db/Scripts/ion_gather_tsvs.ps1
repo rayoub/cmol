@@ -39,7 +39,7 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash
 
 # file name hashes we already did
-$existingTsvs = Get-ChildItem -Path $data -Include ('*Selected*.tsv', '*Filtered*.tsv') -Recurse
+$existingTsvs = Get-ChildItem -Path $data -Filter '*full.tsv' 
 $existingHashes = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingTsv in $existingTsvs) {
     $existingHashes.Add(($existingTsv.Name -split ' ')[2]) | Out-Null

@@ -39,7 +39,7 @@ for($i = 0; $i -lt $files.Length; $i++){
 $zips = $zips | Sort-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash | Select-Object -Property AssayFolder,SampleFolder,DirectoryName,FileName,FileNameHash
 
 # file name hashes we already did
-$existingVcfs = Get-ChildItem -Path $data -Include ('*Selected*.vcf', '*Filtered*.vcf') -Recurse
+$existingVcfs = Get-ChildItem -Path $data -Filter 'C*.vcf'
 $existingHashes = New-Object System.Collections.Generic.HashSet[String]
 foreach($existingVcf in $existingVcfs) {
     $existingHashes.Add(($existingVcf.Name -split ' ')[2]) | Out-Null
