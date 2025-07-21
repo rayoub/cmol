@@ -3,110 +3,8 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 ######################################################################################################
-### DEFINITION
-######################################################################################################
-
-$names = @(
-    ''
-    'Wei Zhang, MD, PhD',
-    'Stephen Hyter, PhD',
-    'Shivani Golem, PhD, FACMG',
-    'Patrick Gonzales, PhD, FACMG, CG(ASCP)'
-)
-
-######################################################################################################
 ### FUNCTIONS
 ######################################################################################################
-
-function Get-Name {
-    param ([String] $sampleID)
-
-    $dims = New-Object System.Drawing.Size(595,242) # width, height
-    $padding = New-Object System.Windows.Forms.Padding(6)
-    $font = New-Object System.Drawing.Font -ArgumentList 'GenericSanSerif', 12.5
-
-    # create form
-    $form = New-Object System.Windows.Forms.Form 
-    $form.Text = "Create Paste File for " + $sampleID
-    $form.Font = $font
-    $form.ControlBox = $false
-    $form.Size = $dims
-    $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
-    $form.SizeGripStyle = 'Hide'
-    $form.StartPosition = "CenterScreen"
-    $form.TopMost = $true
-
-    # labels
-    $nameText = New-Object System.Windows.Forms.Label
-    $nameText.Text = "Name:"
-    $nameText.AutoSize = $true
-    $nameText.Anchor = [System.Windows.Forms.AnchorStyles]::Left
-
-    # name combobox
-    $comboBox = New-Object System.Windows.Forms.ComboBox
-    $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-    $comboBox.Anchor = [System.Windows.Forms.AnchorStyles]::Right
-    $comboBox.Width = 375
-    foreach ($name in $names) {
-        [void] $comboBox.Items.Add($name)
-    }
-    $comboBox.SelectedIndex = 0
-
-    # ok button
-    $okButton = New-Object System.Windows.Forms.Button
-    $okButton.Text = 'OK'
-    $okButton.AutoSize = $true
-    $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $okbutton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $form.AcceptButton = $okButton
-
-    # abort button
-    $abortButton = New-Object System.Windows.Forms.Button
-    $abortButton.Text = 'Abort'
-    $abortButton.AutoSize = $true
-    $abortButton.DialogResult = [System.Windows.Forms.DialogResult]::Abort
-    $abortButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-
-    # table panel
-    $table = New-Object System.Windows.Forms.TableLayoutPanel
-    $table.RowCount = 2
-    $table.ColumnCount = 2
-    $table.AutoSize = $true
-    $table.Padding = $padding
-
-    # row styles
-    $rowStyle1 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
-    $rowStyle2 = New-Object System.Windows.Forms.RowStyle -ArgumentList @([System.Windows.Forms.SizeType]::Absolute, 40)
-    [void] $table.RowStyles.Add($rowStyle1)
-    [void] $table.RowStyles.Add($rowStyle2)
-
-    # table first row
-    $table.Controls.Add($nameText)
-    $table.SetRow($nameText, 0)
-    $table.SetColumn($nameText, 0)
-    $table.Controls.Add($comboBox)
-    $table.SetRow($comboBox, 0)
-    $table.SetColumn($comboBox, 1)
-
-    # flow panel for bottom buttons
-    $flow = New-Object System.Windows.Forms.FlowLayoutPanel
-    $flow.FlowDirection = [System.Windows.Forms.FlowDirection]::RightToLeft
-    $flow.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $flow.Controls.Add($okButton)
-    $flow.Controls.Add($abortButton)
-
-    # table bottom row
-    $table.Controls.Add($flow)
-    $table.SetRow($flow, 1)
-    $table.SetColumn($flow, 0)
-    $table.SetColumnSpan($flow, 2)
-
-    $form.Controls.Add($table)
-
-    $form.ShowDialog()
-
-    $names[$comboBox.SelectedIndex]
-}
 
 function Get-StringField {
     param ([String] $fieldValue)
@@ -218,14 +116,6 @@ foreach($dirName in $patientRows.Keys){
     $facility = 'The University of Kansas Hospital'
     $collectionDate = Get-DateField $row.Collection
     $receivedDate = Get-DateField $row.Received
-    
-    # name 
-    $result, $selectedName = Get-Name $sampleID
-    if ($result -eq [System.Windows.Forms.DialogResult]::Abort) {
-        Write-Host "`nAborting the creation of paste files`n" -ForegroundColor Red
-        $word.quit()
-        exit
-    }
 
     # build text
     $text = "" + 
@@ -235,11 +125,10 @@ foreach($dirName in $patientRows.Keys){
         $MRN + "`v" +"`v" +
         $facility + "`v" + "`v" +
         $collectionDate + "`v" + "`v" +
-        $DOB + ", " + $sex.toupper().substring(0,1) + "`v" + "`v" +
+        $DOB + ", " + $sex + "`v" + "`v" +
         "[surgepath_id]" + "`v" + "`v" +
         $receivedDate + "`v" + "`v" +
-        $selectedName + "`v" + "`v" +
-        (Get-Date -Format "M/d/yyyy") + "`v"
+        (Get-Date -Format "MM/dd/yyyy") + "`v"
 
     # output text
     $selection = $word.Selection

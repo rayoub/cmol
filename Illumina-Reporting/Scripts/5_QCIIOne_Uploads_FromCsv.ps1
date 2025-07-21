@@ -363,7 +363,7 @@ $templateXml = @"
     <ns1:TestProduct> 
         <ns1:Code></ns1:Code>
         <ns1:Profile></ns1:Profile>
-        <ns1:ReportTemplate>KUMC_v1</ns1:ReportTemplate>
+        <ns1:ReportTemplate>KUMC_v3.2</ns1:ReportTemplate>
     </ns1:TestProduct>
     <ns1:Test>
         <ns1:AccessionId></ns1:AccessionId>
