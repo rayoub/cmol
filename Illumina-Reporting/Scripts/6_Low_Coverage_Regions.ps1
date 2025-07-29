@@ -59,7 +59,7 @@ if ($currentDir -ne "results"){
    exit
 }
 
-$header = "Chromosome","Region","Name","RegionLen","RegionLenAbove100","PercentRegionAbove100","ReadCount","BaseCount","GCPercent",
+$header = "Chromosome","Region","Name","AnnotationType","RegionLen","RegionLenAbove100","PercentRegionAbove100","ReadCount","BaseCount","GCPercent",
 "MinCoverage","MaxCoverage","MeanCoverage","MedianCoverage","ZeroCoverageBases","MeanCoverageExclude0","MedianCoverageExclude0"
 
 $inputFiles = Get-ChildItem -Path . -Directory -Filter *BH*-* | Select-Object -ExpandProperty BaseName | Get-ChildItem -Filter *Per-region*.csv
